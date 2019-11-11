@@ -4,7 +4,7 @@
 
 ### Register With Netki
 
-Contact Netki business development at support@netki.com  
+Contact Netki business development at client-onboard@netki.com  
 
 Our team will contact you and consult with you on the best way to approach your KYC and compliance requirements.
 
