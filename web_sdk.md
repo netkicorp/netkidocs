@@ -110,4 +110,4 @@ When Netki onboards your business we ask for information regarding the details o
 
 Our service will post complete callback data every time we update the “state” or the processing status of the record.  In some cases the data will not go through in one shot and will have to be manually reviewed. In these cases your data will be on hold.  Your server will receive a callback with it on hold but then will also get a callback again when it moves to the next state.
 
-More information regarding callback states and payload can be found in the compliance dashboard. https://compliance.netki.com/documentation
+More information regarding callback states and payload can be found in the compliance dashboard. 
