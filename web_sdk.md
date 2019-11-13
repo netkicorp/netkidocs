@@ -1,5 +1,36 @@
 # Web SDK / JavaScript Widget
 
+## Embedded KYC and Onboarding Widget
+
+Netki is a leader in mobile application development and machine learning algorithms.  We have taken many of the best algorithms and tools that are found in our MyVerify app and recompiled them for distribution on mobile browsers such as iOS Safari and Android Chrome. There are a few pros and cons by running in a browser.
+
+Pros:
+
++ No application download
++ Seamless integration into a client's portal
++ Coordination between desktop and mobile experiences
++ Broad deployment audience (browsers are on nearly all major phones)
++ Standardized security schemes
+
+Cons:
+
++ Slightly less crisp user experience (native apps are prettier)
++ Some missing or degraded algorithms
++ Different risk profile with chain of custody
++ No direct control of the cameras
+
+
+## Embedded User Experience
+
+
+
+## User Workflow
+
+Sometimes it is helpful to see things laid out in a workflow. Below is a flow diagram that walks through the various pieces of the onboarding flow.  The goal is for your user to have very little inputs.  Snap a picture of their ID and then post processing extracts all the data.  
+
+![Web SDK Workflow](./images/web_sdk_workflow.jpg)
+
+
 ## Onboarding Steps
 
 ### Register With Netki
@@ -82,7 +113,7 @@ Upon completion of the KYC flow the user will be redirected back out to the url 
 
     `<iframe src="WEBSDK_BASE_URL/?client_token=CLIENT_TOKEN&user_token=USER_JWT&client_guid=YOUR_GUID" ></iframe>`
 
-NOTE: this IFRAME needs all the display real estate that you can give it.  Do not attempt to surround it with much chrome or padding.  Leave footers and headers off when possible.  You can even redirect the user to the link itself if your users will not worry about the domain switch.
+NOTE: this iframe needs all the display real estate that you can give it.  Do not attempt to surround it with much chrome or padding.  Leave footers and headers off when possible.  You can even redirect the user to the link itself if your users will not worry about the domain switch.
 
 NOTE: this iframe needs all the display real estate that you can give it.  Do not attempt to surround it with much chrome or padding.  Leave footers and headers off when possible.  You can even redirect the user to the link itself if your users will not worry about the domain switch.
 
@@ -110,4 +141,4 @@ When Netki onboards your business we ask for information regarding the details o
 
 Our service will post complete callback data every time we update the “state” or the processing status of the record.  In some cases the data will not go through in one shot and will have to be manually reviewed. In these cases your data will be on hold.  Your server will receive a callback with it on hold but then will also get a callback again when it moves to the next state.
 
-More information regarding callback states and payload can be found in the compliance dashboard. 
+More information regarding callback states and payload can be found in the compliance dashboard.
