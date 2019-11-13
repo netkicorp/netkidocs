@@ -23,17 +23,17 @@ Cons:
 ## Embedded User Experience
 
 
-![Web SDK Integration](./web_sdk_ux1.png)
+![Web SDK Integration](./images/web_sdk_ux1.png)
 
-![Web SDK Integration](./web_sdk_ux2.png)
+![Web SDK Integration](./images/web_sdk_ux2.png)
 
-![Web SDK Integration](./web_sdk_ux3.png)
+![Web SDK Integration](./images/web_sdk_ux3.png)
 
-![Web SDK Integration](./web_sdk_ux4.png)
+![Web SDK Integration](./images/web_sdk_ux4.png)
 
-![Web SDK Integration](./web_sdk_ux5.png)
+![Web SDK Integration](./images/web_sdk_ux5.png)
 
-![Web SDK Integration](./web_sdk_ux6.png)
+![Web SDK Integration](./images/web_sdk_ux6.png)
 
 
 ## User Workflow
