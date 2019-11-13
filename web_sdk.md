@@ -22,14 +22,29 @@ Cons:
 
 ## Embedded User Experience
 
+Below are the screens that your users will experience once they start the KYC flow.
+
+First they will be asked to select their country of origin.
+
+<img src="./images/web_sdk_ux0.png" alt="Web SDK Integration" width="150" />
+
+Then they will be asked what document type.
 
 <img src="./images/web_sdk_ux1.png" alt="Web SDK Integration" width="150" />
-<img src="./images/web_sdk_ux2.png" alt="Web SDK Integration" width="150" />
-<img src="./images/web_sdk_ux3.png" alt="Web SDK Integration" width="150" />
-<img src="./images/web_sdk_ux4.png" alt="Web SDK Integration" width="150" />
-<img src="./images/web_sdk_ux5.png" alt="Web SDK Integration" width="150" />
-<img src="./images/web_sdk_ux6.png" alt="Web SDK Integration" width="150" />
 
+
+The messaging on the instruction page primes the user on how to take a good picture. It is important for them to lay the ID flat on a clean flat dark horizontal surface.
+
+<img src="./images/web_sdk_ux2.png" alt="Web SDK Integration" width="150" />
+
+Our machine learning algorithms will guide the user through taking a good picture by providing feedback during the flow.
+
+<img src="./images/web_sdk_ux3.png" alt="Web SDK Integration" width="150" />
+
+
+We will also snap a picture of a selfie. These is usually a better picture because most people know how to take a selfie.
+
+<img src="./images/web_sdk_ux4.png" alt="Web SDK Integration" width="150" />
 
 
 ## User Workflow
