@@ -31,14 +31,18 @@ Our suite of products covers the following application strategies:
 - iframe based Web SDK
 - API interface
 
+### OnboardID Android SDK
+
+### OnboardID iOS SDK
+
+### OnboardID Web SDK
+
+For information regarding our iframe JavaScript implementation, follow the link to the [Web SDK Documentation](./web_sdk.md).
 
 
-### Web SDK
+### API Access
+
+For information regarding our iframe JavaScript implementation, follow the link to the [Web SDK Documentation](./web_sdk.md).
 
 
 ## TransactID
-
-
-
-
-For information regarding our iframe JavaScript implementation, follow the link to the [Web SDK Documentation](./web_sdk.md).
