@@ -1,6 +1,6 @@
 # Netki Technical Product Documentation
 
-<img src="./images/prod_docs.png" alt="Netki Product Documentation" width="500" />
+<img src="./images/headline.png" alt="Netki Product Documentation" width="100%" />
 
 ## Table of Contents
 
