@@ -1,10 +1,13 @@
 # Netki Technical Product Documentation
 
+<img src="./images/prod_docs.png" alt="Netki Product Documentation" width="500" />
+
 ## Table of Contents
 
 - [OnboardID](#onboardid)
 - [OnboardID Solutions](#onboardid-solutions)
 - [OnboardID API Access](#onboardid-api-access)
+- [TransactID](#transactid)
 
 
 ## OnboardID
@@ -49,7 +52,7 @@ After setting up an account with us we will send you onboarding information. It 
 
 ### OnboardID iOS SDK
 
-<img src="./images/ios.jpg" alt="iOS SDK Integration" width="150" />
+<img src="./images/ios.png" alt="iOS SDK Integration" width="150" />
 
 [TBD](#)
 
@@ -64,7 +67,7 @@ Nearly all our clients will interact with our API.  While not all clients will u
 
 
 
-For information regarding our iframe JavaScript implementation, follow the link to the [Web SDK Documentation](./web_sdk.md).
+For information regarding our API implementation, sign into the compliance dashboard and see what .
 
 
 ## TransactID
