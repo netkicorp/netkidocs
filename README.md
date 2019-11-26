@@ -71,3 +71,10 @@ For information regarding our API implementation, sign into the compliance dashb
 
 
 ## TransactID
+
+
+Netki's TransactID allows Virtual Asset Providers (VASPs) to capture and transfer the information required by the "Travel Rule," and stay in compliance with FATF and local jurisdiction regulations.  TransactID uses open-source standards to enable a secure, encrypted, peer-to-peer exchange of identity information between parties prior to transactions.  It's the only Travel Rule compliance solution that's been in use since 2016.
+
+- Works with custodial and non-custodial wallets
+- Open standards solution avoids vendor lock in
+- Leverages legally accepted digital ID standard (X.509)
