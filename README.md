@@ -46,15 +46,15 @@ After setting up an account with us we will send you onboarding information. It 
 ### OnboardID Android SDK
 
 
-<img src="./images/android.jpg" alt="Android SDK Integration" width="150" />
+<a href="./onboard_id_android.md" ><img src="./images/android.png" alt="Android SDK Integration" width="150" /></a>
 
-[TBD](#)
+[OnboardID Android SDK](./onboard_id_android.md)
 
 ### OnboardID iOS SDK
 
-<a href="./onboard_id_android.md" ><img src="./images/ios.png" alt="iOS SDK Integration" width="150" /></a>
+<a href="./onboard_id_ios.md" ><img src="./images/ios.png" alt="iOS SDK Integration" width="150" /></a>
 
-[OnboardID Android SDK](./onboard_id_android.md)
+[OnboardID iOS SDK](./onboard_id_ios.md)
 
 ### OnboardID Web SDK
 
