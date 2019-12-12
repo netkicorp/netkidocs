@@ -111,3 +111,11 @@ Below are the elements which can be altered
 
 <img src="./images/android_image_capture1.png" alt="android image capture raw" width="350px" align="left" />
 <img src="./images/android_image_capture2.png" alt="android image capture changed" width="350px" />
+
+
+## Image Review Screen
+
+
+
+<img src="./images/android_color_review_buttons.png" alt="android image capture raw" width="350px" align="left" />
+<img src="./images/android_color_review_button_2.png" alt="android image capture changed" width="350px" />
