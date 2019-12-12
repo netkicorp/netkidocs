@@ -53,9 +53,58 @@ We allow the following aspects of the UI to be altered.
 
 ## Getting Started
 
+We keep our SDK under a private repository that is powered by [Artifactory](https://jfrog.com/artifactory/).
+
+We will need an email and your name so that we can create an Artifactory account for the Netki Repository. This will be the name that is extracted from the tech admin portion of the onboarding questionnaire.
+
+## Installation
+
+### Step 1
+
+- On the build.gradle file of the project add the maven Netki repository in the repositories for all projects
+
+```
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        // Netki repo configuration
+        maven {
+            url "https://art.myverify.io//netki/libs-release-local/"
+            credentials {
+                username = "YOUR_USER"
+                password = "YOUR_PASSWORD"
+            }
+        }
+    }
+}
+```
+
+### Step 2
+
+- Add NetkiSDK as dependency in the app/build.gradle file with the desired version
+
+	// NetkiSDK
+	api('com.netki:netkisdk:latest.version')
+
+### Step 3
+
+- Recompile the project.
+
+
+### Note
+
+In case you are not using the material design themes please add the following parameter to the AndroidManifest.xml in the application tag.
+
+	tools:replace="android:theme"
+
 
 
 ## Sample Application
 
 
 ## Callbacks
+
+For More Information Regarding Callbacks please see our [Callback Best Practices](./best_practices_internal_callbacks.md) first.
+
+Once you are logged into your dashboard you will find documentation related to what data exists inside those callbacks so that you can map to fields on your side. 
