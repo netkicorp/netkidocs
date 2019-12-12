@@ -115,7 +115,7 @@ Below are the elements which can be altered
 
 ## Image Review Screen
 
-
+The review screens are controlled by the same theme settings as what is above.  The button and accent button colors will control these features. 
 
 <img src="./images/android_color_review_buttons.png" alt="android image capture raw" width="350px" align="left" />
 <img src="./images/android_color_review_button_2.png" alt="android image capture changed" width="350px" />
