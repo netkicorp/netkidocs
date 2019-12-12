@@ -6,10 +6,13 @@ Dramatically Reduce Onboarding Costs While Stopping Fraud.
 ## Table of Contents
 
 - [Overview](#overview)
-- [Example Usage](#example-usage)
-- [Getting Started](#getting-started)
-- [Sample Application](#sample-application)
-- [Callbacks](#callbacks)
+- [Front Identification Instructions Page](#front-identification-instructions-page)
+- [Back Identification Instructions Page](#back-identification-instructions-page)
+- [Front Passport Instructions Page](#front-passport-instructions-page)
+- [Selfie Instructions Page](#selfie-instructions-page)
+- [Image Capture Screen](#image-capture-screen)
+
+
 
 ## Overview
 
@@ -35,7 +38,7 @@ The colors that all the elements follow are the next ones:
 In order to change the color of the elements the client needs to override these previous colors with their own colors defined in their `colors.xml` file
 Below I show the screens and the correspondent color for each one.
 
-### Front Identification Instructions Page
+## Front Identification Instructions Page
 
 
 <img src="./images/android_font_instructionsId_page.png" alt="front instruction screen" width="350px" align="left" />
@@ -68,7 +71,7 @@ An example of a full customized page for front instructions is:
 
 <img src="./images/android_full_customized_front_instructions.png" alt="front instruction screen" width="350px" />
 
-### Back Identification Instructions Page
+## Back Identification Instructions Page
 
 Similar to the front instructional page we provide a way to set your own own instructional page for the capture of the back image.
 
@@ -77,7 +80,7 @@ This is a full image that the client can replace with their own. To replace it t
 <img src="./images/android_back_instructions_id.png" alt="back instruction screen" width="350px" />
 
 
-### Front Passport Instructions Page
+## Front Passport Instructions Page
 
 This follows the same instructions as the previous 2 instruction pages.
 
@@ -85,7 +88,7 @@ Add an image with name `front_instructions_passport.jpg` in the correspondent `d
 
 <img src="./images/android_passport_front_instructions.png" alt="back instruction screen" width="350px" />
 
-### Selfie Instruction Page
+## Selfie Instructions Page
 
 This follows the same instructions as the previous 3 instruction pages.
 
@@ -94,7 +97,7 @@ Add an image with name `selfie_instructions_id.jpg` in the correspondent `drawab
 <img src="./images/android_selfie_instructions.png" alt="back instruction screen" width="350px" />
 
 
-### Image Capture Screen
+## Image Capture Screen
 
 This is a dynamic screen so many of the features are not able to be changed.  Our machine learning computer vision algorithms are working on this page and guiding the user in a way that will facilitate a good capture of their ID.  
 
