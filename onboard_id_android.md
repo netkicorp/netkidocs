@@ -50,6 +50,8 @@ We allow the following aspects of the UI to be altered.
 
 - Single notification text
 
+For more information regarding customization of these screens please see the [Android Theme Documentation](./onboard_id_theme_android.md)
+
 
 ## Getting Started
 
@@ -107,4 +109,4 @@ In case you are not using the material design themes please add the following pa
 
 For More Information Regarding Callbacks please see our [Callback Best Practices](./best_practices_internal_callbacks.md) first.
 
-Once you are logged into your dashboard you will find documentation related to what data exists inside those callbacks so that you can map to fields on your side. 
+Once you are logged into your dashboard you will find documentation related to what data exists inside those callbacks so that you can map to fields on your side.
