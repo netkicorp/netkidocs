@@ -39,8 +39,7 @@ We allow the following aspects of the UI to be altered.
 
 **Picture Review Screen**
 
-- Font
-- Font size
+- Button Font Color
 - Button Colors
 - Continue button show/hide
 - Continue countdown timeout
