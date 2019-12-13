@@ -92,18 +92,17 @@ Once the block returns, the environment will be configured and ready to proceed
 
 ### SDK Execution
 
-The country code of the issuing state **must** be provided. Set the issuing country on the `NetkiClient.issuingCountry` property (default is USA) for the documents to be scanned.
+The 2 character ISO country code of the issuing state **must** be provided. Set the issuing country on the `NetkiClient.issuingCountry` property (default is US) for the documents to be scanned.
 
-SJS: is it 3 character in the app? shouldn't this be US?
 
 Note: there is a list of countries is provided via `[[NetkiClient sharedClient] appContext].countries`. You must provide your own UI for allowing the user to select the issuing country of their ID.
 
 Set the `docType` property on the NetkiClient of the document to be scanned using the `NTKDocType` ENUM
 
-* driver's license
-* passport
-* govt ID
-SJS: what are these absolute values?
+* NTKDocTypeDriversLicense
+* NTKDocTypePassport
+* NTKDocTypeGovernmentID
+
 
 Create an instance of the `NTKCameraFlowViewController` and subscribe to its delegate. Then present the view controller modally
 
