@@ -65,10 +65,10 @@ Below you will find instructions on how to install and configure the Netki Onboa
 
 ### Settings
 
-SJS: are we forced to be bitcode off?
-
 * Enable Bitcode - No
 * Info.plist - Enter a string for Privacy - Camera Usage Description (e.g. Scanning ID front and back)
+
+We are currently shipping with bitcode off. If you need it enabled let us know and we can enable that. 
 
 ### Binaries
 
