@@ -68,7 +68,7 @@ Below you will find instructions on how to install and configure the Netki Onboa
 * Enable Bitcode - No
 * Info.plist - Enter a string for Privacy - Camera Usage Description (e.g. Scanning ID front and back)
 
-We are currently shipping with bitcode off. If you need it enabled let us know and we can enable that. 
+We are currently shipping with bitcode off. If you need it enabled let us know and we can enable that.
 
 ### Binaries
 
@@ -76,15 +76,44 @@ We are currently shipping with bitcode off. If you need it enabled let us know a
 	* confirm_sdk.framework
 	* netkisdk_ios.framework
 
+### Netki Internal Objects
+
+Below are some of the Netki defined business and application objects. These data structures will be used for parameters and also for return objects.
+
+There are 4 types of documents supported currently in the Netki. Types of ID1 and ID3 standardized international documents. Basically a card and passport standard.
+
+```objectivec
+typedef NS_ENUM(NSInteger, NTKDocType) {
+	NTKDocTypeDriversLicense,
+	NTKDocTypePassport,
+	NTKDocTypeGovernmentID,
+	NTKDocTypeOther
+};
+```
+
+In addition to the DOCUMENT TYPE there is an IMAGE TYPE which may associate 1 or more objects to that document type. For instance a driver's license has a FRONT and BACK.
+
+Each document has an associated IMAGE TYPE that indicates if it is a stand alone or part of another document class. Documents of type ID3 will have a FRONT and BACK as expected.
+
+The face image is also a document labeled as SELFIE. That is the only biometric human data.
+
+```objectivec
+NTKDocumentImageType const NTKDocumentImageTypeFRONT;
+NTKDocumentImageType const NTKDocumentImageTypePASSPORT;
+NTKDocumentImageType const NTKDocumentImageTypePASSPORTLASTPAGE;
+NTKDocumentImageType const NTKDocumentImageTypeBACK;
+NTKDocumentImageType const NTKDocumentImageTypeSELFIE;
+```
+
 ### Instantiation Of The SDK
 
-Import the NetkiSDK framework in the AppDelegate
+Import the NetkiSDK framework.
 
     #import <netkisdk_ios/NetkiClient.h>
 
-From the AppDelegate, call below passing your TOKEN provided by Netki:
+From inside your application you must initialize the SDK by running below with your TOKEN provided by Netki.
 
-```obj-c
+```objectivec
 - (void)configureWithClientToken:(NSString *)token block:(void (^)(BOOL success, NSError * _Nullable error))block;
 ```
 
@@ -99,10 +128,16 @@ Note: there is a list of countries is provided via `[[NetkiClient sharedClient] 
 
 Set the `docType` property on the NetkiClient of the document to be scanned using the `NTKDocType` ENUM
 
-* NTKDocTypeDriversLicense
-* NTKDocTypePassport
-* NTKDocTypeGovernmentID
 
+### Delegate Description
+
+
+
+```objectivec
+NTKCaptureControllerDelegate
+
+@protocol NTKCaptureControllerDelegate <NSObject>
+```
 
 Create an instance of the `NTKCameraFlowViewController` and subscribe to its delegate. Then present the view controller modally
 
@@ -112,6 +147,174 @@ Call `- validateAndCompleteWithBlock:onProgress:` and wait for the transaction I
 
 The completion block will return success and either a `Transaction ID` or Error on the event of failure.
 
+
+## Response Values
+
+There are some cases in which you will want to access the data that was captured by the cameras. Things like the documents that were captured, the data out of the documents, the face coordinates, MRZ, etc.
+
+Refer to the `NTKDocumentImage` object.
+
+Description:
+
+```objectivec
+@interface NTKDocumentImage : NSObject
+
+@property (nonatomic, strong, readonly) UIImage *image;
+@property (nonatomic, strong, readonly) NTKDocumentImageType imageType;
+@property (nonatomic, assign, readonly) NTKDocType docType;
+@property (nonatomic, strong, nullable, readonly) NTKCountry *issuingCountry;
+@property (nonatomic, strong, readonly) NTKFaceRecognitionInfo *faceRecognitionInfo;
+@property (nonatomic, strong, readonly) NTKBarcodeRecognitionInfo *barcodeRecognitionInfo;
+@property (nonatomic, strong) UIImage *croppedDocumentFace;
+@property (nonatomic, strong) NTKMRZInfo *mrzInfo;
+
+@end
+```
+The naming convention should be self-explanatory as to what is inside.
+
+If a face was detected on the document you can access it using `croppedDocumentFace` parameter.
+
+
+If a barcode was detected on the document you can access that data using the `barcodeRecognitionInfo` parameter.
+
+The data inside the barcode will be available inside the `NTKBarcodeDriverLicenseInfo` object.
+
+```objectivec
+@interface NTKBarcodeDriverLicenseInfo: NSObject
+
+@property (nonatomic, strong) NSString *documentType;
+@property (nonatomic, strong) NSString *firstName;
+@property (nonatomic, strong) NSString *middleName;
+@property (nonatomic, strong) NSString *lastName;
+@property (nonatomic, strong) NSString *gender;
+@property (nonatomic, strong) NSString *addressStreet;
+@property (nonatomic, strong) NSString *addressCity;
+@property (nonatomic, strong) NSString *addressState;
+@property (nonatomic, strong) NSString *addressZip;
+@property (nonatomic, strong) NSString *licenseNumber;
+@property (nonatomic, strong) NSString *issueDate;
+@property (nonatomic, strong) NSString *expiryDate;
+@property (nonatomic, strong) NSString *birthDate;
+@property (nonatomic, strong) NSString *issuingCountry;
+
+@end
+```
+
+Access the MRZ info using `NTKMRZInfo` object.
+
+
+```objectivec
+@interface NTKMRZInfo : NSObject
+@property (readonly) NSString *birthDate;
+@property (readonly) NSString *docType;
+@property (readonly) NSString *documentNumber;
+@property (readonly) NSString *expiryDate;
+@property (readonly) NSString *givenName;
+@property (readonly) NSString *invitNumber;
+@property (readonly) NSString *issuerAbbr;
+@property (readonly) NSString *nameGroup;
+@property (readonly) NSString *nationAbbr;
+@property (readonly) NSString *personalNumber;
+@property (readonly) NSString *sex;
+@property (readonly) NSString *surName;
+@property (readonly) NSString *visaId;
+
++ (instancetype)mrzInfoWithDictionary:(NSDictionary *)dictionary;
+
+@end
+```
+If we scan the BACK PAGE of the passport there may be a passport serial number if we were able to read that 1D barcode. It can be accessed via the `NTKBarcodePassportBackInfo` object.
+
+```objectivec
+@interface NTKBarcodePassportBackInfo : NSObject
+@property (nonatomic, strong) NSString *licenseNumber;
+
+@end
+```
+
+In the case of detection and decoding of barcodes of either 2D ID barcodes or back page passport 1D barcodes we will populate a general barcode recognition object.
+
+
+```objectivec
+@interface NTKBarcodeRecognitionInfo : NSObject
+@property (nonatomic, strong) NSDictionary *rawInfo;
+@property (nonatomic, strong) NTKBarcodeDriverLicenseInfo *diverLicenseInfo;
+@property (nonatomic, strong) NTKBarcodePassportBackInfo *passportBackInfo;
+
+- (instancetype)initWithDriverLicenseRawData:(NSDictionary *)rawData;
+
+@end
+```
+
+
+
+## Advanced Usage
+
+### Individual Screen Controllers
+
+In some cases you will want to run individual screens. We offer the ability to delegate controllers on an ad-hoc basis.
+
+Here we are instantiating and running the controller and telling it to run the capture and review sequence for ID type and FRONT.
+
+Parameters are:
+
+- issuingCountry
+- doctype
+- imageType
+
+See above for document type ENUM and Image Type [front/back/etc].
+
+```objectivc
+NTKIDCaptureViewController *idCaptureController = [[NTKIDCaptureViewController alloc] initWithIssuingCountry:NetkiClient.sharedClient.issuingCountry doctype:NTKDocTypeDriversLicense imageType:NTKDocumentImageTypeFRONT];
+```
+
+Delegate the callback to the `self` class.
+
+```objectivec
+idCaptureController.delegate = self;
+[self presentViewController:idCaptureController animated:YES completion:nil];
+```
+
+### Review Screen Success Auto Continue
+
+Once a user takes a picture they will be given a review screen. On that screen they will need to review the results of the algorithm.  By default we will show a continue and retry button.  The order of these buttons are reversed based on the results of the algorithms. If all pass then continue is the call-to-action (CTA) on the top and retry on the bottom in minor colors. If any fail then the order is reversed with the retry CTA on the top and the continue showing on the bottom next to a warning symbol.
+
+SJS: i need two examples screenshots of each scenario
+
+If you want to take the user to the next screen review screen automatically you can do that. The thought is that if all pass then you can index automatically. Use review validation strategy.
+
+Please see the example below:
+
+```objectivec
+- (void)startDocumentFrontDetection {
+	NTKIDCaptureViewController *idCaptureController = [[NTKIDCaptureViewController alloc] initWithIssuingCountry:NetkiClient.sharedClient.issuingCountry doctype:NTKDocTypeDriversLicense imageType:NTKDocumentImageTypeFRONT];
+	idCaptureController.delegate = self;
+	idCaptureController.reviewValidationStrategy = [NTKReviewValidationStrategyCloseIfAllDataValid strategyWithCloseFlag:YES timeout:2.0f];
+	[self presentViewController:idCaptureController animated:YES completion:nil];
+}
+```
+
+### Setting Custom Labels
+
+SJS: screen shots of each of these showing their locations.
+
+```objectivec
+@interface NTKCustomTextProvider : NSObject
+
++ (NSString *)headerForCaptureDLFront;
++ (void)setHeaderForCaptureDLFront:(NSString *)text;
+
++ (NSString *)headerForCaptureDLBack;
++ (void)setHeaderForCaptureDLBack:(NSString *)text;
+
++ (NSString *)headerForCapturePassportFront;
++ (void)setHeaderForCapturePassportFront:(NSString *)text;
+
++ (NSString *)headerForCapturePassportLastPage;
++ (void)setHeaderForCapturePassportLastPage:(NSString *)text;
+
+@end
+```
 
 ### Phone Confirmation (optional)
 
@@ -123,13 +326,13 @@ Sending phone number:
 
 You must use an ISO formatted phone number string. Example: *+1234567890*
 
-```obj-c
+```objectivec
 - (void)requestSecurityCodeForPhoneNumber:(NSString *)phoneNumber block:(void (^)(BOOL success, NSError * _Nullable error))block;
 ```
 
 The user will pull that text message and provide it to the application. Send the phone number in again along with the user-provided PIN.
 
-```obj-c
+```objectivec
 - (void)validateSecurityCode:(NSString *)securityCode forPhoneNumber:(NSString *)phoneNumber block:(void (^)(BOOL success, NSError * _Nullable error))block;
 ```
 
