@@ -10,6 +10,8 @@ Dramatically Reduce Onboarding Costs While Stopping Fraud.
 - [Overview](#overview)
 - [Example Usage](#example-usage)
 - [Getting Started](#getting-started)
+- [Installation](#installation)
+- [Advanced Usage](#advanced-usage)
 - [Sample Application](#sample-application)
 - [Callbacks](#callbacks)
 
