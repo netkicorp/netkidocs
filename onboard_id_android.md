@@ -10,6 +10,10 @@ Dramatically Reduce Onboarding Costs While Stopping Fraud.
 - [Overview](#overview)
 - [Example Usage](#example-usage)
 - [Getting Started](#getting-started)
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+- [Netki Internal Objects](#netki-internal-objects)
+- [Advanced Usage](#advanced-usage)
 - [Sample Application](#sample-application)
 - [Callbacks](#callbacks)
 
@@ -64,7 +68,7 @@ We will need an email and your name so that we can create an Artifactory account
 
 - On the build.gradle file of the project add the maven Netki repository in the repositories for all projects
 
-```
+```java
 allprojects {
     repositories {
         google()
@@ -82,12 +86,12 @@ allprojects {
 ```
 ### Step 2
 
-- Enable renderscript in the android gradle configuration
+- Enable `renderscript` in the android `gradle` configuration
 
-```
+```java
 android {
     ...
- 
+
     defaultConfig {       
         ...
         renderscriptTargetApi 28
@@ -109,10 +113,11 @@ android {
 
 
 ### Note
-Depending the configuration of your project you can get an error about android:allowBackup and/or android:theme not correct
-In that case add the following in your AndroidManifest.xml file
 
-```
+Depending the configuration of your project you can get an error about `android:allowBackup` and/or `android:theme` not correct
+In that case add the following in your `AndroidManifest.xml` file
+
+```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools"
 package="com.netkiapp">
@@ -122,34 +127,35 @@ package="com.netkiapp">
         tools:replace="android:allowBackup,android:theme">
         ...
     </application>
-  
+
 </manifest>
 ```
-In case of an error related with 
+In case of an error related with
 
 `Binary XML file line #37: Binary XML file line #37: Error inflating class`
 Make sure that your theme extends from Material Design theme
 
 For example
-```
+
+```xml
 <resources>
-  
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="@style/Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
-  
+
 </resources>
 ```
 
-## Usage
+## Basic Usage
 
 ### Step 1
 
-- Get an instance of the Netki class
+Get an instance of the Netki class
 
-Java
-```
+
+```Java
 Netki netki = Netki.INSTANCE;
 ```
 
@@ -157,47 +163,29 @@ For Koltin you can access the methods directly from the `Netki` object
 
 ### Step 2
 
-- Initialize SDK
+Initialize SDK
 
-Before using any of the methos initialize it with
+Before using any of the methods initialize it as below.
 
-```
+```java
 Netki.initialize(applicationContext)
 ```
 
 ### Step 3
 
-- Configuring the SDK passing in the API key provided by Netki as the token and implementing a callback block.
+Configure the SDK passing in the API key provided by Netki as the token and implementing a callback block.
 
-```
+```java
 Netki.configureWithClientToken(token: String, callback: NetkiCallback)
 ```
 
-Once the configuration callback block returns, the environment will be configured and ready to procede
+Once the configuration callback block returns, the environment will be configured and ready to proceed
 
-### Step 4 (Optional)
 
-- To recieve a security code via SMS call
-
-```
-Netki.requestSecurityCode(phoneNumber: String, callback: NetkiCallback)
-```
-
-with a +1234567890-formatted string as the phone number (include + and country code) 
-
-### Step 5 (Optional)
-
-- To validate de code received by SMS call 
-
-```
-Netki.validateSecurityCode(phoneNumber: String, securityCode: String, callback: NetkiCallback)
-``` 
-
-with the same formatted phone number and the 6-digit security 
 
 ### Step 6
 
-- Set the issuing country for the documents to be scanned by calling 
+- Set the issuing country for the documents to be scanned by calling
 
 ```
 Netki.setIssuingCountry(country: Country)
@@ -226,23 +214,23 @@ enum class DocumentType {
 
 ```
 IdentificationProcessActivity.createIntent(context)
-``` 
+```
 
 This could throw an error, IllegalStateException with a message showing the error.
 The main 2 reasons to throw this error are, running the SDK in a virtual device or not having frontal camera in the device running the SDK.
-	
+
 To validate the result of the IdentificationProcessActivity in the callback use the `resultCode`
 
 ```
 resultCode == Activity.RESULT_OK
 ```
 
-means that the process was succesfully done and we can send the data to netki 
-            
+means that the process was succesfully done and we can send the data to netki
+
 ```
 resultCode != Activity.RESULT_OK
 ```
- 
+
 means that the process was not finished succesfully and we need to start again the flow before sending the data to netki
 
 If there was an error during the process you can find the information in the data that we returnt into the result like this
@@ -255,11 +243,11 @@ in other cases for example the user going back from that flow this will be empty
 
 ### Step 9
 
-- On successful identification process activity response, call 
+- On successful identification process activity response, call
 
 ```
 Netki.validateAndComplete(callback: NetkiVerifyDataCallback)
-``` 
+```
 
 to finish the transaction
 
@@ -273,43 +261,24 @@ to finish the transaction
 
 ### Starting the camera control
 
--The activity responsible for that invocation is: 
+The activity responsible for that invocation is:
 
-```
-CameraIdentificationActivity
-```
 
-- The way to invoke it is creating an Intent passing as parameter the DocumentType and the DocumentSide to initiate the camera and then start the activity expecting the result.
+    CameraIdentificationActivity
 
-```
+
+The way to invoke it is creating an Intent passing as parameter the `DocumentType` and the `DocumentSide` to initiate the camera and then start the activity expecting the result.
+
+```java
 CameraIdentificationActivity.createIntent(context: Context, documentType: DocumentType, documentSide: DocumentSide)
 ```
 
-Where 
+For more information regarding `DocumentType` and `DocumentSide` object classes see [Netki Internal Objects](#netki-internal-objects)
 
-DocumentType
 
-```
-enum class DocumentType {
-        DRIVERS_LICENSE,
-        PASSPORT,
-        GOVERNMENT_ID;
-}
-```
+Example of invocation
 
-DocumentSide
-
-```
-enum class DocumentSide {
-        FRONT,
-        BACK,
-        SELFIE
-}
-```
-
-- Example of invocation
-
-```
+```java
 startActivityForResult(
         CameraIdentificationActivity.createIntent(
                 context,
@@ -321,28 +290,29 @@ startActivityForResult(
 
 ### Handling camera control result
 
--The activity will return a success or error response to the element invoking it. 
+The activity will return a success or error response to the element invoking it.
 
--The first step is to validate if the process was finished successfully, for that you need to verify the resultCode, the 2 options are
+The first step is to validate if the process was finished successfully, for that you need to verify the `resultCode`, the 2 options are
 
-```
+```java
 resultCode == RESULT_OK
 ```
 
-```
+```java
 resultCode == RESULT_CANCELED
 ```
 
 ### Error result
 
-- If the resultCode is RESULT_CANCELED you can access the information of the error with 
+If the `resultCode` is `RESULT_CANCELED` you can access the information of the error this way:
 
-```
+```java
 CameraIdentificationActivity.ERROR_INFORMATION_KEY
 ```
 
-Example
-```
+Example:
+
+```java
 if (resultCode == RESULT_CANCELED) {
         String error = data != null ? data.getStringExtra(CameraIdentificationActivity.ERROR_INFORMATION_KEY) : "";
         Log.e(TAG, error);
@@ -351,9 +321,9 @@ if (resultCode == RESULT_CANCELED) {
 
 ### Success result
 
-- If the result is `RESULT_OK` the control will return a list of `Picture`
+If the result is `RESULT_OK` the control will return a list of `Picture`
 
-```
+```java
 data class Picture(
         val path: String,
         val barcodes: List<Barcode> = mutableListOf(),
@@ -364,15 +334,13 @@ data class Picture(
 
 where:
 
-- path: where the image was saved, this is an internal memory that is only accesible to the app, it is not accesible for external app or the user
+- **path**: where the image was saved, this is an internal memory that is only accesible to the app, it is not accesible for external app or the user
+- **barcodes**: List of all the information extracted from the barcodes found in the identification, this could be empty. This will be available in case that back of DriverLicense was selected
+- **passportContent**: Information readed from the MRZ in the passport, this could be null. This will be available in case that front of Passport was selected
+- **type**: the type of picture returned
 
-- barcodes: List of all the information extracted from the barcodes found in the identification, this could be empty. This will be available in case that back of DriverLicense was selected
 
-- passportContent: Information readed from the MRZ in the passport, this could be null. This will be available in case that front of Passport was selected
-
-- type: the type of picture returned 
-
-```
+```java
 enum class Type {
                 FRONT,
                 BACK,
@@ -381,9 +349,9 @@ enum class Type {
         }
 ```
 
-- The barcode object has the following structure:
+The barcode object has the following structure:
 
-```
+```java
 data class Barcode(
         val rawValue: String,
         val displayValue: String,
@@ -398,7 +366,7 @@ data class Barcode(
         val contactInfo: Barcode.ContactInfo,
         val driverLicense: Barcode.DriverLicense
 ) {
- 
+
         data class Email(
                 val type: Int = 0,
                 val address: String,
@@ -411,7 +379,7 @@ data class Barcode(
                         const val HOME = 2
                 }
         }
- 
+
         data class Phone(
                 val type: Int = 0,
                 val number: String
@@ -424,28 +392,28 @@ data class Barcode(
                         const val MOBILE = 4
                 }
         }
- 
+
         data class Sms(
                 val message: String,
                 val phoneNumber: String
         )
- 
+
         data class WiFi(
                 val ssid: String,
                 val password: String,
                 val encryptionType: Int = 0
         )
- 
+
         data class UrlBookmark(
                 val title: String,
                 val url: String
         )
- 
+
         data class GeoPoint(
                 val lat: Double = 0.toDouble(),
                 val lng: Double = 0.toDouble()
         )
- 
+
         data class CalendarEvent(
                 val summary: String,
                 val description: String,
@@ -455,7 +423,7 @@ data class Barcode(
                 val start: Barcode.CalendarDateTime,
                 val end: Barcode.CalendarDateTime
         )
- 
+
         data class CalendarDateTime(
                 val year: Int = 0,
                 val month: Int = 0,
@@ -466,7 +434,7 @@ data class Barcode(
                 val isUtc: Boolean = false,
                 val rawValue: String
         )
- 
+
         data class ContactInfo(
                 val name: Barcode.PersonName,
                 val organization: String,
@@ -476,7 +444,7 @@ data class Barcode(
                 val urls: Array<String>,
                 val addresses: Array<Barcode.Address>
         )
- 
+
         data class PersonName(
                 val formattedName: String,
                 val pronunciation: String,
@@ -486,7 +454,7 @@ data class Barcode(
                 val last: String,
                 val suffix: String
         )
- 
+
         data class Address(
                 val type: Int = 0,
                 val addressLines: Array<String>
@@ -497,7 +465,7 @@ data class Barcode(
                         const val HOME = 2
                 }
          }
- 
+
         data class DriverLicense(
                 val documentType: String,
                 val firstName: String,
@@ -517,9 +485,9 @@ data class Barcode(
 }
 ```
 
-- The passport object has the following structure
+The passport object has the following structure
 
-```
+```java
 data class PassportContent(
     val text: String,
     val nameGroup: String,
@@ -538,9 +506,9 @@ data class PassportContent(
 )
 ```
 
-- Example of success response:
+Example of success response:
 
-```
+```java
 if (resultCode == RESULT_OK) {
         List<Picture> pictures = (List<Picture>) data.getSerializableExtra(CameraIdentificationActivity.PICTURES_KEY);
         for (Picture picture : pictures) {
@@ -550,13 +518,46 @@ if (resultCode == RESULT_OK) {
 }
 ```
 
+## Advanced Usage
+
+
+### SMS Phone Validation
+
+This is optional. Most SDK users do not use this.
+
+In some cases you may with to use our phone validation service. This is a service that is rarely used by our clients. It was surfaced here because we do it in the flagship MyVerify application and it exists.  
+
+This service will take a phone number and check that number to see if it is really a mobile number and send a PIN verification number in a text message.  We do have the ability to return an exception if VIOP checking is part of your contract. See sales for more information.
+
+You must use an ISO formatted phone number string. Excluding the + or adding other characters will return a validation error.
+
+Example: *+1234567890*
+
+Sending phone number and receiving a PIN via SMS:
+
+
+```java
+Netki.requestSecurityCode(phoneNumber: String, callback: NetkiCallback)
+```
+
+### PIN Validation
+
+To validate the code received by SMS call:
+
+```java
+Netki.validateSecurityCode(phoneNumber: String, securityCode: String, callback: NetkiCallback)
+```
+
+User the same formatted phone number and the 6-digit security PIN that was sent via SMS.
+
+
 ## Extra configuration
 
-- There are 2 extra methods that allow some extra configuration for the SDK
+There are 2 extra methods that allow some extra configuration for the SDK
 
 ### Auto finish in full success
 
-- In case you want to auto close the review screen when all the validations are successful you can do it with the method
+In case you want to auto close the review screen when all the validations are successful you can do it with the method
 
 ```
 Netki.INSTANCE.autoFinishOnSuccess(finish: Boolean, secondsToFinish: Int)
@@ -571,11 +572,11 @@ where
 
 - If you want to display a custom message in the camera screen, you can invoke the next method
 
-```
+```java
 Netki.INSTANCE.setMessagesInstruction(takePictureInstructions: String, secondsDisplayingInstructions: Int)
 ```
 or
-```
+```java
 Netki.INSTANCE.setMessagesInstruction(takePictureInstructions: String, retakePictureInstructions: String, secondsDisplayingInstructions: Int)
 ```
 
@@ -584,6 +585,41 @@ Where:
 - takePictureInstructions: custom message for the first attempt to try to take the picture
 - retakePictureInstructions: custom message for when the user is retrying to take the picture
 - secondsDisplayingInstructions: time that the instructions will be displayed before showing the normal messages. The limit that the message will be displayed 10 seconds before enabling the manual capture
+
+## Netki Internal Objects
+
+
+Below are some of the Netki defined business and application objects. These data structures will be used for parameters and also for return objects.
+
+These variables will be used as parameters in other areas of the application.
+
+There are 4 types of documents supported currently in the Netki. Types of ID1 and ID3 standardized international documents. Basically a card and passport standard.
+
+
+```java
+// com.netki.netkisdk.v2.model.DocumentType options
+enum class DocumentType {
+        DRIVERS_LICENSE,
+        PASSPORT,
+        GOVERNMENT_ID;
+}
+```
+
+In addition to the DOCUMENT TYPE there is an IMAGE TYPE which may associate 1 or more objects to that document type. For instance a driver's license has a FRONT and BACK.
+
+Each document has an associated IMAGE ORIENTATION or TYPE that indicates if it is a stand alone or part of another document class. Documents of type ID3 will have a FRONT and BACK as expected.
+
+The face image is also a document labeled as SELFIE. That is the only biometric human data.
+
+```java
+// com.netki.netkisdk.v2.model.DocumentSide
+enum class DocumentSide {
+        FRONT,
+        BACK,
+        SELFIE
+}
+```
+
 
 ## Sample Application
 
