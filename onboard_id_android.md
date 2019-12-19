@@ -11,6 +11,7 @@ Dramatically Reduce Onboarding Costs While Stopping Fraud.
 - [Example Usage](#example-usage)
 - [Getting Started](#getting-started)
 - [Installation](#installation)
+- [Basic Usage](#basic-usage)
 - [Netki Internal Objects](#netki-internal-objects)
 - [Advanced Usage](#advanced-usage)
 - [Sample Application](#sample-application)
@@ -67,7 +68,7 @@ We will need an email and your name so that we can create an Artifactory account
 
 - On the build.gradle file of the project add the maven Netki repository in the repositories for all projects
 
-```
+```java
 allprojects {
     repositories {
         google()
@@ -83,37 +84,123 @@ allprojects {
     }
 }
 ```
-
 ### Step 2
+
+- Enable `renderscript` in the android `gradle` configuration
+
+```java
+android {
+    ...
+
+    defaultConfig {       
+        ...
+        renderscriptTargetApi 28
+        renderscriptSupportModeEnabled true
+    }
+}
+```
+
+### Step 3
 
 - Add NetkiSDK as dependency in the app/build.gradle file with the desired version
 
 	// NetkiSDK
 	api('com.netki:netkisdk:latest.version')
 
-### Step 3
+### Step 4
 
 - Recompile the project.
 
 
 ### Note
 
-In case you are not using the material design themes please add the following parameter to the AndroidManifest.xml in the application tag.
+Depending the configuration of your project you can get an error about `android:allowBackup` and/or `android:theme` not correct
+In that case add the following in your `AndroidManifest.xml` file
 
-	tools:replace="android:theme"
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+package="com.netkiapp">
+    ...
+    <application
+        ...
+        tools:replace="android:allowBackup,android:theme">
+        ...
+    </application>
 
-## Netki Internal Objects
+</manifest>
+```
+In case of an error related with
+
+`Binary XML file line #37: Binary XML file line #37: Error inflating class`
+Make sure that your theme extends from Material Design theme
+
+For example
+
+```xml
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@style/Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+</resources>
+```
+
+## Basic Usage
+
+### Step 1
+
+Get an instance of the Netki class
 
 
-Below are some of the Netki defined business and application objects. These data structures will be used for parameters and also for return objects.
+```Java
+Netki netki = Netki.INSTANCE;
+```
 
-These variables will be used as parameters in other areas of the application.
+For Koltin you can access the methods directly from the `Netki` object
 
-There are 4 types of documents supported currently in the Netki. Types of ID1 and ID3 standardized international documents. Basically a card and passport standard.
+### Step 2
 
+Initialize SDK
+
+Before using any of the methods initialize it as below.
 
 ```java
-// com.netki.netkisdk.v2.model.DocumentType options
+Netki.initialize(applicationContext)
+```
+
+### Step 3
+
+Configure the SDK passing in the API key provided by Netki as the token and implementing a callback block.
+
+```java
+Netki.configureWithClientToken(token: String, callback: NetkiCallback)
+```
+
+Once the configuration callback block returns, the environment will be configured and ready to proceed
+
+
+
+### Step 6
+
+- Set the issuing country for the documents to be scanned by calling
+
+```
+Netki.setIssuingCountry(country: Country)
+```
+
+a white-list country array is provided via `Netki.getBusinessContext().getCountryList()`
+
+### Step 7
+
+- Set the documentType property on the NetkiSDK of the document to be scanned using the `DocumentType` ENUM
+
+```
+Netki.setDocumentType(documentType: DocumentType)
+```
+```
 enum class DocumentType {
         DRIVERS_LICENSE,
         PASSPORT,
@@ -121,50 +208,75 @@ enum class DocumentType {
 }
 ```
 
-In addition to the DOCUMENT TYPE there is an IMAGE TYPE which may associate 1 or more objects to that document type. For instance a driver's license has a FRONT and BACK.
+### Step 8
 
-Each document has an associated IMAGE ORIENTATION or TYPE that indicates if it is a stand alone or part of another document class. Documents of type ID3 will have a FRONT and BACK as expected.
+- Start an ActivityForResult/Intent to launch the identification process calling
 
-The face image is also a document labeled as SELFIE. That is the only biometric human data.
-
-```java
-// com.netki.netkisdk.v2.model.DocumentSide
-enum class DocumentSide {
-        FRONT,
-        BACK,
-        SELFIE
-}
+```
+IdentificationProcessActivity.createIntent(context)
 ```
 
-## Advanced Usage
+This could throw an error, IllegalStateException with a message showing the error.
+The main 2 reasons to throw this error are, running the SDK in a virtual device or not having frontal camera in the device running the SDK.
+
+To validate the result of the IdentificationProcessActivity in the callback use the `resultCode`
+
+```
+resultCode == Activity.RESULT_OK
+```
+
+means that the process was succesfully done and we can send the data to netki
+
+```
+resultCode != Activity.RESULT_OK
+```
+
+means that the process was not finished succesfully and we need to start again the flow before sending the data to netki
+
+If there was an error during the process you can find the information in the data that we returnt into the result like this
+
+```
+data.getStringExtra(IdentificationProcessActivity.ERROR_INFORMATION_KEY)
+```
+
+in other cases for example the user going back from that flow this will be empty
+
+### Step 9
+
+- On successful identification process activity response, call
+
+```
+Netki.validateAndComplete(callback: NetkiVerifyDataCallback)
+```
+
+to finish the transaction
+
+### Step 10
+
+- The callback will respond with the transaction ID once the identity data has been uploaded to the Netki servers.
+
+## Individual camera controls
+
+- The client has the option to invoke individual camera controls to take pictures of different documents and sides of the document.
+
+### Starting the camera control
+
+The activity responsible for that invocation is:
 
 
+    CameraIdentificationActivity
 
 
-### Individual Screen Controllers
-
-
-In some cases you will want to run individual screens. We offer the ability to delegate controllers on an ad-hoc basis.
-
-Here we are instantiating and running the controller and telling it to run the capture and review sequence for ID type and FRONT.
-
-### Camera controls invocation
-
-The client has the option to invoke individual camera controls to take pictures of different documents and sides of the document.
-
-The activity responsible for that invocation is: `CameraIdentificationActivity`
-
-The way to invoke it is creating an Intent passing as parameter the DocumentType and the DocumentSide to initiate the camera and then start the activity expecting the result.
-
-
-See the [Netki Internal Objects](#netki-internal-objects) for values in the enum objects.
+The way to invoke it is creating an Intent passing as parameter the `DocumentType` and the `DocumentSide` to initiate the camera and then start the activity expecting the result.
 
 ```java
-// Way to create the intent
 CameraIdentificationActivity.createIntent(context: Context, documentType: DocumentType, documentSide: DocumentSide)
 ```
 
-Example of invocation:
+For more information regarding `DocumentType` and `DocumentSide` object classes see [Netki Internal Objects](#netki-internal-objects)
+
+
+Example of invocation
 
 ```java
 startActivityForResult(
@@ -176,29 +288,27 @@ startActivityForResult(
 );
 ```
 
-
-### Response Data
-
-There are some cases in which you will want to access the data that was captured by the cameras. Things like the documents that were captured, the data out of the documents, the face coordinates, MRZ, etc.
-
-**NOTE**: this response data is only available when calling the screens individually.  Otherwise the data goes to our server and the transaction concludes transparent. With greater power comes greater responsibility.  
-
-Handling result
+### Handling camera control result
 
 The activity will return a success or error response to the element invoking it.
-The first step is to validate if the process was finished successfully, for that you need to verify the resultCode
 
-Example:
+The first step is to validate if the process was finished successfully, for that you need to verify the `resultCode`, the 2 options are
 
-// To validate the process was
+```java
+resultCode == RESULT_OK
+```
 
-correctresultCode == RESULT_OK
+```java
+resultCode == RESULT_CANCELED
+```
 
-// To validate the process was
+### Error result
 
-correctresultCode == RESULT_CANCELED
+If the `resultCode` is `RESULT_CANCELED` you can access the information of the error this way:
 
-If the resultCode is RESULT_CANCELED you can access the information of the error with CameraIdentificationActivity.ERROR_INFORMATION_KEY
+```java
+CameraIdentificationActivity.ERROR_INFORMATION_KEY
+```
 
 Example:
 
@@ -209,34 +319,35 @@ if (resultCode == RESULT_CANCELED) {
 }
 ```
 
-If the result is RESULT_OK it will return a list of: `com.netki.netkisdk.v2.model.Picture`
+### Success result
 
-Each one of this picture will have the following structure:
+If the result is `RESULT_OK` the control will return a list of `Picture`
 
 ```java
 data class Picture(
         val path: String,
         val barcodes: List<Barcode> = mutableListOf(),
+        val passportContent: PassportContent? = null,
         val type: Picture.Type
-) : Serializable {
+)
+```
 
-        enum class Type {
+where:
+
+- **path**: where the image was saved, this is an internal memory that is only accesible to the app, it is not accesible for external app or the user
+- **barcodes**: List of all the information extracted from the barcodes found in the identification, this could be empty. This will be available in case that back of DriverLicense was selected
+- **passportContent**: Information readed from the MRZ in the passport, this could be null. This will be available in case that front of Passport was selected
+- **type**: the type of picture returned
+
+
+```java
+enum class Type {
                 FRONT,
                 BACK,
                 SELFIE,
                 FACE_EXTRACTED
         }
-}
 ```
-
-Where:
-path: where the image was saved, this is an internal memory that is only accessible to the app, it is not accessible for external app or the user
-
-barcodes: List of all the information extracted from the barcodes found in the identification, this could be empty
-
-type: the type of picture returned
-
-
 
 The barcode object has the following structure:
 
@@ -374,7 +485,28 @@ data class Barcode(
 }
 ```
 
-Example of success call:
+The passport object has the following structure
+
+```java
+data class PassportContent(
+    val text: String,
+    val nameGroup: String,
+    val givenName: String,
+    val surName: String,
+    val birthDate: String,
+    val docType: String,
+    val issuer: String,
+    val documentNumber: String,
+    val nation: String,
+    val sex: String,
+    val expiryDate: String,
+    val personalNumber: String,
+    val visaId: String,
+    val invitNumber: String
+)
+```
+
+Example of success response:
 
 ```java
 if (resultCode == RESULT_OK) {
@@ -386,11 +518,110 @@ if (resultCode == RESULT_OK) {
 }
 ```
 
+## Advanced Usage
+
+
+### SMS Phone Validation
+
+This is optional. Most SDK users do not use this.
+
+In some cases you may with to use our phone validation service. This is a service that is rarely used by our clients. It was surfaced here because we do it in the flagship MyVerify application and it exists.  
+
+This service will take a phone number and check that number to see if it is really a mobile number and send a PIN verification number in a text message.  We do have the ability to return an exception if VIOP checking is part of your contract. See sales for more information.
+
+You must use an ISO formatted phone number string. Excluding the + or adding other characters will return a validation error.
+
+Example: *+1234567890*
+
+Sending phone number and receiving a PIN via SMS:
+
+
+```java
+Netki.requestSecurityCode(phoneNumber: String, callback: NetkiCallback)
+```
+
+### PIN Validation
+
+To validate the code received by SMS call:
+
+```java
+Netki.validateSecurityCode(phoneNumber: String, securityCode: String, callback: NetkiCallback)
+```
+
+User the same formatted phone number and the 6-digit security PIN that was sent via SMS.
+
+
+## Extra configuration
+
+There are 2 extra methods that allow some extra configuration for the SDK
+
+### Auto finish in full success
+
+In case you want to auto close the review screen when all the validations are successful you can do it with the method
+
+```
+Netki.INSTANCE.autoFinishOnSuccess(finish: Boolean, secondsToFinish: Int)
+```
+
+where
+
+- finish: is a flag to change between auto finishing when all validation is successful and not auto finishing, deafult to false
+- secondsToFinish: is the seconds that the SDK will display the review screen before auto finishing it
+
+### Set custom instructions camera screen
+
+- If you want to display a custom message in the camera screen, you can invoke the next method
+
+```java
+Netki.INSTANCE.setMessagesInstruction(takePictureInstructions: String, secondsDisplayingInstructions: Int)
+```
+or
+```java
+Netki.INSTANCE.setMessagesInstruction(takePictureInstructions: String, retakePictureInstructions: String, secondsDisplayingInstructions: Int)
+```
+
+Where:
+
+- takePictureInstructions: custom message for the first attempt to try to take the picture
+- retakePictureInstructions: custom message for when the user is retrying to take the picture
+- secondsDisplayingInstructions: time that the instructions will be displayed before showing the normal messages. The limit that the message will be displayed 10 seconds before enabling the manual capture
+
+## Netki Internal Objects
+
+
+Below are some of the Netki defined business and application objects. These data structures will be used for parameters and also for return objects.
+
+These variables will be used as parameters in other areas of the application.
+
+There are 4 types of documents supported currently in the Netki. Types of ID1 and ID3 standardized international documents. Basically a card and passport standard.
+
+
+```java
+// com.netki.netkisdk.v2.model.DocumentType options
+enum class DocumentType {
+        DRIVERS_LICENSE,
+        PASSPORT,
+        GOVERNMENT_ID;
+}
+```
+
+In addition to the DOCUMENT TYPE there is an IMAGE TYPE which may associate 1 or more objects to that document type. For instance a driver's license has a FRONT and BACK.
+
+Each document has an associated IMAGE ORIENTATION or TYPE that indicates if it is a stand alone or part of another document class. Documents of type ID3 will have a FRONT and BACK as expected.
+
+The face image is also a document labeled as SELFIE. That is the only biometric human data.
+
+```java
+// com.netki.netkisdk.v2.model.DocumentSide
+enum class DocumentSide {
+        FRONT,
+        BACK,
+        SELFIE
+}
+```
+
 
 ## Sample Application
-
-## Reference
-
 
 
 ## Callbacks
