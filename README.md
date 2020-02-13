@@ -63,11 +63,11 @@ For information regarding our iframe JavaScript implementation, follow the link 
 
 ## OnboardID API Access
 
-Nearly all our clients will interact with our API.  While not all clients will use more than one of the SDKs, it is important to plan ahead to integrate with the API.  Your data will return via callbacks and you are also encouraged to poll the API to check to see if new records have showed up or there are changes to records that are currently in processing.  
+Nearly all of our clients will interact with the API.  While not all clients will use more than one of the SDKs, it is important to plan ahead to integrate with the API.  Your data will return via callbacks. In addition to getting data via callbacks it is also best practices to routinely poll the API to check to see if new records have shown up. You will gather information this way on overall statistics regarding records that are in processing and can pull a transaction to see if data has been updated.  
 
 
 
-For information regarding our API implementation, sign into the compliance dashboard and see what .
+For information regarding our API implementation, sign into the compliance dashboard and refer to the documentation found inside that portal.
 
 
 ## TransactID
