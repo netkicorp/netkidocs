@@ -45,4 +45,5 @@
 |       accountNumber      |   12345678  |                |            accountNumber            |    L    |         accountNumber=         |      accountNumber=     |         1234        |                        |
 |  customerIdentification  |   12345678  |                |        customerIdentification       |    D    |     customerIdentification=    | customerIdentification= |         1234        |                        |
 |   registrationAuthority  |   12345678  |                |        registrationAuthority        |         |     registrationAuthority=     |  registrationAuthority= |         1234        |                        |
-|         cert type        |    format   | Field Alias -> |             ivmsElement             |  data2  |          ivmsDataType          |      tidDescriptor      |   data (examples)   |     ivmsConstraint     |
+
+.
