@@ -1,0 +1,26 @@
+{
+	"vasp_mappings": [
+	{
+		"vasp_name": "VASP NAME 1",
+		"country": "US",
+		"registration_entity": "Entity Name",
+		"id": "2a1e357b-c852-4fd6-b120-43a79fbc0fe3",
+		"created": "2021-01-01T14:32:00Z",
+		"updated": "2021-01-02T12:32:00Z",
+		"license_status": "active",
+		"base_url": "https://domain.com/v1/addresses/{address}",
+		"authentication": "none"
+	},
+	{
+		"vasp_name": "VASP NAME 2",
+		"country": "CA",
+		"registration_entity": "Entity Name",
+		"id": "2a1e357b-c852-4fd6-b120-43a79fbc0fe3",
+		"created": "2021-01-01T14:32:00Z",
+		"updated": "2021-01-02T12:32:00Z",
+		"license_status": "active",
+		"base_url": "https://domain2.com/v1/addresses/{address}",
+		"authentication": "none"
+	}
+	]
+}
