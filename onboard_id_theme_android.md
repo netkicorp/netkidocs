@@ -92,7 +92,7 @@ Add an image with name `front_instructions_passport.jpg` in the correspondent `d
 
 This follows the same instructions as the previous 3 instruction pages.
 
-Add an image with name `selfie_instructions_id.jpg` in the correspondent `drawable` folder for each resolution. The client can also just add one single resource in the `drawable` folder.
+Add an image with name `selfie_instructions.jpg` in the correspondent `drawable` folder for each resolution. The client can also just add one single resource in the `drawable` folder.
 
 <img src="./images/android_selfie_instructions.png" alt="back instruction screen" width="350px" />
 
