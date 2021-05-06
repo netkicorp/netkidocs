@@ -119,3 +119,27 @@ The review screens are controlled by the same theme settings as what is above.  
 
 <img src="./images/android_color_review_buttons.png" alt="android image capture raw" width="350px" align="left" />
 <img src="./images/android_color_review_button_2.png" alt="android image capture changed" width="350px" />
+
+## Buttons corner radius
+
+To configure the corner radius for the buttons you can overwrite the property `netki_button_corner_radius`, by default this is set to value 4dp, you can set a value between 0dp and 32dp.
+
+Example
+`dimens.xml`
+```
+<resources>
+    <dimen name="netki_button_corner_radius">32dp</dimen>
+</resources>
+```
+
+### Instructions page
+![4_inst](https://user-images.githubusercontent.com/15677171/117327572-5b79dc00-ae58-11eb-8c6d-c14245f999ec.jpg)
+![32_inst](https://user-images.githubusercontent.com/15677171/117327576-5c127280-ae58-11eb-991f-b2b9a08c500f.jpg)
+
+### Review page
+![4_rev](https://user-images.githubusercontent.com/15677171/117327676-7cdac800-ae58-11eb-96ce-949fe7f9b024.jpg)
+![32_rev](https://user-images.githubusercontent.com/15677171/117327677-7cdac800-ae58-11eb-83ba-9d087949c4dd.jpg)
+
+
+
+ 
