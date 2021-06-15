@@ -121,7 +121,7 @@ curl -X POST \
 curl -X POST \
   https://kyc.myverify.info/api/token-auth/ \
   -H 'Content-Type: application/json' \
-  -d '{"email":"USERNAME@DOMAIN.COM","password":"18char_STRONG_PASSWORD!"}'
+  -d '{"username":"USERNAME@DOMAIN.COM","password":"18char_STRONG_PASSWORD!"}'
 ```
 
 ## Embed The Iframe
