@@ -74,7 +74,7 @@ Retain your username/email and password.  This will be used to access our dashbo
 ```
 curl -X POST \
   https://kyc.myverify.info/api/client-token-auth/ \
-  -H 'Content-Type: application/json; \
+  -H 'Content-Type: application/json' \
   -d '{"username":"USERNAME","password":"PASSWORD"}'
 
 {"token":"CLIENT_TOKEN"}
