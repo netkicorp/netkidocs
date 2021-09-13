@@ -77,6 +77,8 @@ Below is a sample payload that is passed to the server for processing.  Please n
 {
     "identity": {
         "client_guid": "YOURGUIDHERE",
+        "dui_number": "00000000-0",
+        "birth_date": "1990-01-01",
         "identity_documents": [
             {
                 "document": "a0c25aae-345c-48ab-97e9-83ca1f9b02ab.jpg",
