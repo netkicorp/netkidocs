@@ -11,8 +11,28 @@ The API for the Netki KYC service has been streamlined for mobile applications. 
 
 ### Authentication 
 
+
+#### Fetching Client Token
+
 You will be given a push only client token that you will use to do your initialization and authorization. 
 
+If you do not have that push only client token you will need to gather it from the client token auth endpoint: 
+
+```bash
+curl --request POST \
+  --url https://kyc.myverify.info/api/client-token-auth/ \
+  --header 'Content-Type: multipart/form-data;' \
+  --form 'username=<ROOT_USER>' \
+  --form 'password=<ROOT_PSWD'
+```
+
+```bash
+{
+  "token": "TOKEN"
+}
+```
+
+#### Fetching App Context
 
 Auth: 
 
