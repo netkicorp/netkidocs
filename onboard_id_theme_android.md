@@ -96,6 +96,20 @@ Add an image with name `selfie_instructions.jpg` in the correspondent `drawable`
 
 <img src="./images/android_selfie_instructions.png" alt="back instruction screen" width="350px" />
 
+## Text for Instructions page
+
+If you want to set a custom text for any of the instructions page, you can do it by defining the following properties in your strings file.
+
+```
+<resources>
+    <string name="front_id_instruction">Your custom text for front here</string>
+    <string name="back_id_instruction">Your custom text for back here</string>
+    <string name="selfie_instruction">Your custom text for selfie here</string>
+</resources>
+
+```
+
+Note: If it does not exist yet, you have to create a folder for the specific language that you want to overwrite, for example for english `values-en`, spanish `values-es` and so on.
 
 ## Image Capture Screen
 
