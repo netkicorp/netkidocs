@@ -89,6 +89,12 @@ This represents your account and while it is possible to use widget with only th
 
 The user will be redirected back to your site on completion. We will need the URL for your Thank You landing page. When onboarding the questionnaire will have a space to fill in this URL.
 
+## Set Your Required Fields
+
+In some cases you will want to collect data that is unique for your business use case. For instance you may wish to collect Social Security Numbers. These fields are not complex data types and do not have conditional logic built in.  As an example we can't ask for a business license only for people who select USA for country. 
+
+If you need to collect special fields these will be added by Netki staff after discussions with business stakeholders. 
+
 
 ## Register Your User With Netki
 
