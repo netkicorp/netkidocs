@@ -19,6 +19,26 @@ Cons:
 + Different risk profile with chain of custody
 + No direct control of the cameras
 
+## QuickStart Steps
+
+It will take both front-end and server-side engineer efforts to field the Netki KYC WebSDK.  Some things just cannot be completed on the front end alone. 
+
+There is a series of back and forth steps from onboarding to send your first user though the KYC flow.
+
++ Set up an account with Netki.  (see Netki business development at client-onboard@netki.com)
++ Provide Netki with your company logo final redirect landing page (where to send the user once complete)
++ Set your administrator password from your welcome email
++ API: Pull your CLIENT TOKEN
+
+From here you will need to integrate your server with Netki
+
++ Server: Create a KYC User
++ Pull the user JWT
++ Render the SDK with the User JWT
+
+### Quickstart UX Process Flow
+
+<img src="./images/Workflows-web_SDK_quickstart.jpg" alt="WebSDK Quickstart" width="550" />
 
 ## Embedded User Experience
 
@@ -51,8 +71,6 @@ We will also snap a picture of a selfie. These is usually a better picture becau
 
 Sometimes it is helpful to see things laid out in a workflow. Below is a flow diagram that walks through the various pieces of the onboarding flow.  The goal is for your user to have very little inputs.  Snap a picture of their ID and then post processing extracts all the data.  
 
-![Web SDK Workflow](./images/web_sdk_workflow.jpg)
-
 
 ## Onboarding Steps
 
@@ -63,7 +81,7 @@ Contact Netki business development at client-onboard@netki.com
 Our team will contact you and consult with you on the best way to approach your KYC and compliance requirements.
 
 
-## Pull Your Tokens
+## Pull Your Client Token
 
 Once you are registered you will receive an email to set up your account.  You will be asked to set a password.
 
@@ -85,20 +103,20 @@ This will fetch your business' client token.  This token is used to START the KY
 This represents your account and while it is possible to use widget with only this token you will lose the functionality of being able to transport you user across to other devices.
 
 
-## Set Your Thank You Page
+## Your Thank You Page
 
-The user will be redirected back to your site on completion. We will need the URL for your Thank You landing page. When onboarding the questionnaire will have a space to fill in this URL.
+The user will be redirected back to your site on completion. We will need the URL for your Thank You landing page. When onboarding the questionnaire will have a space to fill in this URL. It is the portion of the portal that is necessary to take your user back in once they have completed their KYC flow and should be set up to properly set the users' expectations on KYC completion times. 
 
-## Set Your Required Fields
+## Provide Your Required Fields
 
 In some cases you will want to collect data that is unique for your business use case. For instance you may wish to collect Social Security Numbers. These fields are not complex data types and do not have conditional logic built in.  As an example we can't ask for a business license only for people who select USA for country. 
 
 If you need to collect special fields these will be added by Netki staff after discussions with business stakeholders. 
 
 
-## Register Your User With Netki
+## Register Your Applicant / User With Netki
 
-Once you have pulled your non-changing client token you can store this token in your environment. Use the client token to create a user record with Netki.  This user record will provide the credentials that are used to push the transaction data under that person’s account.
+Once you have pulled your static `CLIENT TOKEN` you can store this token in your environment. Use the `CLIENT TOKEN` to create a user record with Netki.  This user record will provide the credentials that are used to push the transaction data under that person’s account.  If you do not fetch an email from the user or don't want to provide their email please just generate a random one using your domain.  Ex: `user123_test@yourdomain.com`.  We do not contact the user and only use this as a placeholder for the username. 
 
 
 ### Create A User
@@ -108,26 +126,33 @@ There are 4 required fields.
 If you want to fill in the fields some way that is unique to you then that is fine. We sometimes see clients use the email field by adding their unique user UUID and their domain. Email is the same as username in these cases and will be used in the next call to pull in that user’s JWT.
 
 ```
-curl -X POST \
-  https://kyc.myverify.info/api/users/ \
-  -H 'Accept: */*' \
-  -H 'Authorization: Token {{TOKEN}}' \
-  -H 'Content-Type: application/json; charset=utf-8' \
-  -d '{
-	"first_name": "JOHNNY",
-	"last_name": "POST",
-	"email": "UNIQUE@EMAIL.COM",
-	"password": "18char_STRONG_PASSWORD!"
+curl --request POST \
+  --url https://kyc.myverify.info/api/users/ \
+  --header 'Authorization: Token  <CLIENT_TOKEN>' \
+  --header 'Content-Type: application/json; charset=utf-8' \
+  --data '{
+  "first_name": "Johnny",
+  "last_name": "Post",
+  "email": "johnny+12345x@yourdomain.com",
+	"password": "R1eally_Long_18CharPassword!"
 }'
 ```
 
 ### Pull User JWT
 
 ```bash
-curl -X POST \
-  https://kyc.myverify.info/api/token-auth/ \
-  -H 'Content-Type: application/json' \
-  -d '{"email":"USERNAME@DOMAIN.COM","password":"18char_STRONG_PASSWORD!"}'
+curl --request POST \
+  --url https://dev-kyc.myverify.info/api/token-auth/ \
+  --header 'Content-Type: multipart/form-data;' \
+  --form 'username=johnny+12345x@yourdomain.com' \
+  --form 'password=R1eally_Long_18CharPassword!'
+```
+This will return the JWT for that applicate/user. 
+
+```javascript
+{
+	"access": "JWT_TOKEN"
+}
 ```
 
 ## Embed The Iframe
@@ -136,15 +161,16 @@ curl -X POST \
 
 On your signup page you will drop this embedded code with your client token. This will initialize and start the KYC/onboarding flow.
 
-On mobile devices we “may” break the iframe and surface the application at the top level so that we can fill the screen with it.  This will give us far more control.  
+On mobile devices we "may" break the iframe and surface the application at the top level so that we can fill the screen with it.  This will give us far more control.  
 
 Upon completion of the KYC flow the user will be redirected back out to the url of your choice. If they were on a session cookie or had already logged into your site they should return back with the same level of authentication.
 
-    `<iframe src="WEBSDK_BASE_URL/?client_token=CLIENT_TOKEN&user_token=USER_JWT&client_guid=YOUR_GUID" ></iframe>`
+    <iframe src="WEBSDK_BASE_URL/?user_token=USER_JWT&client_guid=YOUR_GUID" ></iframe>
 
 NOTE: this iframe needs all the display real estate that you can give it.  Do not attempt to surround it with much chrome or padding.  Leave footers and headers off when possible.  You can even redirect the user to the link itself if your users will not worry about the domain switch.
 
 NOTE: this iframe needs all the display real estate that you can give it.  Do not attempt to surround it with much chrome or padding.  Leave footers and headers off when possible.  You can even redirect the user to the link itself if your users will not worry about the domain switch.
+
 
 ## URL Settings
 
@@ -168,6 +194,6 @@ Once the user has completed the onboarding transaction flow you will receive a c
 
 When Netki onboards your business we ask for information regarding the details of the endpoint on your server that will receive the callback data.  
 
-Our service will post complete callback data every time we update the “state” or the processing status of the record.  In some cases the data will not go through in one shot and will have to be manually reviewed. In these cases your data will be on hold.  Your server will receive a callback with it on hold but then will also get a callback again when it moves to the next state.
+Our service will post complete callback data every time we update the "state" or the processing status of the record.  In some cases the data will not go through in one shot and will have to be manually reviewed. In these cases your data will be on hold.  Your server will receive a callback with it on hold but then will also get a callback again when it moves to the next state.
 
 More information regarding callback states and payload can be found in the compliance dashboard.
