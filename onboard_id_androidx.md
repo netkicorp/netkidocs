@@ -25,13 +25,13 @@ out of capturing clear images.
 ## Example Usage
 
 The OnboardID SDK is quite flexible. The use cases go from no modifications and just a couple function calls to advanced
-modifications and keeping control of the user data on the mobile device. It is likely that we have experience some use
+modifications and keeping control of the user data on the mobile device. It is likely that we have experienced some use
 case that would match your business requirements.
 
 ### Screen Theme and Advanced Usage
 
 In some cases you will want to match very closely to your application theme. Maybe you have a design team that is
-adamant about continuity or just want to give a more unique experience.
+adamant about continuity or just wants to give a more unique experience.
 
 For more information regarding customization of these screens please see
 the [Android Theme Documentation](./onboard_id_theme_androidx.md)
@@ -112,7 +112,7 @@ For the error details check the end of this section.
 
 Initialize SDK
 
-Before using any of the methods initialize it as below.
+Before using any of the methods initialize the SDK as below.
 
 ```kotlin
 OnBoardId.initialize(applicationContext)
