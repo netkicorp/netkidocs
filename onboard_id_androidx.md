@@ -47,7 +47,7 @@ the name that is extracted from the tech admin portion of the onboarding questio
 
 ### Step 1
 
-On the build.gradle file of the project add the maven Netki repository in the repositories for all projects
+On the build.gradle file of the project add the maven Netki repository and the huawei in the repositories for all projects.
 
 ```groovy
 allprojects {
@@ -62,6 +62,8 @@ allprojects {
                 password = "YOUR_PASSWORD"
             }
         }
+
+        maven { url "https://developer.huawei.com/repo/" }
     }
 }
 ```
