@@ -15,7 +15,7 @@ https://kyc.myverify.info/api/transactions/UUID/make-failed/
 
 
 
-The core of the the KYC experience is to be able to view the current status of what's going on with your users, addressing any issues as needed, and updating the state of transactions based upon the information that you have received.
+The core of the KYC experience is to be able to view the current status of what's going on with your users, addressing any issues as needed, and updating the state of transactions based upon the information that you have received.
 
 Each individual who goes through the KYC process will get a transaction ID.  This ID will have all of the details needed to track the status of the user through the system.  To get a full list of transactions in your account you will do the following:
 
@@ -186,7 +186,7 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
       "is_active": true,
       "state": "new",
       "notes": null,
-      "contettype": 29
+      "contenttype": 29
     }
   ]
 }
@@ -196,7 +196,7 @@ That's a lot of data for a single call!  Thankfully, you only need to worry abou
 
 * Inside the payload is a results object.  This is an array of JSON objects that have all of your transaction details.
 * The transaction payload includes the identity associated with the transaction and all identity data include the Verified Investor status.
-* The transaction data has field for "state".  Typically you will see the following states: Completed, Hold, or Failed.
+* The transaction data has a field for "state".  Typically you will see the following states: Completed, Hold, or Failed.
 * The transaction has a notes field that has details as to the current state.  If it's on hold, why?  If it failed, why?
 * For Verified Investor customers, the transactions also include "identity_accredited_investor_status" which shows the current status.
 * The results of this call are paged.  You'll see a count and next/previous keys in the results which show your total records and the URL to access the rest of them.
@@ -210,6 +210,8 @@ Let's talk about the transaction states a bit more.  The full list of transactio
 * **hold** - Hold: if a transaction is in the hold state it means one of these things: the facial match score between the selfie and the ID image is lower than 80 (by default), the client failed the liveness tests, the country the user selected via the KYC process doesn't match their ID, there is an AML match for Media or potential sanctions.  A transaction can also go on hold after someone manually runs AML from the dashboard after updating the identity information when the automated systems aren't able to.
 * **failed** - Failed: a transaction will go into a failed state if they try and use an ID from a banned country (OFAC as well as custom, client provided countries), if the birthdate of the person is below the approved age limit (if enabled), if they try to use a phone number that’s on the blacklist (*if enabled), or if someone clicks decline on the dashboard when someone is on hold.
 * **completed** - Completed: Yay!  The user has passed through the AML check without any negative results and we were able to process their ID and their selfie matches the ID. This is also the same state that matched "Approved" on your dashboard.
+* **restarted** - Restarted: Only transactions that were declined can move into a restarted status. This status means that the user has been given an opportunity to perform their KYC process via a decision by the client’s Compliance Team. This status will also generate a new access code that is linked to the access code the end user previously used. See the make-restarted section below for how to restart a transaction.
+**Note**: Restarted status is only used by MyVerify App clients. Clients that use Netki’s SDK do not need this status as SDK clients do not use Netki access codes.
 
 To query transactions individually you'll want to use:
 
@@ -369,6 +371,16 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-819
 ```
 
 Ideally the transaction will show that the user passed KYC verification with flying colors!  However; this is not always the case.  Sometimes the user will have failed KYC or they will be placed on hold.  There can be a few different reasons for this that are outside of the scope of this document.  What we will cover is how to move people on from these states!
+
+Please note only the following state changes are allowed:
+
+HOLD -> COMPLETED
+
+HOLD -> FAILED
+
+COMPLETED -> FAILED
+
+FAILED -> RESTARTED
 
 If someone gets placed on hold and you would like to go ahead and manually approve them you'll use the make-completed endpoint.  You'll need to make sure to include a notes field with the compliance notes as to why it was completed.  To mark a transaction as failed use make-failed instead.  We'll cover make-restarted after this example.
 
