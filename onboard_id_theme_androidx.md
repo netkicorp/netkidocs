@@ -11,7 +11,7 @@ Dramatically Reduce Onboarding Costs While Stopping Fraud.
 
 ## Overview
 
-The NetkiSDK provide the ability for the clients implementing it to configure and personalize some UI elements to make
+The NetkiSDK provides the ability for the clients implementing it to configure and personalize some UI elements to make
 it fit better with their application and show a more natural transition between their app and the SDK.
 This document shows what elements can be customized and the way they are customized.
 
@@ -55,7 +55,7 @@ SelfieInstructionsVideoPath
 
 ## Customizing elements
 
-For each one of the elements that are customizable, the SDK has a setter method that can be used to override the default value.  
+For each of the customizable elements, the SDK has a setter method that can be used to override the default value.  
 
 Those setters are exposed through
 
@@ -110,7 +110,7 @@ After overriding this values the screen would look like this:
 
 ### Image Review Screen
 
-The review screens are controlled by the same theme settings as what is above. The primary and secondary colors will
+The review screens are controlled by the same theme settings as above. The primary and secondary colors will
 control these features.
 
 1 - SecondaryButtonColor, SecondaryButtonTextColor  
