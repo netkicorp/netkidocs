@@ -124,47 +124,48 @@ Here is a sample transaction result.  For more details about the responses you w
 
 ```json
 {
-  "id": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
-  "client": "604e1738-4716-4bdd-867b-4942186b1e1c",
-  "transaction_identity": {
-    "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
-    "identity_emails": [
-      {
-        "id": "f2a172cc-6716-462e-89f0-3468dec53721",
-        "created": "2018-04-30T17:57:54.139181Z",
-        "updated": "2018-04-30T17:57:54.139198Z",
-        "is_active": true,
-        "email": "test@email.com",
-        "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
-      }
-    ],
-    "identity_phone_numbers": [
-      {
-        "id": "1d93d2a2-8ddc-43bc-9c93-03126d9071db",
-        "created": "2018-04-30T17:57:54.166477Z",
-        "updated": "2018-04-30T20:09:14.845833Z",
-        "is_active": true,
-        "phone_number": "+12345550100",
-        "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
-      }
-    ],
-    "identity_addresses": [
-      {
-        "id": "734fa958-f604-4558-a3f7-fde62d6d4617",
-        "created": "2018-04-30T17:57:54.118040Z",
-        "updated": "2018-04-30T17:57:54.118059Z",
-        "is_active": true,
-        "address": "12345 Oompa Loompa Rd",
-        "unit": "",
-        "city": "12345 Oompa Loompa Rd",
-        "state": "TX",
-        "postalcode": "40110",
-        "score": 0,
-        "country_code": "US",
-        "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
-      }
-    ],
-    "identity_documents": [
+  "identity": {
+    "id": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
+    "client": "604e1738-4716-4bdd-867b-4942186b1e1c",
+    "transaction_identity": {
+      "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
+      "identity_emails": [
+        {
+          "id": "f2a172cc-6716-462e-89f0-3468dec53721",
+          "created": "2018-04-30T17:57:54.139181Z",
+          "updated": "2018-04-30T17:57:54.139198Z",
+          "is_active": true,
+          "email": "test@email.com",
+          "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
+        }
+      ],
+      "identity_phone_numbers": [
+        {
+          "id": "1d93d2a2-8ddc-43bc-9c93-03126d9071db",
+          "created": "2018-04-30T17:57:54.166477Z",
+          "updated": "2018-04-30T20:09:14.845833Z",
+          "is_active": true,
+          "phone_number": "+12345550100",
+          "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
+        }
+      ],
+      "identity_addresses": [
+        {
+          "id": "734fa958-f604-4558-a3f7-fde62d6d4617",
+          "created": "2018-04-30T17:57:54.118040Z",
+          "updated": "2018-04-30T17:57:54.118059Z",
+          "is_active": true,
+          "address": "12345 Oompa Loompa Rd",
+          "unit": "",
+          "city": "12345 Oompa Loompa Rd",
+          "state": "TX",
+          "postalcode": "40110",
+          "score": 0,
+          "country_code": "US",
+          "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
+        }
+      ],
+      "identity_documents": [
         {
           "id": "b97274d3-47f9-4a0d-a0ec-5e8d20c30318",
           "errors": [],
@@ -180,8 +181,8 @@ Here is a sample transaction result.  For more details about the responses you w
           "document_classification": null,
           "contenttype": 26
         }
-    ],
-    "identity_data_sources": [
+      ],
+      "identity_data_sources": [
         {
           "id": "a3e07f08-1d56-4e53-bd41-ff1f4fdfa1fe",
           "created": "2018-05-22T23:50:28.984376Z",
@@ -196,8 +197,8 @@ Here is a sample transaction result.  For more details about the responses you w
           "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
           "data_provider": 3
         }
-    ],
-    "identity_data_listings": [
+      ],
+      "identity_data_listings": [
         {
           "id": "feb42133-7737-4a87-95a4-133ad8836303",
           "listing_type": {
@@ -214,122 +215,123 @@ Here is a sample transaction result.  For more details about the responses you w
           "is_active": true,
           "notes": null,
           "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
+        }
+      ],
+      "identity_media_references": [
+        {
+          "id": "2cf52503-7140-49c9-a616-1542d33ce1d4",
+          "created": "2018-07-12T02:55:57.837038Z",
+          "updated": "2018-07-12T02:55:57.874114Z",
+          "is_active": true,
+          "activity_date": "2018-07-12T02:55:57.873624Z",
+          "source": "http://www.ceutaldia.com/tags/calienta?page=1",
+          "title": "Tags calienta - Ceuta al Día - diario digital de Ceuta",
+          "content": "Los 14 jugadores de la lista definitiva de Valero Rivera disputarán el trofeo Domingo Bárcenas ante Argentina y Túnez. Leer Miranda Kerr hace caso omiso al frío invernal y lejos de plantarse el disfraz de Mamá Noel, prefiere mostrar su cuerpo desnudo y totalmente recuperado de su embarazo (que también mostró sin nada de ropa) tal y como podemos ver en unas fotografías para «Industrie». La revista muestra a la novia de Orlando Bloom, de 28 años, en unas imágenes en blanco y negro en las que la modelo de «Victorias Secret» luce sus curvas de infarto, de la mano del fotógrafo Willy Vanderperre.",
+          "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
+        }
+      ],
+      "identity_access_code": null,
+      "identity_accredited_investor_status": {
+        "id": "999b679e-5b79-42c1-b68e-cae3a2559fca",
+        "identity": {
+          "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
+          "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
+          "first_name": "John",
+          "last_name": "Doe"
         },
-    ],
-    "identity_media_references": [
-      {
-        "id": "2cf52503-7140-49c9-a616-1542d33ce1d4",
-        "created": "2018-07-12T02:55:57.837038Z",
-        "updated": "2018-07-12T02:55:57.874114Z",
+        "created": "2018-04-30T18:09:10.632229Z",
+        "updated": "2018-04-30T18:09:10.647964Z",
         "is_active": true,
-        "activity_date": "2018-07-12T02:55:57.873624Z",
-        "source": "http://www.ceutaldia.com/tags/calienta?page=1",
-        "title": "Tags calienta - Ceuta al Día - diario digital de Ceuta",
-        "content": "Los 14 jugadores de la lista definitiva de Valero Rivera disputarán el trofeo Domingo Bárcenas ante Argentina y Túnez. Leer Miranda Kerr hace caso omiso al frío invernal y lejos de plantarse el disfraz de Mamá Noel, prefiere mostrar su cuerpo desnudo y totalmente recuperado de su embarazo (que también mostró sin nada de ropa) tal y como podemos ver en unas fotografías para «Industrie». La revista muestra a la novia de Orlando Bloom, de 28 años, en unas imágenes en blanco y negro en las que la modelo de «Victorias Secret» luce sus curvas de infarto, de la mano del fotógrafo Willy Vanderperre.",
-        "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
-      }
-    ],
-    "identity_access_code": null,
-    "identity_accredited_investor_status": {
-      "id": "999b679e-5b79-42c1-b68e-cae3a2559fca",
-      "identity": {
-        "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
-        "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
-        "first_name": "John",
-        "last_name": "Doe"
-      },
-      "created": "2018-04-30T18:09:10.632229Z",
-      "updated": "2018-04-30T18:09:10.647964Z",
-      "is_active": true,
-      "status": "open",
-      "vendor_status": "waiting_for_investor_acceptance",
-      "raw_data": {
-        "id": 1876,
-        "status": "waiting_for_investor_acceptance",
-        "message": "The verification process is waiting for the investor to start.",
-        "investor": {
-          "id": 1559
+        "status": "open",
+        "vendor_status": "waiting_for_investor_acceptance",
+        "raw_data": {
+          "id": 1876,
+          "status": "waiting_for_investor_acceptance",
+          "message": "The verification process is waiting for the investor to start.",
+          "investor": {
+            "id": 1559
+          },
+          "deal_name": null,
+          "created_at": "2018-04-30T11:09:10.451-07:00",
+          "legal_name": "JOHN DOE",
+          "portal_name": "MyVerify",
+          "webhook_url": "http://localhost:8000/verify-investor/callback/",
+          "investor_url": "http://verifyinvestor-staging.herokuapp.com/investor/verification-requests/1876/accept",
+          "redirect_url": "http://localhost:8000/verify-investor/complete/",
+          "internal_status": "open",
+          "waiting_for_info": false,
+          "verified_expires_at": null
         },
-        "deal_name": null,
-        "created_at": "2018-04-30T11:09:10.451-07:00",
-        "legal_name": "JOHN DOE",
-        "portal_name": "MyVerify",
-        "webhook_url": "http://localhost:8000/verify-investor/callback/",
-        "investor_url": "http://verifyinvestor-staging.herokuapp.com/investor/verification-requests/1876/accept",
-        "redirect_url": "http://localhost:8000/verify-investor/complete/",
-        "internal_status": "open",
-        "waiting_for_info": false,
-        "verified_expires_at": null
+        "message": "The verification process is waiting for the investor to start."
       },
-      "message": "The verification process is waiting for the investor to start."
+      "identity_json_objects": [],
+      "errors": [],
+      "created": "2018-04-30T17:57:54.093394Z",
+      "updated": "2018-04-30T20:09:14.836752Z",
+      "first_name": "John",
+      "last_name": "Doe",
+      "middle_name": "Tester",
+      "alias": null,
+      "country_code": "US",
+      "selected_country_code": "US",
+      "locale": null,
+      "state": "new",
+      "is_active": true,
+      "death_date": "2016-01-01",
+      "birth_location": null,
+      "status": "unknown",
+      "client_guid": "tester-guid",
+      "birth_date": "2001-11-22",
+      "gender": null,
+      "height": null,
+      "weight": null,
+      "eye_color": null,
+      "hair_color": null,
+      "investor_type": "private_party",
+      "ssn": null,
+      "medical_license": null,
+      "insurance_license": null,
+      "drivers_license": null,
+      "passport_number": null,
+      "is_accredited_investor": true,
+      "title": null,
+      "ownership_percentage": null,
+      "notes": "",
+      "phone_is_validated": true,
+      "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
+      "business": "604e1738-4716-4bdd-867b-4942186b1e1c"
     },
-    "identity_json_objects": [],
+    "transaction_metadata": {
+      "id": 112,
+      "created": "2018-04-30T17:57:55.421248Z",
+      "updated": "2018-04-30T17:57:55.421268Z",
+      "is_active": true,
+      "country_code": "US",
+      "state": "TX",
+      "gender": null,
+      "birth_date": null,
+      "locale": "",
+      "app_name": null,
+      "platform": null,
+      "platform_version": null,
+      "app_version": null,
+      "sdk_version": null,
+      "data_hits": null,
+      "media_hits": null,
+      "face_match_score": null,
+      "quality_score": null,
+      "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c"
+    },
+    "transaction_callbacks": [],
+    "required_fields": [],
     "errors": [],
-    "created": "2018-04-30T17:57:54.093394Z",
-    "updated": "2018-04-30T20:09:14.836752Z",
-    "first_name": "John",
-    "last_name": "Doe",
-    "middle_name": "Tester",
-    "alias": null,
-    "country_code": "US",
-    "selected_country_code": "US",
-    "locale": null,
+    "created": "2018-04-30T17:56:34.688474Z",
+    "updated": "2018-04-30T17:56:34.688512Z",
+    "is_active": true,
     "state": "new",
-    "is_active": true,
-    "death_date": "2016-01-01",
-    "birth_location": null,
-    "status": "unknown",
-    "client_guid": "tester-guid",
-    "birth_date": "2001-11-22",
-    "gender": null,
-    "height": null,
-    "weight": null,
-    "eye_color": null,
-    "hair_color": null,
-    "investor_type": "private_party",
-    "ssn": null,
-    "medical_license": null,
-    "insurance_license": null,
-    "drivers_license": null,
-    "passport_number": null,
-    "is_accredited_investor": true,
-    "title": null,
-    "ownership_percentage": null,
-    "notes": "",
-    "phone_is_validated": true,
-    "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
-    "business": "604e1738-4716-4bdd-867b-4942186b1e1c"
-  },
-  "transaction_metadata": {
-    "id": 112,
-    "created": "2018-04-30T17:57:55.421248Z",
-    "updated": "2018-04-30T17:57:55.421268Z",
-    "is_active": true,
-    "country_code": "US",
-    "state": "TX",
-    "gender": null,
-    "birth_date": null,
-    "locale": "",
-    "app_name": null,
-    "platform": null,
-    "platform_version": null,
-    "app_version": null,
-    "sdk_version": null,
-    "data_hits": null,
-    "media_hits": null,
-    "face_match_score": null,
-    "quality_score": null,
-    "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c"
-  },
-  "transaction_callbacks": [],
-  "required_fields": [],
-  "errors": [],
-  "created": "2018-04-30T17:56:34.688474Z",
-  "updated": "2018-04-30T17:56:34.688512Z",
-  "is_active": true,
-  "state": "new",
-  "notes": null,
-  "contettype": 29
+    "notes": null,
+    "contettype": 29
+  }
 }
 ```
 
