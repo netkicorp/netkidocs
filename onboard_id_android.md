@@ -76,10 +76,6 @@ allprojects {
         // Netki repo configuration
         maven {
             url "https://art.myverify.io//netki/libs-release-local/"
-            credentials {
-                username = "YOUR_USER"
-                password = "YOUR_PASSWORD"
-            }
         }
     }
 }
