@@ -10,7 +10,7 @@ VERB: POST
 
 Endpoint: https://kyc.myverify.info/api/single-aml/
 
-The payload will change depending on the information that you are sending.  
+The payload will change depending on the information that you are sending.  No special characters other than - should be used.  And no numbers should be used for names, numbers are ok for blockchain_addresses.
 
 Options:
 
