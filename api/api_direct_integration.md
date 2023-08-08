@@ -122,7 +122,7 @@ And the sample curl example:
 
 
 ```bash
-curl --location --request POST 'https://kyc.myverify.info/api/myverify/' \
+curl --location --request POST 'https://kyc.myverify.info/api/myverify-async/' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer <YOUR BEARER TOKEN>' \
 --data-raw 'PAYLOAD ABOVE'
@@ -133,9 +133,9 @@ Response:
 
 ```bash
 {
-    "message": {
-        "id": "YOUR-NEW-TXID"
-    }
+	"message": {
+		"id": "queued for processing"
+	}
 }
 ```
 
