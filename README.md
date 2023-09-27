@@ -56,10 +56,6 @@ After setting up an account with us we will send you onboarding information. It 
 
 [OnboardID iOS SDK](./onboard_id_ios.md)
 
-### OnboardID Web SDK
-
-For information regarding our iframe JavaScript implementation, follow the link to the [Web SDK Documentation](./web_sdk.md).
-
 
 ## OnboardID API Access
 
