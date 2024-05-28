@@ -1,4 +1,4 @@
-# Netki OnboardID Themed SDK - Android
+# Netki OnboardID Themed SDK - Android/iOS
 
 Dramatically Reduce Onboarding Costs While Stopping Fraud.
 
