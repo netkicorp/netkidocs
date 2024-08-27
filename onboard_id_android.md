@@ -141,7 +141,8 @@ To get the intent use the method:
 ```kotlin
 val intent = OnBoardId.getIdentificationIntent(
     idtype,
-    idCountry
+    idCountry,
+    transactionId
 )
 ```
 
@@ -157,6 +158,7 @@ The types are:
 DRIVERS_LICENSE
 PASSPORT
 GOVERNMENT_ID
+BIOMETRICS
 ```
 
 To fetch list of available ids use:
@@ -167,13 +169,17 @@ val availableIdTypes = OnBoardId.getAvailableIdTypes()
 
 &nbsp;
 
-`idCountry`: The country that issued the id that will be used for the capture process.
+`idCountry`: The country that issued the ID to be used for the capture process. This is optional for biometrics but mandatory for all other ID types.
 
 To fetch the list of available countries use:
 
 ```kotlin
 val availableCountries = OnBoardId.getAvailableCountries()
 ```
+
+&nbsp;
+
+`transactionId`: When submitting biometrics, you need an existing transaction. This field is the ID of the transaction for which you want to resubmit the biometrics. This is mandatory for biometrics; ignore it for all other ID types.
 
 &nbsp;
 
@@ -192,6 +198,27 @@ if (result.resultCode == Activity.RESULT_OK) {
 } else if (result.resultCode == Activity.RESULT_CANCELED) {
     // TODO: implement error logic.
 }
+```
+
+Capturing extra data.
+
+The intent returns extra data that you can use. To extract the data, use the intent's extra data. The current data you can access includes the information of the pictures captured.
+
+To access the info use:
+```kotlin
+val pictures = result.data?.extras?.getSerializable(ResultInfoExtraData.PICTURES.description) as List<Picture>
+```
+
+Where 
+
+```kotlin
+data class Picture(
+    val path: String? = null,
+    val barcodes: MutableList<Barcode> = mutableListOf(),
+    val passportContent: PassportContent? = null,
+    val livenessInformation: LivenessInformation? = null,
+    val type: PictureType
+)
 ```
 
 ### Step 5

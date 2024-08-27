@@ -130,7 +130,8 @@ To get the intent use the method:
 ```swift
 OnBoardId.shared.getIdentificationView(
     idType: idType,
-    idCountry: idCountry,
+    idCountry: idCountry?,
+    transactionId: String?,
     identificationDelegate: identificationDelegate
 )
 ```
@@ -147,6 +148,7 @@ The types are:
 DRIVERS_LICENSE
 PASSPORT
 GOVERNMENT_ID
+BIOMETRICS
 ```
 
 To fetch list of available ids use:
@@ -157,13 +159,18 @@ let availableIdTypes = OnBoardId.shared.getAvailableIdTypes()
 
 &nbsp;
 
-`idCountry`: The country that issued the id that will be used for the capture process.
+`idCountry`: The country that issued the ID to be used for the capture process. This is optional for biometrics but mandatory for all other ID types.
 
 To fetch the list of available countries use:
 
 ```swift
 let availableCountries = OnBoardId.shared.getAvailableCountries()
 ```
+
+&nbsp;
+
+`transactionId`: When submitting biometrics, you need an existing transaction. This field is the ID of the transaction for which you want to resubmit the biometrics. This is mandatory for biometrics; ignore it for all other ID types.
+
 
 Once you have your View you can display it as part of your flow, using the identificationDelegate to get the result.
 
@@ -175,13 +182,32 @@ To validate the result of the process implement a class using IdentificationDele
 There are 2 methods that will get called after the IdentificationView is finalized.
 
 ```swift
-    func onCaptureIdentificationSuccessfully() {
+    func onCaptureIdentificationSuccessfully(extraData: [String: Any]?) {
         // TODO: implement successful logic.
     }
     
     func onCaptureIdentificationCancelled(resultInfo: NetkiSDK.ResultInfo) {
         // TODO: implement error logic.
     }
+```
+
+Capturing extra data.
+
+The intent returns extra data that you can use. To extract the data, use the intent's extra data. The current data you can access includes the information of the pictures captured.
+
+```swift
+let pictures = extraData[ResultInfo.ExtraData.PICTURES.rawValue] as? [Picture] 
+```
+
+Where
+```swift
+public struct Picture: Codable {
+    public var path: String?
+    public var barcodes: [Barcode]?
+    public var passportContent: PassportContent?
+    public var livenessInformation: LivenessInformation?
+    public var type: PictureType
+}
 ```
 
 ### Step 5
