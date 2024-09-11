@@ -54,7 +54,8 @@ After setting up an account with us we will send you onboarding information. It 
 
 [OnboardID iOS SDK](./onboard_id_ios.md)
 
-[OnboardID React Native SDK](./onboard_id_theme_reactnative.md)
+[OnboardID React Native SDK](https://www.npmjs.com/package/@netki/netki-mobilesdk?activeTab=readme)
+[OnboardID React Native Theme Guide](./onboard_id_theme_reactnative.md)
 
 ## OnboardID API Access
 
