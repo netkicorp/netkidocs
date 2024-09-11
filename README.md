@@ -54,11 +54,15 @@ After setting up an account with us we will send you onboarding information. It 
 
 [OnboardID iOS SDK](./onboard_id_ios.md)
 
+[OnboardID React Native SDK](https://www.npmjs.com/package/@netki/netki-mobilesdk?activeTab=readme)
+
+[OnboardID React Native Theme Guide](./onboard_id_theme_reactnative.md)
+
 ## OnboardID API Access
 
 Nearly all of our clients will interact with the API.  While not all clients will use more than one of the SDKs, it is important to plan ahead to integrate with the API.  Your data will return via callbacks. In addition to getting data via callbacks it is also best practices to routinely poll the API to check to see if new records have shown up. You will gather information this way on overall statistics regarding records that are in processing and can pull a transaction to see if data has been updated.  
 
-For information regarding our API implementation, sign into the compliance dashboard and refer to the documentation found inside that portal.
+For information regarding our API implementation, check [here](./onboarid-api.md) or sign into the compliance dashboard and refer to the documentation found inside that portal.
 
 ## TransactID
 
