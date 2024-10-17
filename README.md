@@ -33,7 +33,6 @@ Our suite of products covers the following application strategies:
 - Android SDK native in Java and Kotlin
 - iOS SDK native in Objective-C and Swift
 - React Native wrapper
-- iframe based Web SDK
 - API interface
 
 ## OnboardID SDKs
