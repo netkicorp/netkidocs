@@ -44,7 +44,7 @@ We keep our SDK under a github repository [Github](https://github.com/).
 On your pod file declare the Netki Library.
 
 ```groovy
-  pod 'NetkiSDK', :git => 'https://github.com/netkicorp/ios-pod.git', :tag => '{latest.version}'
+  pod 'NetkiSDK', :git => 'https://github.com/netkicorp/onboardid-pod.git', :tag => '{latest.version}'
 
 ```
 
