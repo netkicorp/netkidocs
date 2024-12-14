@@ -74,6 +74,7 @@ All the Async calls to the SDK return an object called `ResultInfo`
 ```swift
 public struct ResultInfo: Codable {
     public let status: RequestStatus
+    public let extraData: [String : String]?
     public let errorType: ErrorType?
     public let message: String?
 }
@@ -201,10 +202,15 @@ Task {
 }
 ```
 
-If the previous method returns a success status, it means that the data was posted successfully, the result of the
-identification process will be posted to the
-defined [backend callback](https://github.com/netkicorp/netkidocs/blob/master/best_practices_internal_callbacks.md),
-this is an async method.
+This method may return extra data related to the transaction. To access this data, you can check the extraData property in the result:
+
+```swift
+let extraData = result.extraData
+```
+
+If no extra data is returned, extraData may be `nil`.
+
+If the previous method returns a success status, it means that the data was posted successfully, the result of the identification process will be posted to the defined [backend callback](https://github.com/netkicorp/netkidocs/blob/master/best_practices_internal_callbacks.md), this is an async method.
 
 ### Additional methods
 

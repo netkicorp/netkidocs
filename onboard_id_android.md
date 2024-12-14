@@ -85,6 +85,7 @@ All the Async calls to the SDK return an object called `ResultInfo`
 ```kotlin
 class ResultInfo(
     val status: RequestStatus,
+    val extraData: Map<String, String>? = null,
     val errorType: ErrorType? = null,
     val message: String? = null
 )
@@ -211,10 +212,15 @@ launch {
 }
 ```
 
-If the previous method returns a success status, it means that the data was posted successfully, the result of the
-identification process will be posted to the
-defined [backend callback](https://github.com/netkicorp/netkidocs/blob/master/best_practices_internal_callbacks.md),
-this is an async method.
+This method may return extra data related to the transaction. To access this data, you can check the extraData property in the result:
+
+```kotlin
+val extraData = result.extraData
+```
+
+If no extra data is returned, extraData may be `null`.
+
+If the previous method returns a success status, it means that the data was posted successfully, the result of the identification process will be posted to the defined [backend callback](https://github.com/netkicorp/netkidocs/blob/master/best_practices_internal_callbacks.md), this is an async method.
 
 ### Additional methods
 
