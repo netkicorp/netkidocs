@@ -116,6 +116,12 @@ Before using any of the methods initialize the SDK as below.
 OnBoardId.initialize(applicationContext)
 ```
 
+As second parameter you can pass a Environment to use a different environment than production.
+
+```kotlin
+OnBoardId.initialize(applicationContext, Environment.DEV)
+```
+
 ### Step 2
 
 Configure the SDK passing in the API key provided by Netki as the token.
@@ -223,6 +229,40 @@ If no extra data is returned, extraData may be `null`.
 If the previous method returns a success status, it means that the data was posted successfully, the result of the identification process will be posted to the defined [backend callback](https://github.com/netkicorp/netkidocs/blob/master/best_practices_internal_callbacks.md), this is an async method.
 
 ### Additional methods
+
+#### Re-run Biometrics
+
+To re-submit biometric data in the SDk, follow the steps below:
+
+##### Steps to Re-run Biometrics
+Repeat Steps 1 and 2
+Begin by completing steps 1 and 2 from the previous section to prepare the environment and initialize the SDK.
+
+##### Start the Biometric Capture Flow
+Use the following command to get an intent for biometric data capture, replacing "transaction_id" with the appropriate transaction ID:
+
+```kotlin
+val intent = OnBoardId.getBiometricsIntent(transaction_id)
+```
+
+##### Handle the Biometric Flow Results
+Use the same code specified in Step 4 of the previous section to handle the biometric capture results.
+
+##### Submit the Captured Biometrics
+Once the success event is received, submit the captured biometric data by calling:
+
+```kotlin
+launch {
+    val result = OnBoardId.submitBiometrics()
+    if (result.isSuccessful()) {
+        // TODO: implement successful logic.
+    } else {
+        // TODO: implement error logic.
+    }
+}
+```
+
+#### Extra data
 
 If you want to set extra data specific to your business use:
 
