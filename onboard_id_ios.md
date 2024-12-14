@@ -104,6 +104,12 @@ Before using any of the methods initialize the SDK as below.
 OnBoardId.shared.initialize()
 ```
 
+As a parameter you can pass a Environment to use a different environment than production.
+
+```swift
+OnBoardId.shared.initialize(environment: Environments.DEV)
+```
+
 ### Step 2
 
 Configure the SDK passing in the API key provided by Netki as the token.
@@ -125,7 +131,7 @@ Once the configuration callback block returns, the environment will be configure
 
 Get an IdentificationView to start the process to capture the id pictures.
 
-To get the intent use the method:
+To get the view use the method:
 
 ```swift
 OnBoardId.shared.getIdentificationView(
@@ -207,6 +213,45 @@ defined [backend callback](https://github.com/netkicorp/netkidocs/blob/master/be
 this is an async method.
 
 ### Additional methods
+
+
+#### Re-run Biometrics
+
+To re-submit biometric data in the SDk, follow the steps below:
+
+##### Steps to Re-run Biometrics
+Repeat Steps 1 and 2
+Begin by completing steps 1 and 2 from the previous section to prepare the environment and initialize the SDK.
+
+##### Start the Biometric Capture Flow
+Use the following command to get a vie for biometric data capture, replacing "transaction_id" with the appropriate transaction ID:
+
+
+```swift
+OnBoardId.shared.getBiometricsView(
+    transactionId: transaction_id,
+    identificationDelegate: identificationDelegate
+)
+```
+
+##### Handle the Biometric Flow Results
+Use the same code specified in Step 4 of the previous section to handle the biometric capture results.
+
+##### Submit the Captured Biometrics
+Once the success event is received, submit the captured biometric data by calling:
+
+```swift
+Task {
+    let result = await OnBoardId.shared.submitBiometrics()
+    if (result.isSuccessful()) {
+        // TODO: implement successful logic.
+    } else {
+        // TODO: implement error logic.
+    }
+}
+```
+
+#### Extra data
 
 If you want to set extra data specific to your business use:
 
