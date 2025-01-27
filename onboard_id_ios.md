@@ -274,14 +274,16 @@ OnBoardId.shared.submitIdentification(additionalData: [
 In case when the `ResultInfo` returns an error status, it will return an `ErrorType`, the possible values for these are:
 
 ```swift
-NO_INTERNET
-INVALID_DATA
-INVALID_TOKEN
-INVALID_ACCESS_CODE
-INVALID_PHONE_NUMBER
-INVALID_CONFIRMATION_CODE
-UNEXPECTED_ERROR
-USER_CANCEL_IDENTIFICATION
+    NO_INTERNET
+    INVALID_DATA
+    INVALID_TOKEN
+    INVALID_ACCESS_CODE
+    INVALID_PHONE_NUMBER
+    INVALID_CONFIRMATION_CODE
+    USER_CANCEL_IDENTIFICATION
+    TRANSACTION_NOT_FOUND
+    CONFIGURATION_ERROR
+    UNEXPECTED_ERROR
 ```
 
 In case that there is more information about the error, you can find it in the `message` inside `ResultInfo`.
