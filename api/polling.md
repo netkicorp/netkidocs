@@ -370,7 +370,52 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-819
 }
 ```
 
-Ideally the transaction will show that the user passed KYC verification with flying colors!  However; this is not always the case.  Sometimes the user will have failed KYC or they will be placed on hold.  There can be a few different reasons for this that are outside of the scope of this document.  What we will cover is how to move people on from these states!
+#### Errors
+Ideally the transaction will show that the user passed KYC verification with flying colors!  However; this is not always the case.  Sometimes the user will have failed KYC or they will be placed on hold.  There can be a few different reasons for this that are outside of the scope of this document.  But to see the actionable errors (if the state is HOLD or FAILED) you would check two places in the callback.  The root of the callback object has an `errors` list in it and the child object `transaction_identity` also has an `errors` list in it and any errors that show up will be there.  The `transaction_notes` field on the root object also has a list of more detailed errors notes but the `errors` list is a bit more user friendly.
+
+Please note: these errors are geared towards you, our clients, not your end users.  You'll want to make sure that any messaging you do based upon the errors takes that into account, passing them directly onto the end user is discouraged.  To get a full list of our error codes you can go [here](./api_error_codes.md).
+
+```json
+{
+  "id": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
+  "client": "604e1738-4716-4bdd-867b-4942186b1e1c",
+  "transaction_identity": {
+    "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
+    "identity_emails": [
+      "..."
+    ],
+    "identity_phone_numbers": [
+      "..."
+    ],
+    "identity_addresses": [
+      "..."
+    ],
+    "identity_documents": [],
+    "identity_data_sources": [],
+    "identity_data_listings": [],
+    "identity_media_references": [],
+    "identity_access_code": null,
+    "identity_accredited_investor_status": {
+      "..."
+    },
+    "identity_json_objects": [],
+    "errors": [],
+    "created": "2018-04-30T17:57:54.093394Z",
+    "...",
+  },
+  "transaction_metadata": {
+    "id": 112,
+    "created": "2018-04-30T17:57:55.421248Z",
+    "..."
+  },
+  "transaction_callbacks": [],
+  "required_fields": [],
+  "errors": [],
+  "..."
+}
+```
+
+#### State Changes
 
 Please note only the following state changes are allowed:
 
@@ -383,6 +428,7 @@ COMPLETED -> FAILED
 FAILED -> RESTARTED
 
 If someone gets placed on hold and you would like to go ahead and manually approve them you'll use the make-completed endpoint.  You'll need to make sure to include a notes field with the compliance notes as to why it was completed.  To mark a transaction as failed use make-failed instead.  We'll cover make-restarted after this example.
+
 
 ```bash
 curl -X "POST" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-8197-ca4d18a21e2c/make-completed/" \
