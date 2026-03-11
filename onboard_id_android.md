@@ -344,7 +344,7 @@ All SDK operations return a `ResultInfo` object:
 
 ```kotlin
 data class ResultInfo(
-    val status: RequestStatus,      // SUCCESS or ERROR
+    val status: RequestStatus,
     val extraData: Map<String, String>?,
     val errorType: ErrorType?,
     val message: String?
@@ -357,12 +357,7 @@ Check the result using:
 if (result.isSuccessful()) {
     // Handle success
 } else {
-    when (result.errorType) {
-        ErrorType.NO_INTERNET -> showNoInternetMessage()
-        ErrorType.INVALID_TOKEN -> refreshToken()
-        ErrorType.USER_CANCEL_IDENTIFICATION -> handleUserCancelled()
-        else -> showGenericError(result.message)
-    }
+    // Handle error based on result.errorType and result.message
 }
 ```
 
@@ -419,9 +414,6 @@ data class ResultInfo(
     val errorType: ErrorType? = null,
     val message: String? = null
 )
-
-// Check result
-result.isSuccessful()  // Returns true if status == SUCCESS
 ```
 
 #### Picture
@@ -549,8 +541,8 @@ Represents a supported country for document capture.
 ```kotlin
 data class IdCountry(
     val name: String,
-    val alpha2: String,           // e.g., "US"
-    val alpha3: String,           // e.g., "USA"
+    val alpha2: String,
+    val alpha3: String,
     val countryCallingCode: String,
     val hasBarcodeId: Boolean,
     val flag: String?,
@@ -617,11 +609,11 @@ enum class IdType(val type: String, val displayName: String) {
 
 ```kotlin
 enum class PictureType(val type: String) {
-    FRONT("front"),       // Front of document
-    BACK("back"),         // Back of document
-    SELFIE("selfie"),     // Selfie photo
-    LIVENESS("liveness_image"),  // Liveness check image
-    EPASSPORT("e-passport")      // NFC passport data
+    FRONT("front"),
+    BACK("back"),
+    SELFIE("selfie"),
+    LIVENESS("liveness_image"),
+    EPASSPORT("e-passport")
 }
 ```
 
