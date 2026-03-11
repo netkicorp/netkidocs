@@ -2,7 +2,7 @@
 
 The OnboardID SDK enables you to integrate identity verification directly into your Android application. Users can capture ID documents and selfies without leaving your app.
 
-> **Getting Started?** You only need the [Core Integration](#core-integration) section to have a fully working implementation. Everything else is optional.
+**Getting Started?** You only need the [Core Integration](#core-integration) section to have a fully working implementation. Everything else is optional.
 
 ## Table of Contents
 
@@ -14,7 +14,6 @@ The OnboardID SDK enables you to integrate identity verification directly into y
   - [Biometrics Re-capture](#biometrics-re-capture)
   - [Configuration Options](#configuration-options)
   - [Individual Camera Controls](#individual-camera-controls)
-  - [NFC Passport Reading](#nfc-passport-reading)
 - [API Reference](#api-reference)
 - [Error Handling](#error-handling)
 - [Theming](#theming)
@@ -79,13 +78,6 @@ Initialize the SDK with your application context. Call this once, typically in y
 OnBoardId.initialize(applicationContext)
 ```
 
-For non-production environments, pass an `Environment` parameter:
-
-```kotlin
-// Available environments: Environment.DEV, Environment.QA, Environment.PROD
-OnBoardId.initialize(applicationContext, Environment.DEV)
-```
-
 ### Step 2: Configure with Your API Token
 
 Configure the SDK with the API token provided by Netki. This is a suspend function that must be called from a coroutine.
@@ -97,8 +89,7 @@ lifecycleScope.launch {
     if (result.isSuccessful()) {
         // SDK is ready - proceed to capture
     } else {
-        // Handle error - check result.errorType and result.message
-        Log.e("OnboardID", "Configuration failed: ${result.message}")
+        // Handle configuration error
     }
 }
 ```
@@ -119,7 +110,7 @@ val availableCountries = OnBoardId.getAvailableCountries()
 
 // Create the intent
 val intent = OnBoardId.getIdentificationIntent(
-    idType = IdType.DRIVERS_LICENSE,
+    idType = selectedIdType,
     idCountry = selectedCountry
 )
 
@@ -162,12 +153,11 @@ lifecycleScope.launch {
     val result = OnBoardId.submitIdentification()
 
     if (result.isSuccessful()) {
-        // Success! The transaction is being processed
+        // Success - transaction is being processed
         // Results will be sent to your backend callback
         val transactionData = result.extraData
     } else {
         // Handle submission error
-        Log.e("OnboardID", "Submission failed: ${result.message}")
     }
 }
 ```
@@ -227,16 +217,6 @@ lifecycleScope.launch {
 }
 ```
 
-#### Bypass Security Code
-
-For testing or specific use cases, you can bypass phone verification:
-
-```kotlin
-OnBoardId.bypassSecurityCode(phoneNumber = "+14155551234")
-```
-
-> **Note:** Use bypass only in development or when phone verification is handled externally.
-
 ### Biometrics Re-capture
 
 If you need to re-capture biometric data for an existing transaction (e.g., after a failed liveness check), use the biometrics flow.
@@ -260,7 +240,7 @@ lifecycleScope.launch {
     if (result.isSuccessful()) {
         // Biometrics submitted successfully
     } else {
-        Log.e("OnboardID", "Biometrics submission failed: ${result.message}")
+        // Handle submission error
     }
 }
 ```
@@ -346,83 +326,15 @@ private val captureIdLauncher = registerForActivityResult(
             ResultInfo.ExtraData.PICTURES.description
         ) as? List<Picture>
 
-        pictures?.forEach { picture ->
-            // Access captured data
-            val imagePath = picture.path
-            val barcodeData = picture.barcodes
-            val passportMRZ = picture.passportContent
-        }
+        // Process captured pictures - see Picture model in API Reference for available fields
     } else {
         val errorType = result.data?.extras?.getSerializable(
             ResultInfo.ExtraData.ERROR_TYPE.description
         ) as? ErrorType
+        // Handle capture error
     }
 }
 ```
-
-### NFC Passport Reading
-
-For passports with NFC chips (ePassports), the SDK can read additional data directly from the chip, providing higher confidence in document authenticity.
-
-> **Note:** NFC passport reading requires Android devices with NFC capability and passports that contain an NFC chip.
-
-When capturing a passport, if NFC reading is successful, the `Picture` object will contain an `ePassportContent` field with the chip data:
-
-```kotlin
-pictures?.forEach { picture ->
-    picture.ePassportContent?.let { ePassport ->
-        if (ePassport.isValid) {
-            // NFC data successfully read
-            val firstName = ePassport.primaryIdentifier
-            val lastName = ePassport.secondaryIdentifier
-            val nationality = ePassport.nationality
-            val documentNumber = ePassport.documentNumber
-            val dateOfBirth = ePassport.dateOfBirth
-            val dateOfExpiry = ePassport.dateOfExpiry
-            val gender = ePassport.gender
-
-            // Face image from chip (higher quality than photo capture)
-            val faceImagePath = ePassport.faceImagePath
-
-            // Additional personal data (if available)
-            ePassport.additionalPersonalData?.let { additional ->
-                val placeOfBirth = additional.placeOfBirth
-                val permanentAddress = additional.permanentAddress
-            }
-        }
-    }
-}
-```
-
-**EPassportContent Fields:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `isValid` | Boolean | Whether the NFC data was successfully validated |
-| `documentCode` | String? | Document type code |
-| `issuingState` | String? | Country that issued the passport |
-| `primaryIdentifier` | String? | Primary name (usually last name) |
-| `secondaryIdentifier` | String? | Secondary name (usually first name) |
-| `nationality` | String? | Holder's nationality |
-| `documentNumber` | String? | Passport number |
-| `dateOfBirth` | String? | Date of birth |
-| `gender` | Gender? | Gender from chip data |
-| `dateOfExpiry` | String? | Passport expiration date |
-| `faceImagePath` | String? | Path to face image extracted from chip |
-| `additionalPersonalData` | AdditionalPersonalData? | Extended data if available |
-
-**AdditionalPersonalData Fields:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `nameOfHolder` | String? | Full name of holder |
-| `placeOfBirth` | String? | Place of birth |
-| `permanentAddress` | String? | Permanent address |
-| `telephone` | String? | Phone number |
-| `profession` | String? | Profession |
-| `personalNumber` | String? | Personal identification number |
-| `custodyInformation` | String? | Custody information |
-| `title` | String? | Title (Mr., Mrs., etc.) |
 
 ---
 
@@ -477,7 +389,7 @@ if (result.isSuccessful()) {
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `initialize(context, environment?)` | Unit | Initialize the SDK. Call once before any other methods. |
+| `initialize(context)` | Unit | Initialize the SDK. Call once before any other methods. |
 | `configureWithToken(token, accessCode?)` | ResultInfo | Configure SDK with API credentials. Suspend function. |
 | `getIdentificationIntent(idType, idCountry)` | Intent | Get intent to launch the identification capture flow. |
 | `submitIdentification(additionalData?)` | ResultInfo | Submit captured identification data. Suspend function. |
@@ -486,7 +398,6 @@ if (result.isSuccessful()) {
 | `getCaptureIdIntent(idType, pictureType, properties?)` | Intent | Get intent for individual document/selfie capture. |
 | `requestSecurityCode(phoneNumber)` | ResultInfo | Send SMS verification code. Suspend function. |
 | `confirmSecurityCode(phoneNumber, code)` | ResultInfo | Verify SMS code. Suspend function. |
-| `bypassSecurityCode(phoneNumber)` | Unit | Bypass phone verification. |
 | `setBusinessMetadata(metadata)` | Unit | Attach custom metadata to the transaction. |
 | `setClientGuid(clientGuid)` | Unit | Set custom identifier for the transaction. |
 | `setLocation(lat, lon)` | Unit | Set user geolocation. |
@@ -593,6 +504,44 @@ data class LivenessInformation(
 )
 ```
 
+#### EPassportContent
+
+Data extracted from NFC-enabled passports.
+
+```kotlin
+data class EPassportContent(
+    val isValid: Boolean,
+    val documentCode: String?,
+    val issuingState: String?,
+    val primaryIdentifier: String?,
+    val secondaryIdentifier: String?,
+    val nationality: String?,
+    val documentNumber: String?,
+    val dateOfBirth: String?,
+    val gender: Gender?,
+    val dateOfExpiry: String?,
+    val faceImagePath: String?,
+    val additionalPersonalData: AdditionalPersonalData?
+)
+```
+
+#### AdditionalPersonalData
+
+Extended personal data from NFC passports.
+
+```kotlin
+data class AdditionalPersonalData(
+    val nameOfHolder: String?,
+    val placeOfBirth: String?,
+    val permanentAddress: String?,
+    val telephone: String?,
+    val profession: String?,
+    val personalNumber: String?,
+    val custodyInformation: String?,
+    val title: String?
+)
+```
+
 #### IdCountry
 
 Represents a supported country for document capture.
@@ -651,16 +600,6 @@ data class CaptureIdProperties(
 enum class RequestStatus {
     SUCCESS,
     ERROR
-}
-```
-
-#### Environment
-
-```kotlin
-enum class Environment {
-    DEV,   // Development environment
-    QA,    // QA/Testing environment
-    PROD   // Production environment (default)
 }
 ```
 
