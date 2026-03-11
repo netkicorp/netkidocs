@@ -2,7 +2,13 @@
 
 The OnboardID SDK enables you to integrate identity verification directly into your Android application. Users can capture ID documents and selfies without leaving your app.
 
-**Getting Started?** You only need the [Core Integration](#core-integration) section to have a fully working implementation. Everything else is optional.
+---
+
+### Quick Start
+
+To get up and running, complete the [Installation](#installation) and [Core Integration](#core-integration) sections. Everything else is optional.
+
+---
 
 ## Table of Contents
 
