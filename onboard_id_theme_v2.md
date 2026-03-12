@@ -1,14 +1,18 @@
 # OnboardID SDK - Theming Guide
 
-Customize the OnboardID SDK to match your brand identity. This guide covers all available theming options for both iOS and Android platforms.
+Customize the OnboardID SDK to match your brand identity. This guide covers all available theming options for iOS, Android, and Flutter platforms.
 
 ---
 
 ### Quick Start
 
-Apply a theme in a single call using `OnBoardIdUiV2.applyTheme()`. All properties are optional—only override what you need.
+Apply a theme in a single call. All properties are optional—only override what you need.
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -19,8 +23,11 @@ OnBoardIdUiV2.applyTheme(
     )
 )
 ```
+</details>
 
-**iOS (Swift):**
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -31,6 +38,22 @@ OnBoardIdUiV2.applyTheme(
     )
 )
 ```
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        buttons: ButtonColors(
+            primaryBackground: '#3B82F6',
+            primaryText: '#FFFFFF',
+        ),
+    ),
+);
+```
+</details>
 
 ---
 
@@ -53,7 +76,7 @@ The theming API allows you to customize:
 
 All colors use hex strings (e.g., `"#3B82F6"` or `"#FF3B82F6"` with alpha). Any property left `null`/`nil` uses the default SDK styling.
 
-> **Platform Note:** The theming API is identical on iOS and Android. Code examples show both platforms for reference.
+> **Platform Note:** The theming API is identical across iOS, Android, and Flutter. Code examples show all platforms for reference.
 
 ---
 
@@ -65,7 +88,11 @@ Customize the appearance of primary and secondary buttons throughout the SDK.
 
 Primary buttons are used for main actions like "Continue" and "Take Photo".
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -77,7 +104,11 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-**iOS (Swift):**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -89,11 +120,35 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        buttons: ButtonColors(
+            primaryBackground: '#3B82F6',
+            primaryText: '#FFFFFF',
+        ),
+    ),
+);
+```
+
+</details>
+
+---
+
 ### Secondary Buttons
 
 Secondary buttons are used for alternative actions like "Retake" and "Cancel".
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -105,7 +160,11 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-**iOS (Swift):**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -116,6 +175,27 @@ OnBoardIdUiV2.applyTheme(
     )
 )
 ```
+
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        buttons: ButtonColors(
+            secondaryBackground: '#E5E7EB',
+            secondaryText: '#374151',
+        ),
+    ),
+);
+```
+
+</details>
+
+---
+
 <table>
 <tr>
 <th>Default</th>
@@ -132,7 +212,11 @@ OnBoardIdUiV2.applyTheme(
 
 Control the roundness of button corners. Values are in density-independent pixels (dp/points).
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -143,7 +227,11 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-**iOS (Swift):**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -153,6 +241,25 @@ OnBoardIdUiV2.applyTheme(
     )
 )
 ```
+
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        buttons: ButtonColors(
+            cornerRadiusDp: 8,     // Slightly rounded
+        ),
+    ),
+);
+```
+
+</details>
+
+---
 
 | Value | Effect |
 |-------|--------|
@@ -195,7 +302,11 @@ Customize the colors of screens, cards, borders, and text throughout the SDK.
 - **Surface** — Card and container background color
 - **Border** — Border color for cards and input fields
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -208,7 +319,11 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-**iOS (Swift):**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -221,6 +336,27 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        content: ContentColors(
+            background: '#F9FAFB',
+            surface: '#FFFFFF',
+            border: '#E5E7EB',
+        ),
+    ),
+);
+```
+
+</details>
+
+---
+
 ### Text Colors
 
 Control the color of different text elements:
@@ -229,7 +365,11 @@ Control the color of different text elements:
 - **Subtitle text** — Secondary headings
 - **Body text** — Paragraph and instruction text
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -242,7 +382,11 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-**iOS (Swift):**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -255,6 +399,27 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        content: ContentColors(
+            titleText: '#111827',
+            subtitleText: '#374151',
+            bodyText: '#6B7280',
+        ),
+    ),
+);
+```
+
+</details>
+
+---
+
 <table>
 <tr>
 <th>Default</th>
@@ -265,8 +430,6 @@ OnBoardIdUiV2.applyTheme(
 <td><img width="300" alt="Custom Content" src="https://github.com/user-attachments/assets/547ded24-4964-424b-a9c9-cbc12fcfc019" /></td>
 </tr>
 </table>
-
-
 
 ### Content Properties Reference
 
@@ -303,7 +466,11 @@ Each instruction override targets a specific screen using `idType` and `pictureT
 
 Override the title, subtitle, or body text for any instruction screen.
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -320,7 +487,11 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-**iOS (Swift):**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 OnBoardIdUiV2.applyTheme(
     OnBoardIdTheme(
@@ -337,6 +508,31 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        instructions: [
+            InstructionContent(
+                idType: IdType.driversLicense,
+                pictureType: PictureType.front,
+                title: 'Scan Your License',
+                subtitle: 'Front Side',
+                body: 'Position your license within the frame',
+            ),
+        ],
+    ),
+);
+```
+
+</details>
+
+---
+
 <table>
 <tr>
 <th>Default</th>
@@ -348,12 +544,15 @@ OnBoardIdUiV2.applyTheme(
 </tr>
 </table>
 
-
 ### Adding Instruction Steps
 
 For more detailed instructions, use the `steps` property to display a list of items with optional icons.
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 // Build resource URIs for local icons
 val packageName = packageName
@@ -389,7 +588,11 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-**iOS (Swift):**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 // Icons reference asset catalog names directly (no extension)
 OnBoardIdUiV2.applyTheme(
@@ -420,6 +623,51 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+// Resolve Flutter assets to file paths first
+final paths = await NetkiSdk.instance.resolveAssetPaths([
+    'assets/icons/ic_instruction_surface.png',
+    'assets/icons/ic_instruction_corners.png',
+    'assets/icons/ic_instruction_light.png',
+]);
+
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        instructions: [
+            InstructionContent(
+                idType: IdType.driversLicense,
+                pictureType: PictureType.front,
+                title: 'Scan Your License',
+                subtitle: 'Follow these steps',
+                steps: [
+                    InstructionItem(
+                        text: 'Place on a flat, dark surface',
+                        iconUrl: paths['assets/icons/ic_instruction_surface.png'],
+                    ),
+                    InstructionItem(
+                        text: 'Ensure all corners are visible',
+                        iconUrl: paths['assets/icons/ic_instruction_corners.png'],
+                    ),
+                    InstructionItem(
+                        text: 'Avoid glare and shadows',
+                        iconUrl: paths['assets/icons/ic_instruction_light.png'],
+                    ),
+                ],
+            ),
+        ],
+    ),
+);
+```
+
+</details>
+
+---
+
 <table>
 <tr>
 <th>Default</th>
@@ -431,13 +679,15 @@ OnBoardIdUiV2.applyTheme(
 </tr>
 </table>
 
-
-
 ### Warning Steps
 
 Mark a step as a warning to display it with amber/warning styling.
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 val warningIconUrl = "android.resource://$packageName/${R.drawable.ic_instruction_warning}"
 
@@ -448,7 +698,11 @@ OnBoardIdTheme.InstructionItem(
 )
 ```
 
-**iOS (Swift):**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 OnBoardIdTheme.InstructionItem(
     text: "Do not use flash photography",
@@ -457,13 +711,38 @@ OnBoardIdTheme.InstructionItem(
 )
 ```
 
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+final warningIconPath = await NetkiSdk.instance.resolveAssetPath(
+    'assets/icons/ic_instruction_warning.png',
+);
+
+InstructionItem(
+    text: 'Do not use flash photography',
+    iconUrl: warningIconPath,
+    isWarning: true,
+)
+```
+
+</details>
+
+---
+
 <!-- Screenshot: instruction_warning_step.png - Warning step with amber background -->
 
 ### Custom Images and Videos
 
 Replace the default instruction image or video for any screen.
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 // Build resource URIs for local image and video
 val packageName = packageName
@@ -485,7 +764,11 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-**iOS (Swift):**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 // Reference asset catalog names directly (no extension)
 OnBoardIdUiV2.applyTheme(
@@ -503,13 +786,47 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+// Resolve Flutter assets to file paths
+final paths = await NetkiSdk.instance.resolveAssetPaths([
+    'assets/images/passport_guide.png',
+    'assets/videos/passport_tutorial.mp4',
+]);
+
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        instructions: [
+            InstructionContent(
+                idType: IdType.passport,
+                pictureType: PictureType.front,
+                title: 'Scan Your Passport',
+                imageUrl: paths['assets/images/passport_guide.png'],
+                videoPath: paths['assets/videos/passport_tutorial.mp4'],
+            ),
+        ],
+    ),
+);
+```
+
+</details>
+
+---
+
 > **Note:** Both local resources and remote URLs are supported for images and videos. See the platform-specific formats below.
 
 ### Local Resource Formats
 
 Icons and images can be loaded from local app resources or remote URLs. Each platform uses a different format for local resources:
 
-**Android:**
+---
+
+<details>
+<summary><code><b>Android</b></code> <small><i>· click to expand</i></small></summary>
 
 Use the `android.resource://` URI format to reference drawable resources:
 
@@ -539,7 +856,10 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-**iOS:**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> <small><i>· click to expand</i></small></summary>
 
 Reference assets directly by their name in the asset catalog (without file extension):
 
@@ -564,11 +884,57 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> <small><i>· click to expand</i></small></summary>
+
+Flutter assets must be resolved to file paths using `resolveAssetPath()` or `resolveAssetPaths()` before passing to the theme. This is because the native SDK cannot directly access Flutter's asset bundle.
+
+```dart
+// Single asset
+final iconPath = await NetkiSdk.instance.resolveAssetPath(
+    'assets/icons/ic_instruction_surface.png',
+);
+
+// Multiple assets (more efficient)
+final paths = await NetkiSdk.instance.resolveAssetPaths([
+    'assets/icons/ic_instruction_surface.png',
+    'assets/images/my_instruction_image.png',
+]);
+
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        instructions: [
+            InstructionContent(
+                idType: IdType.driversLicense,
+                pictureType: PictureType.front,
+                title: 'Scan Your License',
+                steps: [
+                    InstructionItem(
+                        text: 'Place on a flat surface',
+                        iconUrl: paths['assets/icons/ic_instruction_surface.png'],
+                    ),
+                ],
+                imageUrl: paths['assets/images/my_instruction_image.png'],
+            ),
+        ],
+    ),
+);
+```
+
+> **Note:** Make sure assets are declared in your `pubspec.yaml` under the `flutter.assets` section.
+
+</details>
+
+---
+
 | Platform | Local Resource Format | Example |
 |----------|----------------------|---------|
 | Android | `android.resource://{packageName}/{R.drawable.name}` | `"android.resource://com.example.app/${R.drawable.ic_surface}"` |
 | iOS | Asset catalog name (no extension) | `"ic_surface"` |
-| Both | Remote URL | `"https://example.com/icon.png"` |
+| Flutter | Resolved asset path via `resolveAssetPath()` | `await NetkiSdk.instance.resolveAssetPath('assets/icons/ic.png')` |
+| All | Remote URL | `"https://example.com/icon.png"` |
 
 ### Instruction Properties Reference
 
@@ -601,7 +967,11 @@ OnBoardIdUiV2.applyTheme(
 
 Apply a complete theme with custom colors, buttons, and instructions.
 
-**Android (Kotlin):**
+---
+
+<details>
+<summary><code><b>Android</b></code> Kotlin <small><i>· click to expand</i></small></summary>
+
 ```kotlin
 // Build resource URIs for local drawable resources
 val packageName = packageName
@@ -681,7 +1051,11 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-**iOS (Swift):**
+</details>
+
+<details>
+<summary><code><b>iOS</b></code> Swift <small><i>· click to expand</i></small></summary>
+
 ```swift
 // Icons and images reference asset catalog names directly (no extension)
 OnBoardIdUiV2.applyTheme(
@@ -753,6 +1127,95 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
+</details>
+
+<details>
+<summary><code><b>Flutter</b></code> Dart <small><i>· click to expand</i></small></summary>
+
+```dart
+// Resolve Flutter assets to file paths first
+final paths = await NetkiSdk.instance.resolveAssetPaths([
+    'assets/icons/ic_instruction_surface.png',
+    'assets/icons/ic_instruction_corners.png',
+    'assets/icons/ic_instruction_light.png',
+    'assets/icons/ic_instruction_warning.png',
+    'assets/icons/ic_instruction_face.png',
+    'assets/images/dl_front_guide.png',
+]);
+
+await NetkiSdk.instance.applyTheme(
+    theme: OnBoardIdTheme(
+        buttons: ButtonColors(
+            primaryBackground: '#8C5A3C',   // Medium brown
+            primaryText: '#FFF8F0',         // Cream
+            secondaryBackground: '#FFF8F0', // Cream
+            secondaryText: '#4B2E2B',       // Dark brown
+            cornerRadiusDp: 12,
+        ),
+        content: ContentColors(
+            background: '#FFF8F0',   // Cream
+            surface: '#F5EBE0',      // Warm light tan (cards)
+            border: '#C08552',       // Caramel/tan
+            titleText: '#4B2E2B',    // Dark brown
+            subtitleText: '#8C5A3C', // Medium brown
+            bodyText: '#4B2E2B',     // Dark brown
+        ),
+        instructions: [
+            InstructionContent(
+                idType: IdType.driversLicense,
+                pictureType: PictureType.front,
+                title: "Let's Verify Your Identity",
+                subtitle: 'Driver\'s License - Front',
+                steps: [
+                    InstructionItem(
+                        text: 'Place your ID on a dark, flat surface',
+                        iconUrl: paths['assets/icons/ic_instruction_surface.png'],
+                    ),
+                    InstructionItem(
+                        text: 'Make sure all four corners are visible',
+                        iconUrl: paths['assets/icons/ic_instruction_corners.png'],
+                    ),
+                    InstructionItem(
+                        text: 'Avoid glare and shadows on the document',
+                        iconUrl: paths['assets/icons/ic_instruction_light.png'],
+                    ),
+                    InstructionItem(
+                        text: 'Do not cover any information with your fingers',
+                        iconUrl: paths['assets/icons/ic_instruction_warning.png'],
+                        isWarning: true,
+                    ),
+                ],
+                imageUrl: paths['assets/images/dl_front_guide.png'],
+            ),
+            InstructionContent(
+                idType: IdType.biometrics,
+                pictureType: PictureType.selfie,
+                title: 'Almost Done!',
+                subtitle: 'Take a Selfie',
+                steps: [
+                    InstructionItem(
+                        text: 'Remove glasses, hats, and masks',
+                        iconUrl: paths['assets/icons/ic_instruction_face.png'],
+                    ),
+                    InstructionItem(
+                        text: 'Find good lighting - face a window if possible',
+                        iconUrl: paths['assets/icons/ic_instruction_light.png'],
+                    ),
+                    InstructionItem(
+                        text: 'Look straight at the camera',
+                        iconUrl: paths['assets/icons/ic_instruction_face.png'],
+                    ),
+                ],
+            ),
+        ],
+    ),
+);
+```
+
+</details>
+
+---
+
 <table>
 <tr>
 <th>Default</th>
@@ -776,14 +1239,28 @@ OnBoardIdUiV2.applyTheme(
 
 ## API Reference
 
-### OnBoardIdUiV2
+### Entry Point
 
-Entry point for theming the SDK.
+The method for applying themes:
+
+| Platform | Entry Point |
+|----------|-------------|
+| Android | `OnBoardIdUiV2.applyTheme(theme)` |
+| iOS | `OnBoardIdUiV2.applyTheme(theme)` |
+| Flutter | `await NetkiSdk.instance.applyTheme(theme: theme)` |
+
+**Additional Methods (Android/iOS only):**
 
 | Method | Description |
 |--------|-------------|
-| `applyTheme(theme)` | Apply a complete theme configuration |
 | `enable()` | Enable V2 UI (only needed if you previously switched to V1) |
+
+**Flutter Asset Resolution:**
+
+| Method | Description |
+|--------|-------------|
+| `resolveAssetPath(assetPath)` | Resolve a single Flutter asset to a file path |
+| `resolveAssetPaths(assetPaths)` | Resolve multiple Flutter assets to file paths (returns Map) |
 
 ### OnBoardIdTheme
 
@@ -848,19 +1325,19 @@ Top-level theme configuration.
 
 ### IdType Values
 
-| Value | Android | iOS | Description |
-|-------|---------|-----|-------------|
-| Driver's License | `IdType.DRIVERS_LICENSE` | `.DRIVERS_LICENSE` | Driver's license |
-| Passport | `IdType.PASSPORT` | `.PASSPORT` | Passport |
-| Government ID | `IdType.GOVERNMENT_ID` | `.GOVERNMENT_ID` | National ID card |
-| Biometrics | `IdType.BIOMETRICS` | `.BIOMETRICS` | Selfie/liveness |
+| Value | Android | iOS | Flutter | Description |
+|-------|---------|-----|---------|-------------|
+| Driver's License | `IdType.DRIVERS_LICENSE` | `.DRIVERS_LICENSE` | `IdType.driversLicense` | Driver's license |
+| Passport | `IdType.PASSPORT` | `.PASSPORT` | `IdType.passport` | Passport |
+| Government ID | `IdType.GOVERNMENT_ID` | `.GOVERNMENT_ID` | `IdType.governmentId` | National ID card |
+| Biometrics | `IdType.BIOMETRICS` | `.BIOMETRICS` | `IdType.biometrics` | Selfie/liveness |
 
 ### PictureType Values
 
-| Value | Android | iOS | Description |
-|-------|---------|-----|-------------|
-| Front | `PictureType.FRONT` | `.FRONT` | Document front |
-| Back | `PictureType.BACK` | `.BACK` | Document back |
-| Selfie | `PictureType.SELFIE` | `.SELFIE` | Selfie capture |
-| Liveness | `PictureType.LIVENESS` | `.LIVENESS` | Liveness check |
-| E-Passport | `PictureType.EPASSPORT` | `.EPASSPORT` | NFC passport |
+| Value | Android | iOS | Flutter | Description |
+|-------|---------|-----|---------|-------------|
+| Front | `PictureType.FRONT` | `.FRONT` | `PictureType.front` | Document front |
+| Back | `PictureType.BACK` | `.BACK` | `PictureType.back` | Document back |
+| Selfie | `PictureType.SELFIE` | `.SELFIE` | `PictureType.selfie` | Selfie capture |
+| Liveness | `PictureType.LIVENESS` | `.LIVENESS` | `PictureType.liveness` | Liveness check |
+| E-Passport | `PictureType.EPASSPORT` | `.EPASSPORT` | `PictureType.epassport` | NFC passport |
