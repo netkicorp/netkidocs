@@ -55,8 +55,6 @@ All colors use hex strings (e.g., `"#3B82F6"` or `"#FF3B82F6"` with alpha). Any 
 
 > **Platform Note:** The theming API is identical on iOS and Android. Code examples show both platforms for reference.
 
-<!-- Screenshot: theme_overview.png - Before/after comparison of default vs custom theme -->
-
 ---
 
 ## Button Styling
@@ -118,9 +116,17 @@ OnBoardIdUiV2.applyTheme(
     )
 )
 ```
+<table>
+<tr>
+<th>Default</th>
+<th>Custom</th>
+</tr>
+<tr>
+<td><img width="300" alt="Default Buttons" src="https://github.com/user-attachments/assets/9e921221-09d2-44ed-965f-498edf3c9dc4" /></td>
+<td><img width="300" alt="Custom Buttons" src="https://github.com/user-attachments/assets/06da31f1-e560-4446-8030-0f21d780398e" /></td>
+</tr>
+</table>
 
-<!-- Screenshot: buttons_default.png - Default button styling -->
-<!-- Screenshot: buttons_custom.png - Custom button colors -->
 
 ### Corner Radius
 
@@ -155,7 +161,17 @@ OnBoardIdUiV2.applyTheme(
 | `16` | Moderately rounded |
 | `24+` | Pill-shaped buttons |
 
-<!-- Screenshot: buttons_radius.png - Corner radius variations (0, 8, 16, 24) -->
+<table>
+<tr>
+<th>Default</th>
+<th>Custom 0DP</th>
+</tr>
+<tr>
+<td><img width="300" alt="Square Corners" src="https://github.com/user-attachments/assets/256964fc-6cc7-4bbe-bc4d-da8dd881db2f" /></td>
+<td><img width="300" alt="Rounded Corners" src="https://github.com/user-attachments/assets/9d9393de-7014-4d91-a54d-7fc6d1b653f5" /></td>
+</tr>
+</table>
+
 
 ### Button Properties Reference
 
@@ -239,7 +255,18 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-<!-- Screenshot: content_annotated.png - Annotated UI showing where each color applies -->
+<table>
+<tr>
+<th>Default</th>
+<th>Custom</th>
+</tr>
+<tr>
+<td><img width="300" alt="Default Content" src="https://github.com/user-attachments/assets/0bea9bcc-9080-44e2-b129-ef515106af25" /></td>
+<td><img width="300" alt="Custom Content" src="https://github.com/user-attachments/assets/547ded24-4964-424b-a9c9-cbc12fcfc019" /></td>
+</tr>
+</table>
+
+
 
 ### Content Properties Reference
 
@@ -310,8 +337,17 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-<!-- Screenshot: instruction_default.png - Default instruction screen -->
-<!-- Screenshot: instruction_custom_text.png - Custom title, subtitle, and body -->
+<table>
+<tr>
+<th>Default</th>
+<th>Custom</th>
+</tr>
+<tr>
+<td><img width="300" alt="Default Instructions" src="https://github.com/user-attachments/assets/e668291c-c620-4a3d-b2c4-04162f9233c0" /></td>
+<td><img width="300" alt="Custom Instructions" src="https://github.com/user-attachments/assets/62e1d1df-1ea1-46c8-9338-143c05d53290" /></td>
+</tr>
+</table>
+
 
 ### Adding Instruction Steps
 
@@ -384,7 +420,18 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-<!-- Screenshot: instruction_with_steps.png - Steps with icons -->
+<table>
+<tr>
+<th>Default</th>
+<th>Custom</th>
+</tr>
+<tr>
+<td><img width="300" alt="Default Steps" src="https://github.com/user-attachments/assets/73f5f4e5-9597-47c0-8116-620d338f8649" /></td>
+<td><img width="300" alt="Custom Steps" src="https://github.com/user-attachments/assets/fdacc8e0-3f5f-4d62-8ac6-a5a49d11bfa8" /></td>
+</tr>
+</table>
+
+
 
 ### Warning Steps
 
@@ -706,7 +753,24 @@ OnBoardIdUiV2.applyTheme(
 )
 ```
 
-<!-- Screenshot: example_brand_custom.png - Complete themed example -->
+<table>
+<tr>
+<th>Default</th>
+<th>Custom</th>
+</tr>
+<tr>
+<td><img width="300" alt="Default ID Instructions" src="https://github.com/user-attachments/assets/b6b3135b-2880-4a51-a90b-a23986b3aa89" /></td>
+<td><img width="300" alt="Custom ID Instructions" src="https://github.com/user-attachments/assets/3a373a1c-e754-46eb-8c2b-800db7d16319" /></td>
+</tr>
+<tr>
+<td><img width="300" alt="Default Capture Screen" src="https://github.com/user-attachments/assets/91916523-0733-4bdf-96d1-91350b96db11" /></td>
+<td><img width="300" alt="Custom Capture Screen" src="https://github.com/user-attachments/assets/ff175e9e-eada-4529-be60-ba3b353b77a3" /></td>
+</tr>
+<tr>
+<td><img width="300" alt="Default Review Screen" src="https://github.com/user-attachments/assets/3d0e611d-18b3-4aca-9ad6-de108fa704c9" /></td>
+<td><img width="300" alt="Custom Review Screen" src="https://github.com/user-attachments/assets/dc4233a3-4cdc-4085-a1db-8898432b463d" /></td>
+</tr>
+</table>
 
 ---
 
