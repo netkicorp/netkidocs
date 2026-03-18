@@ -1,6 +1,6 @@
 # OnboardID SDK - Theming Guide
 
-Customize the OnboardID SDK to match your brand identity. This guide covers all available theming options for iOS, Android, and Flutter platforms.
+Customize the OnboardID SDK to match your brand identity. This guide covers all available theming options for iOS, Android, Flutter, and React Native platforms.
 
 ---
 
@@ -55,6 +55,24 @@ await NetkiSdk.instance.applyTheme(
 ```
 </details>
 
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+import netkiSDK from '@netki/netki-mobilesdk';
+import type { OnBoardIdTheme } from '@netki/netki-mobilesdk';
+
+const theme: OnBoardIdTheme = {
+    buttons: {
+        primaryBackground: '#3B82F6',
+        primaryText: '#FFFFFF',
+    },
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
+```
+</details>
+
 ---
 
 ## Table of Contents
@@ -76,7 +94,7 @@ The theming API allows you to customize:
 
 All colors use hex strings (e.g., `"#3B82F6"` or `"#FF3B82F6"` with alpha). Any property left `null`/`nil` uses the default SDK styling.
 
-> **Platform Note:** The theming API is identical across iOS, Android, and Flutter. Code examples show all platforms for reference.
+> **Platform Note:** The theming API is identical across iOS, Android, Flutter, and React Native. Code examples show all platforms for reference.
 
 ---
 
@@ -138,6 +156,22 @@ await NetkiSdk.instance.applyTheme(
 
 </details>
 
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+const theme: OnBoardIdTheme = {
+    buttons: {
+        primaryBackground: '#3B82F6',
+        primaryText: '#FFFFFF',
+    },
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
+```
+
+</details>
+
 ---
 
 ### Secondary Buttons
@@ -190,6 +224,22 @@ await NetkiSdk.instance.applyTheme(
         ),
     ),
 );
+```
+
+</details>
+
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+const theme: OnBoardIdTheme = {
+    buttons: {
+        secondaryBackground: '#E5E7EB',
+        secondaryText: '#374151',
+    },
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
 ```
 
 </details>
@@ -255,6 +305,21 @@ await NetkiSdk.instance.applyTheme(
         ),
     ),
 );
+```
+
+</details>
+
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+const theme: OnBoardIdTheme = {
+    buttons: {
+        cornerRadiusDp: 8,     // Slightly rounded
+    },
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
 ```
 
 </details>
@@ -355,6 +420,23 @@ await NetkiSdk.instance.applyTheme(
 
 </details>
 
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+const theme: OnBoardIdTheme = {
+    content: {
+        background: '#F9FAFB',
+        surface: '#FFFFFF',
+        border: '#E5E7EB',
+    },
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
+```
+
+</details>
+
 ---
 
 ### Text Colors
@@ -414,6 +496,23 @@ await NetkiSdk.instance.applyTheme(
         ),
     ),
 );
+```
+
+</details>
+
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+const theme: OnBoardIdTheme = {
+    content: {
+        titleText: '#111827',
+        subtitleText: '#374151',
+        bodyText: '#6B7280',
+    },
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
 ```
 
 </details>
@@ -527,6 +626,27 @@ await NetkiSdk.instance.applyTheme(
         ],
     ),
 );
+```
+
+</details>
+
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+const theme: OnBoardIdTheme = {
+    instructions: [
+        {
+            idType: 'DRIVERS_LICENSE',
+            pictureType: 'FRONT',
+            title: 'Scan Your License',
+            subtitle: 'Front Side',
+            body: 'Position your license within the frame',
+        },
+    ],
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
 ```
 
 </details>
@@ -666,6 +786,55 @@ await NetkiSdk.instance.applyTheme(
 
 </details>
 
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+import { Image } from 'react-native';
+
+// Import assets using require()
+const icons = {
+    surface: require('./assets/icons/ic_instruction_surface.png'),
+    corners: require('./assets/icons/ic_instruction_corners.png'),
+    light: require('./assets/icons/ic_instruction_light.png'),
+};
+
+// Resolve to URIs using Image.resolveAssetSource()
+const getAssetUri = (source: any): string => {
+    const resolved = Image.resolveAssetSource(source);
+    return resolved?.uri || '';
+};
+
+const theme: OnBoardIdTheme = {
+    instructions: [
+        {
+            idType: 'DRIVERS_LICENSE',
+            pictureType: 'FRONT',
+            title: 'Scan Your License',
+            subtitle: 'Follow these steps',
+            steps: [
+                {
+                    text: 'Place on a flat, dark surface',
+                    iconUrl: getAssetUri(icons.surface),
+                },
+                {
+                    text: 'Ensure all corners are visible',
+                    iconUrl: getAssetUri(icons.corners),
+                },
+                {
+                    text: 'Avoid glare and shadows',
+                    iconUrl: getAssetUri(icons.light),
+                },
+            ],
+        },
+    ],
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
+```
+
+</details>
+
 ---
 
 <table>
@@ -726,6 +895,21 @@ InstructionItem(
     iconUrl: warningIconPath,
     isWarning: true,
 )
+```
+
+</details>
+
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+const warningIcon = require('./assets/icons/ic_instruction_warning.png');
+
+{
+    text: 'Do not use flash photography',
+    iconUrl: getAssetUri(warningIcon),
+    isWarning: true,
+}
 ```
 
 </details>
@@ -811,6 +995,29 @@ await NetkiSdk.instance.applyTheme(
         ],
     ),
 );
+```
+
+</details>
+
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+const passportGuide = require('./assets/images/passport_guide.png');
+
+const theme: OnBoardIdTheme = {
+    instructions: [
+        {
+            idType: 'PASSPORT',
+            pictureType: 'FRONT',
+            title: 'Scan Your Passport',
+            imageUrl: getAssetUri(passportGuide),
+            // Note: videoPath is also supported
+        },
+    ],
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
 ```
 
 </details>
@@ -927,6 +1134,48 @@ await NetkiSdk.instance.applyTheme(
 
 </details>
 
+<details>
+<summary><code><b>React Native</b></code> <small><i>· click to expand</i></small></summary>
+
+Use `require()` to import assets and `Image.resolveAssetSource()` to convert them to URIs that the native SDK can use:
+
+```typescript
+import { Image } from 'react-native';
+
+// Import assets using require()
+const iconSource = require('./assets/icons/ic_instruction_surface.png');
+const imageSource = require('./assets/images/my_instruction_image.png');
+
+// Helper to convert to URI
+const getAssetUri = (source: any): string => {
+    const resolved = Image.resolveAssetSource(source);
+    return resolved?.uri || '';
+};
+
+const theme: OnBoardIdTheme = {
+    instructions: [
+        {
+            idType: 'DRIVERS_LICENSE',
+            pictureType: 'FRONT',
+            title: 'Scan Your License',
+            steps: [
+                {
+                    text: 'Place on a flat surface',
+                    iconUrl: getAssetUri(iconSource),
+                },
+            ],
+            imageUrl: getAssetUri(imageSource),
+        },
+    ],
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
+```
+
+> **Note:** Assets must be placed in your project's assets folder and will be bundled automatically by Metro.
+
+</details>
+
 ---
 
 | Platform | Local Resource Format | Example |
@@ -934,6 +1183,7 @@ await NetkiSdk.instance.applyTheme(
 | Android | `android.resource://{packageName}/{R.drawable.name}` | `"android.resource://com.example.app/${R.drawable.ic_surface}"` |
 | iOS | Asset catalog name (no extension) | `"ic_surface"` |
 | Flutter | Resolved asset path via `resolveAssetPath()` | `await NetkiSdk.instance.resolveAssetPath('assets/icons/ic.png')` |
+| React Native | URI from `Image.resolveAssetSource()` | `Image.resolveAssetSource(require('./icon.png')).uri` |
 | All | Remote URL | `"https://example.com/icon.png"` |
 
 ### Instruction Properties Reference
@@ -1214,6 +1464,101 @@ await NetkiSdk.instance.applyTheme(
 
 </details>
 
+<details>
+<summary><code><b>React Native</b></code> TypeScript <small><i>· click to expand</i></small></summary>
+
+```typescript
+import { Image } from 'react-native';
+import netkiSDK from '@netki/netki-mobilesdk';
+import type { OnBoardIdTheme } from '@netki/netki-mobilesdk';
+
+// Import assets using require()
+const icons = {
+    surface: require('./assets/icons/ic_instruction_surface.png'),
+    corners: require('./assets/icons/ic_instruction_corners.png'),
+    light: require('./assets/icons/ic_instruction_light.png'),
+    warning: require('./assets/icons/ic_instruction_warning.png'),
+    face: require('./assets/icons/ic_instruction_face.png'),
+    dlFrontImage: require('./assets/images/dl_front_guide.png'),
+};
+
+// Helper to convert to URI
+const getAssetUri = (source: any): string => {
+    const resolved = Image.resolveAssetSource(source);
+    return resolved?.uri || '';
+};
+
+const theme: OnBoardIdTheme = {
+    buttons: {
+        primaryBackground: '#8C5A3C',   // Medium brown
+        primaryText: '#FFF8F0',         // Cream
+        secondaryBackground: '#FFF8F0', // Cream
+        secondaryText: '#4B2E2B',       // Dark brown
+        cornerRadiusDp: 12,
+    },
+    content: {
+        background: '#FFF8F0',   // Cream
+        surface: '#F5EBE0',      // Warm light tan (cards)
+        border: '#C08552',       // Caramel/tan
+        titleText: '#4B2E2B',    // Dark brown
+        subtitleText: '#8C5A3C', // Medium brown
+        bodyText: '#4B2E2B',     // Dark brown
+    },
+    instructions: [
+        {
+            idType: 'DRIVERS_LICENSE',
+            pictureType: 'FRONT',
+            title: "Let's Verify Your Identity",
+            subtitle: "Driver's License - Front",
+            steps: [
+                {
+                    text: 'Place your ID on a dark, flat surface',
+                    iconUrl: getAssetUri(icons.surface),
+                },
+                {
+                    text: 'Make sure all four corners are visible',
+                    iconUrl: getAssetUri(icons.corners),
+                },
+                {
+                    text: 'Avoid glare and shadows on the document',
+                    iconUrl: getAssetUri(icons.light),
+                },
+                {
+                    text: 'Do not cover any information with your fingers',
+                    iconUrl: getAssetUri(icons.warning),
+                    isWarning: true,
+                },
+            ],
+            imageUrl: getAssetUri(icons.dlFrontImage),
+        },
+        {
+            idType: 'BIOMETRICS',
+            pictureType: 'SELFIE',
+            title: 'Almost Done!',
+            subtitle: 'Take a Selfie',
+            steps: [
+                {
+                    text: 'Remove glasses, hats, and masks',
+                    iconUrl: getAssetUri(icons.face),
+                },
+                {
+                    text: 'Find good lighting - face a window if possible',
+                    iconUrl: getAssetUri(icons.light),
+                },
+                {
+                    text: 'Look straight at the camera',
+                    iconUrl: getAssetUri(icons.face),
+                },
+            ],
+        },
+    ],
+};
+
+await netkiSDK.applyTheme(JSON.stringify(theme));
+```
+
+</details>
+
 ---
 
 <table>
@@ -1248,6 +1593,7 @@ The method for applying themes:
 | Android | `OnBoardIdUiV2.applyTheme(theme)` |
 | iOS | `OnBoardIdUiV2.applyTheme(theme)` |
 | Flutter | `await NetkiSdk.instance.applyTheme(theme: theme)` |
+| React Native | `await netkiSDK.applyTheme(JSON.stringify(theme))` |
 
 **Additional Methods (Android/iOS only):**
 
@@ -1261,6 +1607,12 @@ The method for applying themes:
 |--------|-------------|
 | `resolveAssetPath(assetPath)` | Resolve a single Flutter asset to a file path |
 | `resolveAssetPaths(assetPaths)` | Resolve multiple Flutter assets to file paths (returns Map) |
+
+**React Native Asset Resolution:**
+
+| Method | Description |
+|--------|-------------|
+| `Image.resolveAssetSource(require('./path'))` | Resolve a bundled asset to a source object with `uri` property |
 
 ### OnBoardIdTheme
 
@@ -1325,19 +1677,19 @@ Top-level theme configuration.
 
 ### IdType Values
 
-| Value | Android | iOS | Flutter | Description |
-|-------|---------|-----|---------|-------------|
-| Driver's License | `IdType.DRIVERS_LICENSE` | `.DRIVERS_LICENSE` | `IdType.driversLicense` | Driver's license |
-| Passport | `IdType.PASSPORT` | `.PASSPORT` | `IdType.passport` | Passport |
-| Government ID | `IdType.GOVERNMENT_ID` | `.GOVERNMENT_ID` | `IdType.governmentId` | National ID card |
-| Biometrics | `IdType.BIOMETRICS` | `.BIOMETRICS` | `IdType.biometrics` | Selfie/liveness |
+| Value | Android | iOS | Flutter | React Native | Description |
+|-------|---------|-----|---------|--------------|-------------|
+| Driver's License | `IdType.DRIVERS_LICENSE` | `.DRIVERS_LICENSE` | `IdType.driversLicense` | `'DRIVERS_LICENSE'` | Driver's license |
+| Passport | `IdType.PASSPORT` | `.PASSPORT` | `IdType.passport` | `'PASSPORT'` | Passport |
+| Government ID | `IdType.GOVERNMENT_ID` | `.GOVERNMENT_ID` | `IdType.governmentId` | `'GOVERNMENT_ID'` | National ID card |
+| Biometrics | `IdType.BIOMETRICS` | `.BIOMETRICS` | `IdType.biometrics` | `'BIOMETRICS'` | Selfie/liveness |
 
 ### PictureType Values
 
-| Value | Android | iOS | Flutter | Description |
-|-------|---------|-----|---------|-------------|
-| Front | `PictureType.FRONT` | `.FRONT` | `PictureType.front` | Document front |
-| Back | `PictureType.BACK` | `.BACK` | `PictureType.back` | Document back |
-| Selfie | `PictureType.SELFIE` | `.SELFIE` | `PictureType.selfie` | Selfie capture |
-| Liveness | `PictureType.LIVENESS` | `.LIVENESS` | `PictureType.liveness` | Liveness check |
-| E-Passport | `PictureType.EPASSPORT` | `.EPASSPORT` | `PictureType.epassport` | NFC passport |
+| Value | Android | iOS | Flutter | React Native | Description |
+|-------|---------|-----|---------|--------------|-------------|
+| Front | `PictureType.FRONT` | `.FRONT` | `PictureType.front` | `'FRONT'` | Document front |
+| Back | `PictureType.BACK` | `.BACK` | `PictureType.back` | `'BACK'` | Document back |
+| Selfie | `PictureType.SELFIE` | `.SELFIE` | `PictureType.selfie` | `'SELFIE'` | Selfie capture |
+| Liveness | `PictureType.LIVENESS` | `.LIVENESS` | `PictureType.liveness` | `'LIVENESS'` | Liveness check |
+| E-Passport | `PictureType.EPASSPORT` | `.EPASSPORT` | `PictureType.epassport` | `'EPASSPORT'` | NFC passport |
