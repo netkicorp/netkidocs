@@ -68,7 +68,7 @@ In your app's `build.gradle` file, add the SDK dependency:
 implementation 'com.netki:netkisdk:${latest.version}'
 ```
 
-> **Note:** Replace `${latest.version}` with the current version. Check the [releases page](https://art.myverify.io/netki/libs-release-local/com/netki/netkisdk/) for available versions.
+> **Note:** Replace `${latest.version}` with the current version. Check [Maven Central](https://central.sonatype.com/artifact/com.netki/netkisdk) for available versions.
 
 ## Core Integration
 

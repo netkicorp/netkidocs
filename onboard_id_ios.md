@@ -47,7 +47,7 @@ Add the following keys to your `Info.plist`:
 In your `Podfile`, add the Netki SDK:
 
 ```ruby
-pod 'NetkiSDK', :git => 'https://github.com/netkicorp/onboardid-pod.git', :tag => '{latest.version}'
+pod 'NetkiSDK', '~> {latest.version}'
 ```
 
 Then run:
@@ -56,7 +56,7 @@ Then run:
 pod install
 ```
 
-> **Note:** Replace `{latest.version}` with the current version.
+> **Note:** Replace `{latest.version}` with the current version. Check [CocoaPods](https://cocoapods.org/pods/NetkiSDK) for available versions.
 
 ### Step 2: Import the SDK
 
