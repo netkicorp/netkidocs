@@ -25,7 +25,7 @@ To get up and running, complete the [Installation](#installation) and [Core Inte
 
 ## Requirements
 
-- iOS 13.0 or higher
+- iOS 17.0 or higher
 - Camera permission
 - Photo Library permission
 
