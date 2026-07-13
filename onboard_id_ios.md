@@ -25,9 +25,10 @@ To get up and running, complete the [Installation](#installation) and [Core Inte
 
 ## Requirements
 
-- iOS 13.0 or higher
+- iOS 17.0 or higher
 - Camera permission
 - Photo Library permission
+- NFC capability (required for passport reading)
 
 Add the following keys to your `Info.plist`:
 
@@ -38,7 +39,24 @@ Add the following keys to your `Info.plist`:
 <string>Photo library access is required to store captured images</string>
 <key>NSPhotoLibraryAddUsageDescription</key>
 <string>Photo library access is required to store captured images</string>
+<key>NFCReaderUsageDescription</key>
+<string>Used to read NFC chip data from your passport for identity verification.</string>
+<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+<array>
+    <string>A0000002471001</string>
+</array>
 ```
+
+Enable the **Near Field Communication Tag Reading** capability in your target's *Signing & Capabilities* tab. Xcode will add the following to your `.entitlements` file:
+
+```xml
+<key>com.apple.developer.nfc.readersession.formats</key>
+<array>
+    <string>TAG</string>
+</array>
+```
+
+> **About `A0000002471001`:** this is the ICAO 9303 ePassport Application Identifier (AID) — a fixed standard value used by all ePassport chips worldwide. Copy it verbatim; it is not application-specific.
 
 ## Installation
 

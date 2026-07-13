@@ -26,7 +26,7 @@ To get up and running, complete the [Installation](#installation) and [Core Inte
 
 ## Requirements
 
-- Android API level 21 (Lollipop) or higher
+- Android API level 23 (Marshmallow) or higher
 - Camera permission
 - Internet permission
 
@@ -39,26 +39,24 @@ Add the following permissions to your `AndroidManifest.xml`:
 
 ## Installation
 
-### Step 1: Add the Netki Repository
+### Step 1: Add Repositories
 
-In your project's `build.gradle` file, add the Netki maven repository:
+In your project's `settings.gradle` (or `build.gradle` if you're on an older Gradle version), make sure the following repositories are declared:
 
 ```groovy
-allprojects {
+dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
 
-        // Netki SDK repository
-        maven {
-            url "https://art.myverify.io/netki/libs-release-local/"
-        }
-
-        // Required for ML models
+        // Required for the ML liveness detection library that NetkiSDK
+        // depends on transitively.
         maven { url "https://developer.huawei.com/repo/" }
     }
 }
 ```
+
+Starting with v12.0.0, NetkiSDK is a single self-contained artifact — no additional private repositories are required.
 
 ### Step 2: Add the Dependency
 
