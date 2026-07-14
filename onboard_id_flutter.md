@@ -29,10 +29,11 @@ To get up and running, complete the [Installation](#installation) and [Core Inte
 - Dart SDK 3.11.1 or higher
 - iOS 17.0 or higher
 - Android API level 24 (Android 7.0) or higher
+- NFC capability (required for passport reading)
 
 ### iOS Setup
 
-Add the following keys to your `Info.plist`:
+Add the following keys to your `ios/Runner/Info.plist`:
 
 ```xml
 <key>NSCameraUsageDescription</key>
@@ -41,7 +42,24 @@ Add the following keys to your `Info.plist`:
 <string>Photo library access is required to store captured images</string>
 <key>NSPhotoLibraryAddUsageDescription</key>
 <string>Photo library access is required to store captured images</string>
+<key>NFCReaderUsageDescription</key>
+<string>Used to read NFC chip data from your passport for identity verification.</string>
+<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+<array>
+    <string>A0000002471001</string>
+</array>
 ```
+
+Enable the **Near Field Communication Tag Reading** capability in your Xcode project's *Signing & Capabilities* tab. Xcode will add the following to your `Runner.entitlements` file:
+
+```xml
+<key>com.apple.developer.nfc.readersession.formats</key>
+<array>
+    <string>TAG</string>
+</array>
+```
+
+> **About `A0000002471001`:** this is the ICAO 9303 ePassport Application Identifier (AID) — a fixed standard value used by all ePassport chips worldwide. Copy it verbatim; it is not application-specific.
 
 ### Android Setup
 
@@ -60,7 +78,7 @@ In your `pubspec.yaml`, add the Netki SDK:
 
 ```yaml
 dependencies:
-  netki_sdk: ^${latest.version}
+  netki_sdk: ^12.0.0
 ```
 
 Then run:
@@ -69,7 +87,7 @@ Then run:
 flutter pub get
 ```
 
-> **TODO:** Package repository URL to be defined once published to production.
+Available at [pub.dev/packages/netki_sdk](https://pub.dev/packages/netki_sdk).
 
 ### Step 2: Import the SDK
 
