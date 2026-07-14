@@ -58,6 +58,19 @@ Enable the **Near Field Communication Tag Reading** capability in your target's 
 
 > **About `A0000002471001`:** this is the ICAO 9303 ePassport Application Identifier (AID) — a fixed standard value used by all ePassport chips worldwide. Copy it verbatim; it is not application-specific.
 
+### Enable NFC on your App ID in Apple Developer Portal
+
+Info.plist keys and entitlements alone are not enough — the App ID itself must have the NFC capability enabled in the Apple Developer Portal, otherwise provisioning strips the entitlement and `NFCTagReaderSession.readingAvailable` returns `false` at runtime.
+
+1. Sign in at [developer.apple.com/account](https://developer.apple.com/account).
+2. Left nav → **Certificates, Identifiers & Profiles** → **Identifiers**.
+3. Filter to **App IDs** and open the App ID matching your app's bundle identifier.
+4. In the **Capabilities** list, tick **NFC Tag Reading** and click **Save**.
+5. Enabling the capability invalidates existing provisioning profiles. Go to **Profiles**, filter to that bundle ID, and click **Edit → Save** on each affected profile so Apple re-issues them with the new entitlement.
+6. In Xcode: Settings → Accounts → your Apple ID → **Download Manual Profiles** (or let automatic signing re-fetch on next build).
+
+Repeat for every build configuration whose bundle ID differs (Development / QA / Production typically have three separate App IDs — enable NFC on each).
+
 ## Installation
 
 ### Step 1: Add the Dependency
