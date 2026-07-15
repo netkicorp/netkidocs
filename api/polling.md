@@ -1,39 +1,66 @@
-## Information Polling
+# Transactions
 
-API endpoints used in this section
+Every person who goes through your KYC flow gets a transaction. A
+transaction is the master record of that person's verification: their
+identity data, uploaded documents, AML/sanctions screening results, and
+(for accredited-investor deals) their investor-verification status. Poll
+these endpoints to track a transaction's progress, review why something
+is on hold or failed, and move a transaction to a new state when your
+compliance team makes a decision.
 
-https://kyc.myverify.info/api/token-auth/
+## Endpoints
 
-https://kyc.myverify.info/api/transactions/UUID/
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/transactions/` | List transactions for your business |
+| `GET` | `/api/transactions/{id}/` | Retrieve a single transaction |
+| `PUT` | `/api/transactions/{id}/make-completed/` | Manually approve a transaction |
+| `PUT` | `/api/transactions/{id}/make-failed/` | Manually fail a transaction |
+| `PUT` | `/api/transactions/{id}/make-restarted/` | Restart a transaction and issue the customer a new access code |
 
-https://kyc.myverify.info/api/transactions/UUID/make-completed/
+## Authentication
 
-https://kyc.myverify.info/api/transactions/UUID/make-restarted/
+> [!NOTE]
+> All endpoints on this page require the `Authorization` header described in
+> [API Conventions](./conventions.md#authentication).
 
-https://kyc.myverify.info/api/transactions/UUID/make-failed/
+## List transactions
 
+`GET /api/transactions/`
 
+Returns the transactions belonging to your business, most recently created
+first. This is the primary way to poll for status changes: run this
+periodically (or in response to a callback) and check each transaction's
+`state`.
 
+**Path / query parameters**
 
-The core of the KYC experience is to be able to view the current status of what's going on with your users, addressing any issues as needed, and updating the state of transactions based upon the information that you have received.
+| Name | In | Type | Description |
+|---|---|---|---|
+| `search` | query | string | Case-insensitive substring match against the transaction ID, the identity ID, the identity's first or last name, or the identity's phone number. This does **not** match access codes — see [Access Codes](./access_codes.md) to look up a transaction by access code |
+| `client_id` | query | string (UUID) | Filter to an exact business ID (useful for staff/parent-business accounts that can see child businesses) |
+| `state` | query | string | Filter to an exact transaction state (see [Transaction states](#transaction-states) below) |
+| `states` | query | string | Comma-separated list of states; returns transactions matching any of them |
+| `transaction_identity` | query | string (UUID) | Filter to an exact identity ID |
+| `transaction_identity__country_code` | query | string | Filter to an exact identity country code |
+| `created_by` | query | integer | Filter to the internal user/account that created the transaction |
+| `first_name` / `last_name` / `full_name` | query | string | Case-insensitive partial match against the identity's name |
+| `client_guid` | query | string | Case-insensitive partial match against the GUID you supplied when creating the transaction |
+| `phonenumber` | query | string | Case-insensitive partial match against the identity's phone number |
+| `created_on` | query | string (date) | Return only transactions created on this exact date |
+| `start_date` / `end_date` | query | string (date) | Return transactions created within this date range |
+| `ordering` | query | string | One of `created`, `updated`, `state`, or several `transaction_identity__*` fields; prefix with `-` for descending. Defaults to `-created` |
+| `page` | query | integer | Page number |
+| `page_size` | query | integer | Results per page (default 10, maximum 100) |
 
-Each individual who goes through the KYC process will get a transaction ID.  This ID will have all of the details needed to track the status of the user through the system.  To get a full list of transactions in your account you will do the following:
-
-
-```bash
-curl -X "POST" "https://kyc.myverify.info/api/token-auth/" \
-     -H 'Content-Type: application/json; charset=utf-8' \
-     -d $'{
-  "username": "client_username",
-  "password": "client_password"
-}'
-```
-
+**Request**
 
 ```bash
 curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
-     -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwianRpIjoiZGJhNzQ5ZTBiZGNjNGM1NmJjMWI0NmQ1MWY4YzIzM2YiLCJleHAiOjE1MjQ4NTUwODAsInVzZXJfaWQiOjF9.tmubREi5qH2KZTBBK-Lf047gnyVllk_jNLD9qp0aesE'
+     -H 'Authorization: Bearer eyJ...<truncated>'
 ```
+
+**Response `200`**
 
 ```json
 {
@@ -44,23 +71,71 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
     {
       "id": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
       "client": "604e1738-4716-4bdd-867b-4942186b1e1c",
+      "state": "hold",
+      "phase": "kyc",
+      "completed_by": null,
+      "notes": null,
+      "is_active": true,
+      "created": "2026-06-30T14:22:10.104300Z",
+      "updated": "2026-07-01T09:05:44.881200Z",
+      "contenttype": 29,
       "transaction_identity": {
         "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "middle_name": null,
+        "alias": null,
+        "country_code": "US",
+        "selected_country_code": "US",
+        "locale": null,
+        "state": "completed",
+        "is_active": true,
+        "liveness_score": 0.94,
+        "death_date": null,
+        "birth_location": null,
+        "status": "unknown",
+        "client_guid": "your-internal-guid-123",
+        "birth_date": "1990-04-12",
+        "gender": null,
+        "height": null,
+        "weight": null,
+        "eye_color": null,
+        "hair_color": null,
+        "investor_type": "private_party",
+        "ssn": "6789",
+        "medical_license": null,
+        "insurance_license": null,
+        "drivers_license": "D1234567",
+        "passport_number": null,
+        "resident_number": null,
+        "is_accredited_investor": true,
+        "title": null,
+        "ownership_percentage": null,
+        "notes": "",
+        "source_of_wealth": null,
+        "tax_id": null,
+        "phone_is_validated": true,
+        "geolocation_point": null,
+        "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
+        "business": "604e1738-4716-4bdd-867b-4942186b1e1c",
+        "created": "2026-06-30T14:22:10.093394Z",
+        "updated": "2026-07-01T09:05:44.836752Z",
+        "contenttype": 30,
         "identity_emails": [
           {
             "id": "f2a172cc-6716-462e-89f0-3468dec53721",
-            "created": "2018-04-30T17:57:54.139181Z",
-            "updated": "2018-04-30T17:57:54.139198Z",
+            "created": "2026-06-30T14:22:10.139181Z",
+            "updated": "2026-06-30T14:22:10.139198Z",
             "is_active": true,
-            "email": "test@email.com",
+            "email": "jane.doe@example.com",
             "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
           }
         ],
         "identity_phone_numbers": [
           {
             "id": "1d93d2a2-8ddc-43bc-9c93-03126d9071db",
-            "created": "2018-04-30T17:57:54.166477Z",
-            "updated": "2018-04-30T20:09:14.845833Z",
+            "created": "2026-06-30T14:22:10.166477Z",
+            "updated": "2026-06-30T14:22:10.166477Z",
             "is_active": true,
             "phone_number": "+12345550100",
             "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
@@ -69,375 +144,603 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
         "identity_addresses": [
           {
             "id": "734fa958-f604-4558-a3f7-fde62d6d4617",
-            "created": "2018-04-30T17:57:54.118040Z",
-            "updated": "2018-04-30T17:57:54.118059Z",
+            "created": "2026-06-30T14:22:10.118040Z",
+            "updated": "2026-06-30T14:22:10.118059Z",
             "is_active": true,
-            "address": "12345 Oompa Loompa Rd",
+            "address": "123 Main St",
             "unit": "",
-            "city": "12345 Oompa Loompa Rd",
+            "city": "Austin",
             "state": "TX",
-            "postalcode": "40110",
+            "postalcode": "78701",
             "score": 0,
             "country_code": "US",
             "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
           }
         ],
-        "identity_documents": [],
-        "identity_data_sources": [],
-        "identity_data_listings": [],
+        "identity_documents": [
+          {
+            "id": "b97274d3-47f9-4a0d-a0ec-5e8d20c30318",
+            "created": "2026-06-30T14:24:56.066101Z",
+            "updated": "2026-06-30T14:24:56.074392Z",
+            "is_active": true,
+            "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
+            "document": "https://<your-bucket>.s3.amazonaws.com/identities/documents/b12345d3-47f9-4a0d-a0ec-5e8d20c12345.selfie.jpg",
+            "document_type": "drivers_license",
+            "country_code": "US",
+            "expiration_date": "2028-04-12",
+            "issue_date": "2020-04-12",
+            "can_bypass_expiration": false,
+            "state": "completed",
+            "document_classification": 4021,
+            "reviewer": null,
+            "is_reviewed": false,
+            "reviewed_date": null,
+            "contenttype": 26,
+            "mime_type": {
+              "id": 3,
+              "media_type": "image",
+              "extension": "jpg",
+              "mime_type": "image/jpeg"
+            },
+            "identity_document_thumbnail": [
+              {
+                "id": "0c9a3b1d-1e2f-4a3b-9c4d-5e6f7a8b9c0d",
+                "name": "b97274d3-47f9-4a0d-a0ec-5e8d20c30318",
+                "image": {
+                  "full_size": "https://<your-bucket>.s3.amazonaws.com/identities/documents/thumbs/b97274d3.jpg",
+                  "thumbnail": "https://<your-bucket>.s3.amazonaws.com/identities/documents/thumbs/b97274d3.thumbnail__200x200.jpg",
+                  "medium_square_crop": "https://<your-bucket>.s3.amazonaws.com/identities/documents/thumbs/b97274d3.crop__400x400.jpg",
+                  "small_square_crop": "https://<your-bucket>.s3.amazonaws.com/identities/documents/thumbs/b97274d3.crop__50x50.jpg"
+                }
+              }
+            ],
+            "errors": []
+          }
+        ],
+        "identity_data_sources": [
+          {
+            "id": "a3e07f08-1d56-4e53-bd41-ff1f4fdfa1fe",
+            "created": "2026-06-30T14:26:28.984376Z",
+            "updated": "2026-06-30T14:27:37.684915Z",
+            "is_active": true,
+            "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
+            "raw_data": {
+              "face_match_score": "94"
+            },
+            "reference_url": "",
+            "comply_search_matches": 1,
+            "score": "62",
+            "is_reviewed": false,
+            "reviewed_date": null,
+            "data_provider": {
+              "id": 3,
+              "data_provider_type": {
+                "id": 2,
+                "type_description": "Sanctions and Watchlist Screening",
+                "identifier": "aml"
+              }
+            },
+            "aml_source_notes": [
+              {
+                "name": "OFAC SDN List",
+                "identifier": "OFAC-SDN-4471",
+                "provider_id": "4471",
+                "aml_source_countries": [
+                  { "country": "US", "provider_id": "4471" }
+                ],
+                "listing_started": "2019-02-01T00:00:00Z",
+                "listing_ended": null,
+                "related_url": ""
+              }
+            ]
+          }
+        ],
+        "identity_data_listings": [
+          {
+            "id": "feb42133-7737-4a87-95a4-133ad8836303",
+            "created": "2026-06-30T14:27:57.819137Z",
+            "updated": "2026-06-30T14:27:57.872607Z",
+            "is_active": true,
+            "notes": null,
+            "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
+            "provider_id": "4471",
+            "reviewer": null,
+            "is_reviewed": false,
+            "reviewed_date": null,
+            "listing_type": {
+              "id": 11,
+              "created": "2026-01-18T21:22:41.783260Z",
+              "updated": "2026-01-18T21:22:41.783330Z",
+              "is_active": true,
+              "name": "sanctions",
+              "description": "",
+              "is_flagged": true
+            }
+          }
+        ],
         "identity_media_references": [],
         "identity_access_code": null,
         "identity_accredited_investor_status": {
           "id": "999b679e-5b79-42c1-b68e-cae3a2559fca",
-          "identity": {
-            "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
-            "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
-            "first_name": "John",
-            "last_name": "Doe"
-          },
-          "created": "2018-04-30T18:09:10.632229Z",
-          "updated": "2018-04-30T18:09:10.647964Z",
+          "created": "2026-06-30T14:30:10.632229Z",
+          "updated": "2026-06-30T14:30:10.647964Z",
           "is_active": true,
           "status": "open",
           "vendor_status": "waiting_for_investor_acceptance",
+          "message": "The verification process is waiting for the investor to start.",
+          "identity": {
+            "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
+            "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
+            "first_name": "Jane",
+            "last_name": "Doe"
+          },
+          "identity_document_accreditation_status": [],
+          "errors": [],
           "raw_data": {
             "id": 1876,
             "status": "waiting_for_investor_acceptance",
             "message": "The verification process is waiting for the investor to start.",
-            "investor": {
-              "id": 1559
-            },
+            "investor": { "id": 1559 },
             "deal_name": null,
-            "created_at": "2018-04-30T11:09:10.451-07:00",
-            "legal_name": "JOHN DOE",
+            "created_at": "2026-06-30T07:30:10.451-07:00",
+            "legal_name": "JANE DOE",
             "portal_name": "MyVerify",
-            "webhook_url": "http://localhost:8000/verify-investor/callback/",
-            "investor_url": "http://verifyinvestor-staging.herokuapp.com/investor/verification-requests/1876/accept",
-            "redirect_url": "http://localhost:8000/verify-investor/complete/",
+            "webhook_url": "https://your-domain.example/verify-investor/callback/",
+            "investor_url": "https://kyc.myverify.info/investor/verification-requests/1876/accept",
+            "redirect_url": "https://your-domain.example/verify-investor/complete/",
             "internal_status": "open",
             "waiting_for_info": false,
             "verified_expires_at": null
-          },
-          "message": "The verification process is waiting for the investor to start."
+          }
         },
         "identity_json_objects": [],
-        "errors": [],
-        "created": "2018-04-30T17:57:54.093394Z",
-        "updated": "2018-04-30T20:09:14.836752Z",
-        "first_name": "John",
-        "last_name": "Doe",
-        "middle_name": "Tester",
-        "alias": null,
-        "country_code": "US",
-        "selected_country_code": "US",
-        "locale": null,
-        "state": "new",
-        "is_active": true,
-        "death_date": "2016-01-01",
-        "birth_location": null,
-        "status": "unknown",
-        "client_guid": "tester-guid",
-        "birth_date": "2001-11-22",
-        "gender": null,
-        "height": null,
-        "weight": null,
-        "eye_color": null,
-        "hair_color": null,
-        "investor_type": "private_party",
-        "ssn": null,
-        "medical_license": null,
-        "insurance_license": null,
-        "drivers_license": null,
-        "passport_number": null,
-        "is_accredited_investor": true,
-        "title": null,
-        "ownership_percentage": null,
-        "notes": "",
-        "phone_is_validated": true,
-        "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
-        "business": "604e1738-4716-4bdd-867b-4942186b1e1c"
+        "declined_feedback_texts": [],
+        "errors": []
       },
       "transaction_metadata": {
         "id": 112,
-        "created": "2018-04-30T17:57:55.421248Z",
-        "updated": "2018-04-30T17:57:55.421268Z",
+        "created": "2026-06-30T14:22:11.421248Z",
+        "updated": "2026-07-01T09:05:44.421268Z",
         "is_active": true,
+        "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
         "country_code": "US",
         "state": "TX",
         "gender": null,
-        "birth_date": null,
+        "birth_year": 1990,
         "locale": "",
         "app_name": null,
         "platform": null,
         "platform_version": null,
+        "platform_version_name": null,
         "app_version": null,
         "sdk_version": null,
-        "data_hits": null,
-        "media_hits": null,
-        "face_match_score": null,
-        "quality_score": null,
-        "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c"
+        "brand": null,
+        "device": null,
+        "display": null,
+        "hardware": null,
+        "manufacturer": null,
+        "model": null,
+        "product": null,
+        "sanction_hits": 1,
+        "pep_hits": 0,
+        "media_hits": 0,
+        "warning_hits": 0,
+        "face_match_score": 94,
+        "liveness_face_match_score": 94,
+        "document_classifications": null,
+        "provider_calls": null,
+        "investor_type": "private_party",
+        "accredited_investor_status": "open",
+        "client_guid": "your-internal-guid-123",
+        "is_country_phone_mismatch": false,
+        "is_selected_id_country_mismatch": false,
+        "center_face_attempts": 1,
+        "center_face_count_pass": 1,
+        "center_face_count_fail": 0,
+        "turn_right_face_attempts": 1,
+        "turn_right_face_count_pass": 1,
+        "turn_right_face_count_fail": 0,
+        "turn_left_face_attempts": 1,
+        "turn_left_face_count_pass": 1,
+        "turn_left_face_count_fail": 0,
+        "liveness_score": 0.94,
+        "acuant_alerts": [],
+        "audit_logs": []
       },
-      "transaction_callbacks": [],
+      "transaction_callbacks": [
+        {
+          "id": 5957,
+          "created": "2026-07-01T09:05:45.103396Z",
+          "updated": "2026-07-01T09:05:47.637570Z",
+          "is_active": true,
+          "state": "completed",
+          "response_raw": "OK",
+          "status_code": 200,
+          "callback_duration": "0.0088900000",
+          "callback_url": "https://your-domain.example/callbacks/",
+          "callback_counter": 1,
+          "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c"
+        }
+      ],
+      "transaction_notes": [
+        {
+          "id": 8842,
+          "created": "2026-07-01T09:05:44.700000Z",
+          "updated": "2026-07-01T09:05:44.700000Z",
+          "is_active": true,
+          "note": "Hold Reason: Sanctions screening returned a possible match.",
+          "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
+          "created_by": null
+        }
+      ],
+      "transaction_declined_reasons": [],
       "required_fields": [],
-      "errors": [],
-      "created": "2018-04-30T17:56:34.688474Z",
-      "updated": "2018-04-30T17:56:34.688512Z",
-      "is_active": true,
-      "state": "new",
-      "notes": null,
-      "contenttype": 29
+      "errors": []
     }
   ]
 }
 ```
 
-That's a lot of data for a single call!  Thankfully, you only need to worry about a few key items (the results are also paged, so if you are expecting to see a transaction in the list and don't, check the next entry):
+The envelope (`count`, `next`, `previous`, `results`) follows the standard
+list format described in [API Conventions](./conventions.md#pagination).
 
-* Inside the payload is a results object.  This is an array of JSON objects that have all of your transaction details.
-* The transaction payload includes the identity associated with the transaction and all identity data include the Verified Investor status.
-* The transaction data has a field for "state".  Typically you will see the following states: Completed, Hold, or Failed.
-* The transaction has a notes field that has details as to the current state.  If it's on hold, why?  If it failed, why?
-* For Verified Investor customers, the transactions also include "identity_accredited_investor_status" which shows the current status.
-* The results of this call are paged.  You'll see a count and next/previous keys in the results which show your total records and the URL to access the rest of them.
+### Transaction fields (top level)
 
-#### Transaction States
-Let's talk about the transaction states a bit more.  The full list of transaction states are as follows:
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Transaction identifier |
+| `client` | string (UUID) | The business this transaction belongs to |
+| `state` | string | Current transaction state, see [Transaction states](#transaction-states) |
+| `phase` | string | Current processing phase, see [Transaction phases](#transaction-phases) |
+| `completed_by` | string \| null | `system` if an automated process last changed the state, `user` if a person did |
+| `notes` | string \| null | Free-text notes on the transaction |
+| `is_active` | boolean | Whether the transaction record is active |
+| `created` | string (ISO-8601) | When the transaction was created |
+| `updated` | string (ISO-8601) | When the transaction was last modified |
+| `contenttype` | integer | Internal reference identifier; not needed for integration |
+| `transaction_identity` | object \| null | The identity going through verification, see [transaction_identity fields](#transaction_identity-fields) |
+| `transaction_metadata` | object \| null | Aggregated processing metadata, see [transaction_metadata fields](#transaction_metadata-fields) |
+| `transaction_callbacks` | array | Callback delivery attempts for this transaction, see [transaction_callbacks fields](#transaction_callbacks-fields) |
+| `transaction_notes` | array | Timestamped notes recorded as the transaction changed state, see [transaction_notes fields](#transaction_notes-fields) |
+| `transaction_declined_reasons` | array | Structured decline reasons attached to a failed transaction, see [transaction_declined_reasons fields](#transaction_declined_reasons-fields) |
+| `required_fields` | array | Extra workflow fields your business has configured, see [required_fields fields](#required_fields-fields) |
+| `errors` | array | Actionable errors on the transaction itself, see [errors fields](#errors-fields) |
 
-* **new** - New: when a transaction is first created it will be in the new state.  You'll probably never actually see this state, as it changes to processing almost immediately after creation.
-* **processing** - Processing: the transaction is being processed and we are parsing the information and checking AML to see who's been naughty or nice.
-* **post_processing** - Post Processing: we found some stuff that requires some extra looking into on our side.  Typically there was a problem with parsing the information off the ID and we have someone who goes in and will update that and finish the rest of the processing.  On our dashboard this shows as Netki Review.
-* **hold** - Hold: if a transaction is in the hold state it means one of these things: the facial match score between the selfie and the ID image is lower than 80 (by default), the client failed the liveness tests, the country the user selected via the KYC process doesn't match their ID, there is an AML match for Media or potential sanctions.  A transaction can also go on hold after someone manually runs AML from the dashboard after updating the identity information when the automated systems aren't able to.
-* **failed** - Failed: a transaction will go into a failed state if they try and use an ID from a banned country (OFAC as well as custom, client provided countries), if the birthdate of the person is below the approved age limit (if enabled), if they try to use a phone number that’s on the blacklist (*if enabled), or if someone clicks decline on the dashboard when someone is on hold.
-* **completed** - Completed: Yay!  The user has passed through the AML check without any negative results and we were able to process their ID and their selfie matches the ID. This is also the same state that matched "Approved" on your dashboard.
-* **restarted** - Restarted: Only transactions that were declined can move into a restarted status. This status means that the user has been given an opportunity to perform their KYC process via a decision by the client’s Compliance Team. This status will also generate a new access code that is linked to the access code the end user previously used. See the make-restarted section below for how to restart a transaction.
-**Note**: Restarted status is only used by MyVerify App clients. Clients that use Netki’s SDK do not need this status as SDK clients do not use Netki access codes.
+### `transaction_identity` fields
 
-To query transactions individually you'll want to use:
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Identity identifier |
+| `first_name` / `last_name` / `middle_name` / `alias` | string \| null | Name fields as captured or provided |
+| `country_code` | string \| null | ISO alpha-2 country code from the identity document |
+| `selected_country_code` | string \| null | ISO alpha-2 country code the customer selected in the flow |
+| `locale` | string \| null | Locale the customer used |
+| `state` | string | Identity-level state: `new`, `processing`, `failed`, `completed`, or `expired` |
+| `is_active` | boolean | Whether the identity record is active |
+| `liveness_score` | number | Selfie liveness score |
+| `death_date` | string (date) \| null | Set if a data source flags the person as deceased |
+| `birth_location` | string \| null | Birth location, if captured |
+| `status` | string | Free-form identity status label |
+| `client_guid` | string \| null | The GUID you supplied when creating the transaction |
+| `birth_date` | string (date) \| null | Date of birth |
+| `gender` | string \| null | `male`, `female`, `other`, or `unknown` |
+| `height` / `weight` / `eye_color` / `hair_color` | string \| null | Physical description fields from the document, where available |
+| `investor_type` | string \| null | `private_party` or `corporate_entity` |
+| `ssn` | string \| null | Last 4 digits only; the API masks the rest |
+| `medical_license` / `insurance_license` / `drivers_license` / `passport_number` / `resident_number` | string \| null | ID numbers captured from documents, when applicable |
+| `is_accredited_investor` | boolean | Whether this identity is going through (or has completed) accredited-investor verification |
+| `title` | string \| null | Job title, for corporate-entity signers |
+| `ownership_percentage` | integer \| null | Ownership percentage, for corporate-entity signers |
+| `notes` | string \| null | Free-text notes on the identity |
+| `source_of_wealth` | string \| null | Captured for some accredited-investor workflows |
+| `tax_id` | string \| null | Captured for some corporate-entity workflows |
+| `phone_is_validated` | boolean | Whether the phone number passed validation |
+| `geolocation_point` | object \| null | `{ "longitude": <number>, "latitude": <number> }` if a location was captured |
+| `transaction` | string (UUID) | The transaction this identity belongs to |
+| `business` | string (UUID) | The business this identity belongs to |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `contenttype` | integer | Internal reference identifier; not needed for integration |
+| `identity_emails` | array | See [identity_emails fields](#identity_emails-fields) |
+| `identity_phone_numbers` | array | See [identity_phone_numbers fields](#identity_phone_numbers-fields) |
+| `identity_addresses` | array | See [identity_addresses fields](#identity_addresses-fields) |
+| `identity_documents` | array | Uploaded documents, see [identity_documents fields](#identity_documents-fields) |
+| `identity_data_sources` | array | AML/screening results, see [identity_data_sources fields](#identity_data_sources-fields) |
+| `identity_data_listings` | array | Sanction/PEP/adverse-media listing flags, see [identity_data_listings fields](#identity_data_listings-fields) |
+| `identity_media_references` | array | Adverse-media mentions found during screening, see [identity_media_references fields](#identity_media_references-fields) |
+| `identity_access_code` | object \| null | The access code this customer used, see [Access Codes](./access_codes.md) for the shape |
+| `identity_accredited_investor_status` | object \| null | Present only for accredited-investor workflows, see [Accredited-investor status](#accredited-investor-status) |
+| `identity_json_objects` | array | Free-form JSON blobs attached by your workflow configuration, see [identity_json_objects fields](#identity_json_objects-fields) |
+| `declined_feedback_texts` | array | SMS messages sent to the customer when a restart was triggered, see [declined_feedback_texts fields](#declined_feedback_texts-fields) |
+| `errors` | array | Actionable errors on this identity, see [errors fields](#errors-fields) |
+
+### `identity_emails` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Email record identifier |
+| `email` | string | Email address |
+| `identity` | string (UUID) | Parent identity |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this record is active |
+
+### `identity_phone_numbers` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Phone record identifier |
+| `phone_number` | string | Phone number in E.164 format |
+| `identity` | string (UUID) | Parent identity |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this record is active |
+
+### `identity_addresses` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Address record identifier |
+| `address` / `unit` / `city` / `state` / `postalcode` | string \| null | Address components |
+| `country_code` | string \| null | ISO alpha-2 country code |
+| `score` | integer | Internal ranking used when more than one address is on file |
+| `identity` | string (UUID) | Parent identity |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this record is active |
+
+### `identity_documents` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Document identifier |
+| `document` | string (URL) | Location of the uploaded document image |
+| `document_type` | string | Document type, for example `drivers_license`, `passport`, or `selfie` |
+| `country_code` | string \| null | ISO alpha-2 country code the document was issued in |
+| `expiration_date` / `issue_date` | string (date) \| null | Dates read from the document, if present |
+| `can_bypass_expiration` | boolean | Whether an expired document was allowed through |
+| `state` | string | Document processing state: `new`, `pending`, `processing`, `completed`, `failed`, `disabled`, `quarantined`, or `fraud` |
+| `document_classification` | integer \| null | Internal reference to the recognized document type |
+| `reviewer` | integer \| null | Internal user ID of whoever manually reviewed the document, if any |
+| `is_reviewed` | boolean | Whether a manual review has occurred |
+| `reviewed_date` | string (ISO-8601) \| null | When the manual review happened |
+| `identity` | string (UUID) | Parent identity |
+| `contenttype` | integer | Internal reference identifier; not needed for integration |
+| `mime_type` | object \| null | `{ "id", "media_type", "extension", "mime_type" }` describing the file format |
+| `identity_document_thumbnail` | array | Generated thumbnails: each entry has `id`, `name`, and an `image` object with `full_size`, `thumbnail`, `medium_square_crop`, and `small_square_crop` URLs |
+| `errors` | array | Actionable errors on this document, see [errors fields](#errors-fields) |
+
+### `identity_data_sources` fields
+
+Represents one screening/AML check result.
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Record identifier |
+| `raw_data` | object \| null | Free-form data from the screening check; shape varies by check type |
+| `reference_url` | string | Reference link for the check, when one applies |
+| `comply_search_matches` | integer | Number of screening matches found |
+| `score` | string \| null | Confidence score for the check |
+| `is_reviewed` | boolean | Whether a compliance reviewer has looked at this |
+| `reviewed_date` | string (ISO-8601) \| null | When it was reviewed |
+| `identity` | string (UUID) | Parent identity |
+| `data_provider` | object \| null | `{ "id", "data_provider_type": { "id", "type_description", "identifier" } }` |
+| `aml_source_notes` | array | See [aml_source_notes fields](#aml_source_notes-fields) |
+| `aml_hits` | array | Present when a screening hit was returned; see [aml_hits fields](#aml_hits-fields) |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this record is active |
+
+### `aml_source_notes` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `name` | string | Name of the watchlist or source that produced the note |
+| `identifier` | string | Source-assigned identifier |
+| `provider_id` | string | Screening-provider reference ID |
+| `aml_source_countries` | array | `{ "country": "<alpha-2>", "provider_id" }` entries |
+| `listing_started` / `listing_ended` | string (ISO-8601) \| null | When the listing was active |
+| `related_url` | string | Reference URL; blank when no public reference applies |
+
+### `aml_hits` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Hit identifier |
+| `name` | string | Name matched by the screening check |
+| `score` | number \| null | Match confidence score |
+| `provider_id` | string | Screening-provider reference ID |
+| `identity_aml_hit_match_types` | array | `{ "name" }` — the type(s) of match (for example sanctions, PEP, adverse media) |
+| `identity_aml_hit_assets` | array | `{ "public_url", "asset_type", "source", "provider_id" }` — supporting media for the hit |
+| `aml_hit_info` | array | `{ "feed", "name", "source", "occupation", "nationality", "organization" }` — biographical detail on the matched entity |
+| `aml_sources` | array | `{ "name", "source_type", "listing_started", "listing_ended", "country", "source_urls": [{ "title", "url" }] }` |
+
+### `identity_data_listings` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Listing identifier |
+| `provider_id` | string | Screening-provider reference ID |
+| `notes` | string \| null | Reviewer notes |
+| `reviewer` | string \| null | Username of whoever reviewed this listing |
+| `is_reviewed` | boolean | Whether it has been reviewed |
+| `reviewed_date` | string (ISO-8601) \| null | When it was reviewed |
+| `identity` | string (UUID) | Parent identity |
+| `listing_type` | object | `{ "id", "name", "description", "is_flagged", "created", "updated", "is_active" }` — the category of listing (for example a sanctions or adverse-media flag) |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this record is active |
+
+### `identity_media_references` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Record identifier |
+| `activity_date` | string (ISO-8601) | Date of the media mention |
+| `provider_id` | string | Screening-provider reference ID |
+| `source` | string | Source reference (often a URL) |
+| `title` | string | Headline of the media mention |
+| `content` | string | Snippet of the media mention |
+| `reviewed_by` | integer \| null | Internal user ID of whoever reviewed this mention |
+| `reviewed_date` | string (ISO-8601) \| null | When it was reviewed |
+| `identity` | string (UUID) | Parent identity |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this record is active |
+
+### `identity_json_objects` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | integer | Record identifier |
+| `data` | object | Free-form JSON payload defined by your workflow configuration |
+| `identity` | string (UUID) | Parent identity |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this record is active |
+
+### `declined_feedback_texts` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Record identifier |
+| `message` | string | Text of the SMS sent to the customer |
+
+## Accredited-investor status
+
+For accredited-investor deals, `transaction_identity.identity_accredited_investor_status`
+tracks the customer's progress through investor verification. It is `null`
+until the identity enters that workflow.
+
+### `identity_accredited_investor_status` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Record identifier |
+| `status` | string | `open`, `uploaded`, `hold`, `expired`, `rejected`, or `accepted` |
+| `vendor_status` | string \| null | Status label from the investor-verification workflow, informational only |
+| `message` | string \| null | Human-readable summary of `status` |
+| `identity` | object | `{ "id", "transaction", "first_name", "last_name" }` — abbreviated identity reference |
+| `identity_document_accreditation_status` | array | Accreditation documents the customer has uploaded, see below |
+| `errors` | array | Actionable errors on the accreditation, see [errors fields](#errors-fields) |
+| `raw_data` | object \| null | Informational detail relayed from the investor-verification workflow (see below); not guaranteed to be present or stable |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this record is active |
+
+**`identity_document_accreditation_status` entries**
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Record identifier |
+| `status` | string | `uploaded`, `verified`, or `invalid` |
+| `accredited_status` | string (UUID) | The parent accreditation record |
+| `document` | object \| null | The uploaded document, in the same shape as [identity_documents](#identity_documents-fields) |
+
+**`raw_data` keys you may see**
+
+`raw_data` is relayed as-is from the investor-verification workflow, so its
+exact shape can vary. Keys commonly present include:
+
+| Key | Type | Description |
+|---|---|---|
+| `status` | string | Vendor-side status label |
+| `message` | string | Human-readable status message |
+| `legal_name` | string | Legal name on file with the investor-verification workflow |
+| `deal_name` | string \| null | Name of the deal being verified for, if applicable |
+| `investor_url` | string (URL) | The link your customer visits to complete their investor verification, for example `https://kyc.myverify.info/investor/verification-requests/1876/accept` |
+| `webhook_url` | string (URL) | Callback endpoint used internally during processing, for example `https://your-domain.example/verify-investor/callback/` |
+| `redirect_url` | string (URL) | Page the customer's browser returns to after finishing the investor-verification workflow, for example `https://your-domain.example/verify-investor/complete/` |
+| `waiting_for_info` | boolean | Whether the workflow is waiting on more information |
+| `verified_expires_at` | string (ISO-8601) \| null | When a completed verification expires, if applicable |
+
+`webhook_url` and `redirect_url` are informational — you are not expected to
+call or host them yourself. `investor_url` is the only one of the three you
+would typically act on (for example, to resend it to your customer).
+
+## Retrieve a transaction
+
+`GET /api/transactions/{id}/`
+
+Returns a single transaction in the same shape as an entry in
+[List transactions](#list-transactions) above.
+
+**Path / query parameters**
+
+| Name | In | Type | Description |
+|---|---|---|---|
+| `id` | path | string (UUID) | The transaction's `id` |
+
+**Request**
 
 ```bash
 curl -X "GET" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-8197-ca4d18a21e2c/" \
-    -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwianRpIjoiZGJhNzQ5ZTBiZGNjNGM1NmJjMWI0NmQ1MWY4YzIzM2YiLCJleHAiOjE1MjQ4NTUwODAsInVzZXJfaWQiOjF9.tmubREi5qH2KZTBBK-Lf047gnyVllk_jNLD9qp0aesE'
+     -H 'Authorization: Bearer eyJ...<truncated>'
 ```
 
-```json
-{
-  "id": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
-  "client": "604e1738-4716-4bdd-867b-4942186b1e1c",
-  "transaction_identity": {
-    "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
-    "identity_emails": [
-      {
-        "id": "f2a172cc-6716-462e-89f0-3468dec53721",
-        "created": "2018-04-30T17:57:54.139181Z",
-        "updated": "2018-04-30T17:57:54.139198Z",
-        "is_active": true,
-        "email": "test@email.com",
-        "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
-      }
-    ],
-    "identity_phone_numbers": [
-      {
-        "id": "1d93d2a2-8ddc-43bc-9c93-03126d9071db",
-        "created": "2018-04-30T17:57:54.166477Z",
-        "updated": "2018-04-30T20:09:14.845833Z",
-        "is_active": true,
-        "phone_number": "+12345550100",
-        "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
-      }
-    ],
-    "identity_addresses": [
-      {
-        "id": "734fa958-f604-4558-a3f7-fde62d6d4617",
-        "created": "2018-04-30T17:57:54.118040Z",
-        "updated": "2018-04-30T17:57:54.118059Z",
-        "is_active": true,
-        "address": "12345 Oompa Loompa Rd",
-        "unit": "",
-        "city": "12345 Oompa Loompa Rd",
-        "state": "TX",
-        "postalcode": "40110",
-        "score": 0,
-        "country_code": "US",
-        "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364"
-      }
-    ],
-    "identity_documents": [],
-    "identity_data_sources": [],
-    "identity_data_listings": [],
-    "identity_media_references": [],
-    "identity_access_code": null,
-    "identity_accredited_investor_status": {
-      "id": "999b679e-5b79-42c1-b68e-cae3a2559fca",
-      "identity": {
-        "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
-        "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
-        "first_name": "John",
-        "last_name": "Doe"
-      },
-      "created": "2018-04-30T18:09:10.632229Z",
-      "updated": "2018-04-30T18:09:10.647964Z",
-      "is_active": true,
-      "status": "open",
-      "vendor_status": "waiting_for_investor_acceptance",
-      "raw_data": {
-        "id": 1876,
-        "status": "waiting_for_investor_acceptance",
-        "message": "The verification process is waiting for the investor to start.",
-        "investor": {
-          "id": 1559
-        },
-        "deal_name": null,
-        "created_at": "2018-04-30T11:09:10.451-07:00",
-        "legal_name": "JOHN DOE",
-        "portal_name": "MyVerify",
-        "webhook_url": "http://localhost:8000/verify-investor/callback/",
-        "investor_url": "http://verifyinvestor-staging.herokuapp.com/investor/verification-requests/1876/accept",
-        "redirect_url": "http://localhost:8000/verify-investor/complete/",
-        "internal_status": "open",
-        "waiting_for_info": false,
-        "verified_expires_at": null
-      },
-      "message": "The verification process is waiting for the investor to start."
-    },
-    "identity_json_objects": [],
-    "errors": [],
-    "created": "2018-04-30T17:57:54.093394Z",
-    "updated": "2018-04-30T20:09:14.836752Z",
-    "first_name": "John",
-    "last_name": "Doe",
-    "middle_name": "Tester",
-    "alias": null,
-    "country_code": "US",
-    "selected_country_code": "US",
-    "locale": null,
-    "state": "new",
-    "is_active": true,
-    "death_date": "2016-01-01",
-    "birth_location": null,
-    "status": "unknown",
-    "client_guid": "tester-guid",
-    "birth_date": "2001-11-22",
-    "gender": null,
-    "height": null,
-    "weight": null,
-    "eye_color": null,
-    "hair_color": null,
-    "investor_type": "private_party",
-    "ssn": null,
-    "medical_license": null,
-    "insurance_license": null,
-    "drivers_license": null,
-    "passport_number": null,
-    "is_accredited_investor": true,
-    "title": null,
-    "ownership_percentage": null,
-    "notes": "",
-    "phone_is_validated": true,
-    "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
-    "business": "604e1738-4716-4bdd-867b-4942186b1e1c"
-  },
-  "transaction_metadata": {
-    "id": 112,
-    "created": "2018-04-30T17:57:55.421248Z",
-    "updated": "2018-04-30T17:57:55.421268Z",
-    "is_active": true,
-    "country_code": "US",
-    "state": "TX",
-    "gender": null,
-    "birth_date": null,
-    "locale": "",
-    "app_name": null,
-    "platform": null,
-    "platform_version": null,
-    "app_version": null,
-    "sdk_version": null,
-    "data_hits": null,
-    "media_hits": null,
-    "face_match_score": null,
-    "quality_score": null,
-    "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c"
-  },
-  "transaction_callbacks": [],
-  "required_fields": [],
-  "errors": [],
-  "created": "2018-04-30T17:56:34.688474Z",
-  "updated": "2018-04-30T17:56:34.688512Z",
-  "is_active": true,
-  "state": "new",
-  "notes": null,
-  "contettype": 29
-}
-```
+**Response `200`**
 
-#### Errors
-Ideally the transaction will show that the user passed KYC verification with flying colors!  However; this is not always the case.  Sometimes the user will have failed KYC or they will be placed on hold.  There can be a few different reasons for this that are outside of the scope of this document.  But to see the actionable errors (if the state is HOLD or FAILED) you would check two places in the callback.  The root of the callback object has an `errors` list in it and the child object `transaction_identity` also has an `errors` list in it and any errors that show up will be there.  The `transaction_notes` field on the root object also has a list of more detailed errors notes but the `errors` list is a bit more user friendly.
+Same object shape as an entry in `results` above — see
+[Transaction fields (top level)](#transaction-fields-top-level)
+and the nested field tables it links to.
 
-Please note: these errors are geared towards you, our clients, not your end users.  You'll want to make sure that any messaging you do based upon the errors takes that into account, passing them directly onto the end user is discouraged.  To get a full list of our error codes you can go [here](./api_error_codes.md).
+**Errors**
 
-```json
-{
-  "id": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
-  "client": "604e1738-4716-4bdd-867b-4942186b1e1c",
-  "transaction_identity": {
-    "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
-    "identity_emails": [
-      "..."
-    ],
-    "identity_phone_numbers": [
-      "..."
-    ],
-    "identity_addresses": [
-      "..."
-    ],
-    "identity_documents": [],
-    "identity_data_sources": [],
-    "identity_data_listings": [],
-    "identity_media_references": [],
-    "identity_access_code": null,
-    "identity_accredited_investor_status": {
-      "..."
-    },
-    "identity_json_objects": [],
-    "errors": [],
-    "created": "2018-04-30T17:57:54.093394Z",
-    "...",
-  },
-  "transaction_metadata": {
-    "id": 112,
-    "created": "2018-04-30T17:57:55.421248Z",
-    "..."
-  },
-  "transaction_callbacks": [],
-  "required_fields": [],
-  "errors": [],
-  "..."
-}
-```
+| Status | Code | Meaning |
+|---|---|---|
+| `401` | `not_authenticated` | No `Authorization` header was sent |
+| `401` | `token_not_valid` | Access token is expired, invalid, or malformed |
+| `404` | `not_found` | `id` does not exist or is not accessible to your account |
 
-#### State Changes
+## Transaction states
 
-Please note only the following state changes are allowed:
+`state` on the transaction (not to be confused with `transaction_identity.state`,
+which uses a smaller set of values) will be one of:
 
-HOLD -> COMPLETED
+| State | Meaning |
+|---|---|
+| `new` | Just created; transitions to `processing` almost immediately |
+| `processing` | Document parsing and AML screening are underway |
+| `post_processing` | Automated processing flagged something for a Netki reviewer to resolve, shown as "Netki Review" on the dashboard |
+| `customer_review` | Same as `post_processing`, but for workflows where your own compliance team does the review instead of Netki |
+| `hold` | Something needs a decision: low face-match score, failed liveness check, a country mismatch, or an AML/media match. Can also be set manually after a reviewer updates identity data |
+| `failed` | Verification did not pass — banned document country, underage customer, blacklisted phone number, or a manual decline from `hold` |
+| `completed` | Verification passed. Matches "Approved" on the dashboard |
+| `canceled` | The transaction was stopped and cannot be restarted |
+| `restarted` | The customer was given a new access code to redo verification after a decline. Only used by access-code (MyVerify app) customers — SDK integrations don't use this state |
+| `quarantine` | Flagged for security review |
+| `expired` | The transaction was created but never used |
+| `delete_pending` / `deleted` | The transaction is queued for or has completed data deletion |
 
-HOLD -> FAILED
+## Transaction phases
 
-COMPLETED -> FAILED
+`phase` tracks where in the pipeline a transaction currently is, independent
+of `state`:
 
-FAILED -> RESTARTED
+| Phase | Meaning |
+|---|---|
+| `new` | Not yet started |
+| `document` | Document capture, face match, and OCR processing |
+| `identity` | AML/sanctions screening |
+| `kyc` | Business-logic decisioning (expiration checks, face-match thresholds, AML review) |
+| `finished` | Processing has completed for this pass (the transaction may still be on hold or otherwise need attention) |
 
-If someone gets placed on hold and you would like to go ahead and manually approve them you'll use the make-completed endpoint.  You'll need to make sure to include a notes field with the compliance notes as to why it was completed.  To mark a transaction as failed use make-failed instead.  We'll cover make-restarted after this example.
+## Mark a transaction as completed
 
+`PUT /api/transactions/{id}/make-completed/`
+
+Manually approves a transaction, for example after a compliance reviewer
+resolves a `hold`. This can be called from any current state.
+
+**Path / query parameters**
+
+| Name | In | Type | Description |
+|---|---|---|---|
+| `id` | path | string (UUID) | The transaction's `id` |
+
+**Request**
 
 ```bash
-curl -X "POST" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-8197-ca4d18a21e2c/make-completed/" \
+curl -X "PUT" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-8197-ca4d18a21e2c/make-completed/" \
      -H 'Content-Type: application/json; charset=utf-8' \
-     -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwianRpIjoiZGJhNzQ5ZTBiZGNjNGM1NmJjMWI0NmQ1MWY4YzIzM2YiLCJleHAiOjE1MjQ4NTUwODAsInVzZXJfaWQiOjF9.tmubREi5qH2KZTBBK-Lf047gnyVllk_jNLD9qp0aesE' \
+     -H 'Authorization: Bearer eyJ...<truncated>' \
      -d $'{
-  "notes": "reason for completing transaction"
+  "notes": "Reviewed and cleared by compliance."
 }'
 ```
+
+**Response `200`**
 
 ```json
 {
@@ -445,11 +748,116 @@ curl -X "POST" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-81
 }
 ```
 
-The endpoint for make-restarted is almost the same as the others, just replace make-completed with make-restarted and the verb is PUT instead of POST, but the return value is different and what happens on the back end is different.  Only a transaction that is in a failed state can be restarted.  What this does is it will send the user a new SMS with a new link and a new access code to go through KYC again.  The response back for this also includes the new access code that was sent to the user for tracking.
+**Response fields**
 
+| Field | Type | Description |
+|---|---|---|
+| `message` | string | Confirmation message |
 
-The new access code is *not* linked to the user at this point.  If they were to give this code to someone else, it would then be linked to the other person.  There will be a parent/child relation between the two codes but not the transactions or identities behind them.
+**Errors**
 
+| Status | Code | Meaning |
+|---|---|---|
+| `400` | — | AML needs to be run again before this transaction can be completed |
+| `401` | `not_authenticated` / `token_not_valid` | Missing or invalid access token |
+| `404` | `not_found` | `id` does not exist or is not accessible to your account |
+
+## Mark a transaction as failed
+
+`PUT /api/transactions/{id}/make-failed/`
+
+Manually fails a transaction. Valid from `new`, `processing`, `hold`,
+`post_processing`, `completed`, or `customer_review`.
+
+**Path / query parameters**
+
+| Name | In | Type | Description |
+|---|---|---|---|
+| `id` | path | string (UUID) | The transaction's `id` |
+
+**Request**
+
+```bash
+curl -X "PUT" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-8197-ca4d18a21e2c/make-failed/" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -H 'Authorization: Bearer eyJ...<truncated>' \
+     -d $'{
+  "notes": "Declined: sanctions match confirmed by compliance.",
+  "reasons": ["sanctions_match_confirmed"]
+}'
+```
+
+**Request fields**
+
+| Field | Required | Type | Description |
+|---|---|---|---|
+| `notes` | yes | string | Reason for the decline; required and must not be blank |
+| `reasons` | no | array of strings | One or more decline-reason codes configured for your business. Unknown codes are ignored |
+
+**Response `200`**
+
+```json
+{
+  "message": "Transaction 83d0d0b0-68e8-4746-8197-ca4d18a21e2c moved to failed state."
+}
+```
+
+**Response fields**
+
+| Field | Type | Description |
+|---|---|---|
+| `message` | string | Confirmation message |
+
+**Errors**
+
+| Status | Code | Meaning |
+|---|---|---|
+| `400` | — | `notes` was blank, or the transaction's current state cannot transition to `failed` (for example it is already `failed`, `restarted`, `canceled`, or `quarantine`) |
+| `401` | `not_authenticated` / `token_not_valid` | Missing or invalid access token |
+| `404` | `not_found` | `id` does not exist or is not accessible to your account |
+
+## Restart a transaction
+
+`PUT /api/transactions/{id}/make-restarted/`
+
+Sends the customer a new SMS with a new access code so they can go through
+verification again. Valid from `new`, `failed`, `hold`, `post_processing`,
+or `customer_review`. Only meaningful for customers who entered through an
+access code (MyVerify app) — SDK integrations don't use access codes and
+won't use this endpoint.
+
+The new access code is a *child* of the code the customer originally used.
+It is not linked to that customer until someone actually uses it — see
+[Restarted codes](./access_codes.md#restarted-codes) for how the
+parent/child relationship works.
+
+**Path / query parameters**
+
+| Name | In | Type | Description |
+|---|---|---|---|
+| `id` | path | string (UUID) | The transaction's `id` |
+
+**Request**
+
+```bash
+curl -X "PUT" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-8197-ca4d18a21e2c/make-restarted/" \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -H 'Authorization: Bearer eyJ...<truncated>' \
+     -d $'{
+  "notes": "Customer asked to retake their ID photo.",
+  "message": "Please try again using the link below."
+}'
+```
+
+**Request fields**
+
+| Field | Required | Type | Description |
+|---|---|---|---|
+| `notes` | yes | string | Internal reason for the restart; required and must not be blank |
+| `message` | one of `message` / `error_code` required | string | Custom text to include in the SMS sent to the customer |
+| `error_code` | one of `message` / `error_code` required | string | An error code to reference instead of custom text |
+
+**Response `200`**
 
 ```json
 {
@@ -457,3 +865,139 @@ The new access code is *not* linked to the user at this point.  If they were to 
   "new_access_code": "nktq2jy"
 }
 ```
+
+If the customer's phone number is in a country where SMS links cannot be
+sent, the response instead looks like:
+
+```json
+{
+  "message": "Transaction 83d0d0b0-68e8-4746-8197-ca4d18a21e2c restarted.",
+  "new_access_code": "nktq2jy",
+  "sms_blocked": true,
+  "sms_blocked_message": "SMS with URL cannot be sent to this country. Please provide the access code to the user manually."
+}
+```
+
+**Response fields**
+
+| Field | Type | Description |
+|---|---|---|
+| `message` | string | Confirmation message |
+| `new_access_code` | string | The new access code issued for the restart. Give this to the same customer who used the original code |
+| `sms_blocked` | boolean | Present only when the restart SMS could not be sent |
+| `sms_blocked_message` | string | Present only when `sms_blocked` is `true` |
+
+**Errors**
+
+| Status | Code | Meaning |
+|---|---|---|
+| `400` | — | Neither `message` nor `error_code` was sent, `notes` was blank, or the transaction's current state cannot transition to `restarted` |
+| `401` | `not_authenticated` / `token_not_valid` | Missing or invalid access token |
+| `404` | `not_found` | `id` does not exist or is not accessible to your account |
+| `429` | — | This transaction was restarted very recently; wait before retrying |
+
+## `transaction_metadata` fields
+
+Aggregated, denormalized processing detail for the transaction — handy for
+reporting without having to walk the full nested identity object.
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | integer | Record identifier |
+| `country_code` | string \| null | ISO alpha-2 country code |
+| `state` | string \| null | US state/province code, when applicable |
+| `gender` | string \| null | `male`, `female`, `other`, or `unknown` |
+| `birth_year` | integer \| null | Birth year only |
+| `locale` | string \| null | Locale used during the flow |
+| `app_name` / `platform` / `platform_version` / `platform_version_name` / `app_version` / `sdk_version` | string \| null | Client application/device details, when supplied |
+| `brand` / `device` / `display` / `hardware` / `manufacturer` / `model` / `product` | string \| null | Device details, when supplied |
+| `sanction_hits` / `pep_hits` / `media_hits` / `warning_hits` | integer \| null | Counts of each type of screening hit |
+| `face_match_score` / `liveness_face_match_score` | integer \| null | Face-match and liveness scores |
+| `document_classifications` | object \| null | Internal document-classification detail |
+| `provider_calls` | object \| null | Internal diagnostic detail; not guaranteed to be present |
+| `investor_type` | string \| null | `private_party` or `corporate_entity` |
+| `accredited_investor_status` | string \| null | Mirrors `identity_accredited_investor_status.status`, when applicable |
+| `client_guid` | string \| null | The GUID you supplied when creating the transaction |
+| `is_country_phone_mismatch` | boolean | Whether the phone number's country didn't match the identity's country |
+| `is_selected_id_country_mismatch` | boolean | Whether the customer's selected country didn't match their ID's issuing country |
+| `center_face_attempts` / `center_face_count_pass` / `center_face_count_fail` | integer \| null | Liveness check attempt counts, center pose |
+| `turn_right_face_attempts` / `turn_right_face_count_pass` / `turn_right_face_count_fail` | integer \| null | Liveness check attempt counts, right-turn pose |
+| `turn_left_face_attempts` / `turn_left_face_count_pass` / `turn_left_face_count_fail` | integer \| null | Liveness check attempt counts, left-turn pose |
+| `liveness_score` | number \| null | Overall liveness score |
+| `acuant_alerts` | array | Document-authentication alerts raised during processing (usually empty) |
+| `audit_logs` | array | Internal record of administrative actions on this transaction. `actor` shows a username, or `Netki Staff Member` if the action was taken by Netki staff |
+| `transaction` | string (UUID) | Parent transaction |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this record is active |
+
+## `transaction_callbacks` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | integer | Callback attempt identifier |
+| `state` | string | `new`, `processing`, `paused`, `restarting`, `failed`, or `completed` |
+| `response_raw` | string \| null | The raw response body your endpoint returned |
+| `status_code` | integer \| null | The HTTP status your endpoint returned |
+| `callback_duration` | string \| null | Seconds the callback attempt took |
+| `callback_url` | string \| null | The URL the callback was sent to |
+| `callback_counter` | integer | Attempt number for this callback |
+| `transaction` | string (UUID) | Parent transaction |
+
+See [Callbacks](./callbacks2.md) for more on how callback delivery works.
+
+## `transaction_notes` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | integer | Note identifier |
+| `note` | string | Note text — typically records why a state change happened |
+| `transaction` | string (UUID) | Parent transaction |
+| `created_by` | integer \| null | Internal user ID that created the note, if any |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this record is active |
+
+## `transaction_declined_reasons` fields
+
+| Field | Type | Description |
+|---|---|---|
+| `reason` | string | The decline reason text |
+
+## `required_fields` fields
+
+Extra workflow fields configured for your business (most transactions have
+none, so this is usually an empty array).
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | integer | Field identifier |
+| `name` | string | Internal field name |
+| `data_type` | string | `string`, `integer`, `float`, `date`, `datetime`, or `list` |
+| `label` | string | Display label |
+| `description` | string | Display description |
+| `regex` | string \| null | Validation pattern, if any |
+| `keypad` | string \| null | Suggested input keypad, if any |
+| `options` | array | For `list` fields: `{ "key", "position", "label" }` entries |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this field is active |
+
+## `errors` fields
+
+Appears at the root of the transaction, on `transaction_identity`, on
+individual `identity_documents` entries, and on
+`identity_accredited_investor_status`. These are the actionable errors for
+whatever state the containing object is in.
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | integer | Error record identifier |
+| `object_id` | string (UUID) | The record this error is attached to |
+| `content_type` | integer | Internal reference identifier for the type of record `object_id` points to; not needed for integration |
+| `error_code` | object | `{ "error_code_id", "error_code_name", "rank", "category", "error_code_description" }` — see [API Error Codes](./api_error_codes.md) for the full registry |
+| `created` / `updated` | string (ISO-8601) | Timestamps |
+| `is_active` | boolean | Whether this error is still active |
+
+> [!NOTE]
+> These errors are written for you, not for your end users — don't pass
+> them directly through to a customer-facing UI. `notes` on the transaction
+> also carries a plain-language summary of why a transaction is on hold or
+> failed.
