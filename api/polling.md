@@ -640,14 +640,17 @@ exact shape can vary. Keys commonly present include:
 | `legal_name` | string | Legal name on file with the investor-verification workflow |
 | `deal_name` | string \| null | Name of the deal being verified for, if applicable |
 | `investor_url` | string (URL) | The link your customer visits to complete their investor verification, for example `https://kyc.myverify.info/investor/verification-requests/1876/accept` |
-| `webhook_url` | string (URL) | Callback endpoint used internally during processing, for example `https://your-domain.example/verify-investor/callback/` |
-| `redirect_url` | string (URL) | Page the customer's browser returns to after finishing the investor-verification workflow, for example `https://your-domain.example/verify-investor/complete/` |
+| `webhook_url` | string (URL) | Netki-hosted callback endpoint used internally during processing, for example `https://kyc.myverify.info/verify-investor/callback/` |
+| `redirect_url` | string (URL) | Page the customer's browser returns to after finishing the investor-verification workflow. Netki-hosted when Netki hosts the accredited-investor form (the usual setup), for example `https://kyc.myverify.info/verify-investor/complete/`; if you host that form yourself, this is your own URL |
 | `waiting_for_info` | boolean | Whether the workflow is waiting on more information |
 | `verified_expires_at` | string (ISO-8601) \| null | When a completed verification expires, if applicable |
 
-`webhook_url` and `redirect_url` are informational — you are not expected to
-call or host them yourself. `investor_url` is the only one of the three you
-would typically act on (for example, to resend it to your customer).
+`webhook_url` is a Netki endpoint used internally during processing — you do
+not call it yourself. `redirect_url` is where the customer's browser lands
+after verification: a Netki page when Netki hosts the accredited-investor form
+(the usual case), or your own URL when you host that form. `investor_url` is
+the link you would typically act on — for example, to resend it to your
+customer.
 
 ## Retrieve a transaction
 
