@@ -17,9 +17,8 @@ them for more codes or guidance on best practices.
 
 > [!NOTE]
 > Both endpoints require the `Authorization` header described in
-> [API Conventions](./conventions.md#authentication). Use
-> `GET /api/business/businesses/` (see [Authentication](./authentication.md#list-businesses))
-> to find the `business_id` to use in these paths.
+> [API Conventions](./conventions.md#authentication). The `business_id` in
+> these paths is the `id` of your business account.
 
 Access codes are read-only through this API — they cannot be created,
 updated, or deleted here. New codes are generated for you by your account
@@ -36,7 +35,7 @@ first.
 
 | Name | In | Type | Description |
 |---|---|---|---|
-| `business_id` | path | string (UUID) | Business identifier from [List businesses](./authentication.md#list-businesses) |
+| `business_id` | path | string (UUID) | The `id` of your business account |
 | `code` | query | string | Filter to an exact code |
 | `is_active` | query | boolean | Filter to active (`true`) or used/inactive (`false`) codes |
 | `parent_code__code` | query | string | Filter to codes that are children of the given parent code |
@@ -139,7 +138,7 @@ code has been used, and to find the resulting `identity`.
 
 | Name | In | Type | Description |
 |---|---|---|---|
-| `business_id` | path | string (UUID) | Business identifier from [List businesses](./authentication.md#list-businesses) |
+| `business_id` | path | string (UUID) | The `id` of your business account |
 | `code` | path | string | The access code to look up |
 
 **Request**
