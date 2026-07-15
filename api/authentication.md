@@ -1,21 +1,40 @@
+# Authentication
 
-API endpoints used in this section
+The Netki API uses JSON Web Tokens (JWTs) for authentication. Obtain a token
+pair by logging in, then use the access token on every subsequent request
+until it expires.
 
-https://kyc.myverify.info/api/token-auth/
+## Endpoints
 
-https://kyc.myverify.info/api/business/businesses/
+| Method | Path | Purpose |
+|---|---|---|
+| `POST` | `/api/token-auth/` | Log in with a username and password and receive an access/refresh token pair |
+| `POST` | `/api/token-refresh/` | Exchange a refresh token for a new access token |
+| `GET` | `/api/business/businesses/` | List the businesses (and corporate investors, if any) associated with your account |
 
-https://kyc.myverify.info/api/token-refresh/
+## Authentication
 
+> [!NOTE]
+> `POST /api/token-auth/` and `POST /api/token-refresh/` are how you establish
+> and renew your credentials — they do not themselves require a bearer token.
+> Every other endpoint, including `GET /api/business/businesses/`, requires
+> the `Authorization` header described in [API Conventions](./conventions.md#authentication).
 
+Your account executive will provide your login credentials. The API is not
+self-service; credential changes go through support.
 
-The Netki API uses a JWT ([JSON Web Token](https://jwt.io/)) scheme for authentication and communication.
+## Log in
 
-Your account executive will be able to provide you with your login credentials. Our web service is currently not self-service so your credentials will need to be updated though our support department.
+`POST /api/token-auth/`
 
-Access to the system is a two step process.  First you will need to login to get your access token.
+Exchanges a username and password for an access/refresh token pair.
 
-Sample login call and response using Curl
+**Path / query parameters**
+
+None.
+
+**Request**
+
 ```bash
 curl -X "POST" "https://kyc.myverify.info/api/token-auth/" \
      -H 'Content-Type: application/json; charset=utf-8' \
@@ -25,42 +44,90 @@ curl -X "POST" "https://kyc.myverify.info/api/token-auth/" \
 }'
 ```
 
+**Response `200`**
+
 ```json
 {
-  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImp0aSI6ImM5Yzg5MzBjMDU2ODQyMDE4NzcyYzc4MmVkZWNmMDIxIiwiZXhwIjoxNTI0OTM5NjgwLCJ1c2VyX2lkIjoxfQ.-MeXDc78wH0RxxNjrnOvC8DKK3Ujf1RAR7Ygjq4KMbE",
-  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwianRpIjoiZGJhNzQ5ZTBiZGNjNGM1NmJjMWI0NmQ1MWY4YzIzM2YiLCJleHAiOjE1MjQ4NTUwODAsInVzZXJfaWQiOjF9.tmubREi5qH2KZTBBK-Lf047gnyVllk_jNLD9qp0aesE"
+  "refresh": "eyJ...<truncated>",
+  "access": "eyJ...<truncated>"
 }
 ```
 
- Sample refresh call and response using Curl 
+**Response fields**
 
+| Field | Type | Description |
+|---|---|---|
+| `refresh` | string | Long-lived token used to obtain new access tokens at `/api/token-refresh/` |
+| `access` | string | Short-lived token sent as `Authorization: Bearer <access>` on all other requests |
+
+**Errors**
+
+| Status | Code | Meaning |
+|---|---|---|
+| `401` | `no_active_account` | Username or password is incorrect |
+
+## Refresh a token
+
+`POST /api/token-refresh/`
+
+Exchanges a refresh token for a new access token.
+
+**Path / query parameters**
+
+None.
+
+**Request**
 
 ```bash
 curl -X "POST" "https://kyc.myverify.info/api/token-refresh/" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -u ':' \
      -d $'{
-  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImp0aSI6ImM5Yzg5MzBjMDU2ODQyMDE4NzcyYzc4MmVkZWNmMDIxIiwiZXhwIjoxNTI0OTM5NjgwLCJ1c2VyX2lkIjoxfQ.-MeXDc78wH0RxxNjrnOvC8DKK3Ujf1RAR7Ygjq4KMbE"
+  "refresh": "eyJ...<truncated>"
 }'
 ```
 
+**Response `200`**
+
 ```json
 {
-  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwianRpIjoiYWNkZGIxYWQ3ZDJkNDcxNjgzMzQ0MzFiNDRjOGQ5N2YiLCJleHAiOjE1MjY2NzEyNzYsInVzZXJfaWQiOjEyfQ.F8x_uQ3NZCh66x99Ok4H1uzh19AC9GdS_OGM_xlzL44"
+  "access": "eyJ...<truncated>"
 }
 ```
 
-### Sample Business API Call
-Using the access code from the login response you will pass that into your Authorization header when access any other API endpoints like so:
+**Response fields**
 
- Sample call to businesses end point which will provide your business information and the information for any corporate investors (if you have them) 
+| Field | Type | Description |
+|---|---|---|
+| `access` | string | New short-lived access token |
+
+**Errors**
+
+| Status | Code | Meaning |
+|---|---|---|
+| `401` | `token_not_valid` | Refresh token is expired, invalid, or malformed |
+
+## List businesses
+
+`GET /api/business/businesses/`
+
+Returns the businesses associated with your account, including any corporate
+investor businesses, and the app configuration (`app_context`) for each one.
+Save the `id` of the business you need — it is used by access code and other
+business-scoped endpoints.
+
+**Path / query parameters**
+
+None.
+
+**Request**
 
 ```bash
 curl -X "GET" "https://kyc.myverify.info/api/business/businesses/" \
-     -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwianRpIjoiZGJhNzQ5ZTBiZGNjNGM1NmJjMWI0NmQ1MWY4YzIzM2YiLCJleHAiOjE1MjQ4NTUwODAsInVzZXJfaWQiOjF9.tmubREi5qH2KZTBBK-Lf047gnyVllk_jNLD9qp0aesE'
+     -H 'Authorization: Bearer eyJ...<truncated>'
 ```
 
-If you save your business ID from the results here it will come in handy in the next page under access codes and for any other business related API calls.
+**Response `200`**
 
 ```json
 {
@@ -70,87 +137,181 @@ If you save your business ID from the results here it will come in handy in the 
   "results": [
     {
       "id": "604e1738-4716-4bdd-867b-4942186b1e1c",
+      "name": "Netki Testing",
+      "status": "open",
+      "business_type": "exchange",
+      "email": null,
+      "country_code": null,
+      "ein": null,
+      "is_investor_business": false,
+      "is_active": true,
+      "created": "2026-04-27T18:29:02.798424Z",
+      "updated": "2026-04-27T18:31:50.661200Z",
+      "parent_business": null,
+      "primary_account": "8f14e45f-ceea-467e-adc1-0d4e8e6b3e5a",
       "app_context": {
         "id": 7,
+        "business": "604e1738-4716-4bdd-867b-4942186b1e1c",
+        "logo_dark": "https://<your-bucket>.s3.amazonaws.com/businesses/assets/logo.png",
+        "logo_light": "https://<your-bucket>.s3.amazonaws.com/businesses/assets/logo.png",
+        "redirect_backlink": null,
+        "liveness_algorithm": "default",
+        "requires_multiple_taxids": false,
+        "access_code_prefix": "nkt",
+        "preferred_restart_contact_method": "sms",
+        "restart_limit": "20",
         "required_fields": [
           {
             "id": 4,
-            "options": [
-              {
-                "id": 3,
-                "created": "2018-04-16T22:26:35.268006Z",
-                "updated": "2018-04-16T22:26:35.283482Z",
-                "is_active": true,
-                "key": "true",
-                "position": 0,
-                "label": "Yes",
-                "language_code": "en"
-              },
-              {
-                "id": 4,
-                "created": "2018-04-16T22:26:35.268006Z",
-                "updated": "2018-04-16T22:26:35.283482Z",
-                "is_active": true,
-                "key": "false",
-                "position": 0,
-                "label": "No",
-                "language_code": "en"
-              }
-            ],
-            "created": "2018-04-16T22:26:35.233747Z",
-            "updated": "2018-04-16T22:26:35.258242Z",
-            "is_active": true,
             "name": "is_accredited_investor",
             "data_type": "list",
             "regex": null,
             "keypad": "list",
             "label": "Are you an Accredited Investor (US Only)",
             "description": "Are you an Accredited Investor (US Only)",
-            "language_code": "en"
+            "language_code": "en",
+            "created": "2026-04-16T22:26:35.233747Z",
+            "updated": "2026-04-16T22:26:35.258242Z",
+            "is_active": true,
+            "options": [
+              {
+                "id": 3,
+                "key": "true",
+                "position": 0,
+                "label": "Yes",
+                "language_code": "en",
+                "created": "2026-04-16T22:26:35.268006Z",
+                "updated": "2026-04-16T22:26:35.283482Z",
+                "is_active": true
+              },
+              {
+                "id": 4,
+                "key": "false",
+                "position": 0,
+                "label": "No",
+                "language_code": "en",
+                "created": "2026-04-16T22:26:35.268006Z",
+                "updated": "2026-04-16T22:26:35.283482Z",
+                "is_active": true
+              }
+            ]
           }
         ],
-        "created": "2018-04-27T18:33:17.657524Z",
-        "updated": "2018-04-27T18:33:30.955998Z",
-        "is_active": true,
-        "logo_dark": "https://netkipearldev.s3.amazonaws.com/businesses/assets/logo_netki_mark_solo_small.png?AWSAccessKeyId=AKIAJQRUEJLMVY3TS25Q&Signature=ovmwObaG%2B7MnAW6Xc0AKlIxyoEA%3D&Expires=1524857788",
-        "logo_light": "https://netkipearldev.s3.amazonaws.com/businesses/assets/logo_netki_mark_solo_small.png?AWSAccessKeyId=AKIAJQRUEJLMVY3TS25Q&Signature=ovmwObaG%2B7MnAW6Xc0AKlIxyoEA%3D&Expires=1524857788",
-        "redirect_backlink": null,
-        "access_code_prefix": "nkt",
-        "preferred_restart_contact_method": "sms",
-        "restart_limit": "20",
         "phone_pin_timeout": 120,
         "phone_retry_attempt_limit": 1,
         "phone_use_automatic_bypass": false,
         "accredited_investor_flow": "accredited_web_form",
-        "business": "604e1738-4716-4bdd-867b-4942186b1e1c",
+        "has_aml_provider": true,
         "welcome_message": "Welcome to MyVerify!",
         "completed_message": "Thanks for signing up!",
         "sms_verification_message": null,
         "sms_corporate_onboard_message": null,
         "declined_feedback_sms": null,
         "sms_accredited_message": null,
-        "language_code": "en"
+        "invalid_access_code_message": "Access code {access_code} is invalid or has been used. Please contact support.",
+        "language_code": "en",
+        "created": "2026-04-27T18:33:17.657524Z",
+        "updated": "2026-04-27T18:33:30.955998Z",
+        "is_active": true
       },
       "country_blacklist": [],
-      "business_documents": [],
       "business_addresses": [],
+      "business_documents": [],
       "business_media_references": [],
       "business_data_sources": [],
+      "business_data_listings": [],
       "business_json_objects": [],
+      "business_metadata": null,
+      "business_notes": [],
       "errors": [],
-      "created": "2018-04-27T18:29:02.798424Z",
-      "updated": "2018-04-27T18:31:50.661200Z",
-      "is_active": true,
-      "name": "Netkitesting",
-      "status": "open",
-      "established_date": "2018-04-27",
-      "business_type": null,
-      "email": null,
-      "country_code": null,
-      "primary_account": 12,
-      "parent_business": null,
-      "contettype": 30
+      "contenttype": 30
     }
   ]
 }
 ```
+
+The envelope (`count`, `next`, `previous`, `results`) follows the standard
+list format described in [API Conventions](./conventions.md#pagination).
+
+**Response fields**
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string (UUID) | Business identifier |
+| `name` | string | Business name |
+| `status` | string | One of `open`, `hold`, `rejected`, `accepted` |
+| `business_type` | string \| null | One of `exchange`, `ico`, `investor`, `bank` |
+| `email` | string \| null | Business contact email |
+| `country_code` | string \| null | ISO 3166-1 alpha-2 country code |
+| `ein` | string \| null | Business tax identification number |
+| `is_investor_business` | boolean | Whether this business represents a corporate investor |
+| `is_active` | boolean | Whether the business record is active |
+| `created` | string (ISO-8601) | When the business was created |
+| `updated` | string (ISO-8601) | When the business was last updated |
+| `parent_business` | string (UUID) \| null | Identifier of the parent business, if this is a corporate investor |
+| `primary_account` | string (UUID) | Identifier of the primary user account for this business |
+| `app_context` | object | App configuration for this business (see below) |
+| `country_blacklist` | array | Countries excluded from onboarding for this business |
+| `business_addresses` | array | Addresses on file for this business |
+| `business_documents` | array | Documents on file for this business |
+| `business_media_references` | array | Media assets on file for this business |
+| `business_data_sources` | array | AML/sanctions data sources associated with this business |
+| `business_data_listings` | array | AML/sanctions data listing flags for this business |
+| `business_json_objects` | array | Arbitrary structured data attached to this business |
+| `business_metadata` | object \| null | Aggregate transaction/hit counters for this business |
+| `business_notes` | array | Internal notes attached to this business |
+| `errors` | array | Errors associated with this business |
+| `contenttype` | integer | Internal type identifier for this resource |
+
+**`app_context` fields**
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | integer | App context identifier |
+| `business` | string (UUID) | Business this app context belongs to |
+| `logo_dark` | string (URL) \| null | Logo shown on dark backgrounds in the verification app |
+| `logo_light` | string (URL) \| null | Logo shown on light backgrounds in the verification app |
+| `redirect_backlink` | string \| null | URL to redirect to after the flow completes |
+| `liveness_algorithm` | string | Liveness detection algorithm in use, e.g. `default` |
+| `requires_multiple_taxids` | boolean | Whether both TIN and SSN are collected |
+| `access_code_prefix` | string \| null | Prefix applied to access codes for this business |
+| `preferred_restart_contact_method` | string | One of `sms`, `email`, `both` |
+| `restart_limit` | string | Number of times a transaction may be restarted |
+| `required_fields` | array | Custom fields collected during onboarding (see below) |
+| `phone_pin_timeout` | integer | Seconds before the phone verification PIN bypass activates |
+| `phone_retry_attempt_limit` | integer | Number of phone verification retry attempts allowed |
+| `phone_use_automatic_bypass` | boolean | Whether phone verification bypasses automatically |
+| `accredited_investor_flow` | string | One of `accredited_web_form`, `accredited_web_and_vi`, `accredited_vi` |
+| `has_aml_provider` | boolean | Whether an AML/sanctions provider is configured for this business |
+| `welcome_message` | string | Welcome text shown in the verification app |
+| `completed_message` | string | Completion text shown in the verification app |
+| `sms_verification_message` | string \| null | Custom phone verification SMS text |
+| `sms_corporate_onboard_message` | string \| null | Custom corporate onboarding SMS text |
+| `declined_feedback_sms` | string \| null | Custom SMS text sent on a declined outcome |
+| `sms_accredited_message` | string \| null | Custom SMS text for accredited investor flow |
+| `invalid_access_code_message` | string | Message shown when an access code is invalid or used |
+| `language_code` | string | Language of the returned translated text |
+| `created` | string (ISO-8601) | When the app context was created |
+| `updated` | string (ISO-8601) | When the app context was last updated |
+| `is_active` | boolean | Whether the app context is active |
+
+Each entry in `required_fields` describes a custom onboarding field:
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | integer | Field identifier |
+| `name` | string | Field name |
+| `data_type` | string | One of `string`, `integer`, `float`, `date`, `datetime`, `list` |
+| `regex` | string \| null | Validation pattern, if any |
+| `keypad` | string \| null | Input keypad hint for the app |
+| `label` | string | Display label |
+| `description` | string | Display description |
+| `language_code` | string | Language of the returned translated text |
+| `options` | array | For `list` fields, the selectable options (each with `id`, `key`, `position`, `label`, `language_code`) |
+
+**Errors**
+
+| Status | Code | Meaning |
+|---|---|---|
+| `401` | `not_authenticated` | No `Authorization` header was sent |
+| `401` | `token_not_valid` | Access token is expired, invalid, or malformed |
