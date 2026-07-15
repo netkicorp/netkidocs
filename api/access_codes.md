@@ -37,10 +37,10 @@ first.
 |---|---|---|---|
 | `business_id` | path | string (UUID) | The `id` of your business account |
 | `code` | query | string | Filter to an exact code |
-| `is_active` | query | boolean | Filter to active (`true`) or used/inactive (`false`) codes |
+| `is_active` | query | boolean | Whether the code is still valid. `is_active=true` returns unused (still valid) codes; `is_active=false` returns used codes. This is the correct way to check whether a code has been used |
 | `parent_code__code` | query | string | Filter to codes that are children of the given parent code |
-| `is_null` | query | string | Comma-separated field names that must be null, e.g. `is_null=identity` for unused codes |
-| `is_notnull` | query | string | Comma-separated field names that must not be null, e.g. `is_notnull=identity` for used codes |
+| `is_null` | query | string | Comma-separated field names that must be null. Use `is_null=parent_code` to return original codes (those that are not restarts) |
+| `is_notnull` | query | string | Comma-separated field names that must not be null. Use `is_notnull=parent_code` to return only restart codes |
 | `ordering` | query | string | `created` or `updated`, prefix with `-` for descending. Defaults to `-created` |
 
 **Request**
@@ -131,8 +131,10 @@ list format described in [API Conventions](./conventions.md#pagination).
 
 `GET /api/business/businesses/{business_id}/access-codes/{code}/`
 
-Returns a single access code by its code value. Use this to check whether a
-code has been used, and to find the resulting `identity`.
+Returns a single access code by its code value. Check the `is_active` field to
+tell whether the code has been used: `is_active=true` means the code is unused
+and still valid; `is_active=false` means it has been used. When a code has been
+used, `identity` holds the identifier of the customer who used it.
 
 **Path / query parameters**
 
