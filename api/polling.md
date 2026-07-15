@@ -285,9 +285,9 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
             "created_at": "2026-06-30T07:30:10.451-07:00",
             "legal_name": "JANE DOE",
             "portal_name": "MyVerify",
-            "webhook_url": "https://your-domain.example/verify-investor/callback/",
+            "webhook_url": "https://kyc.myverify.info/verify-investor/callback/",
             "investor_url": "https://kyc.myverify.info/investor/verification-requests/1876/accept",
-            "redirect_url": "https://your-domain.example/verify-investor/complete/",
+            "redirect_url": "https://kyc.myverify.info/verify-investor/complete/",
             "internal_status": "open",
             "waiting_for_info": false,
             "verified_expires_at": null
