@@ -733,6 +733,12 @@ of `state`:
 
 `PUT /api/transactions/{id}/make-completed/`
 
+> [!NOTE]
+> This endpoint backs a manual compliance-dashboard action. It exists so you
+> can build your own review dashboard instead of using the Netki Compliance
+> dashboard. It is meant to be triggered by a person reviewing a case — do not
+> use it as part of an automated workflow.
+
 Manually approves a transaction, for example after a compliance reviewer
 resolves a `hold`. This can be called from any current state.
 
@@ -778,6 +784,12 @@ curl -X "PUT" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-819
 ## Mark a transaction as failed
 
 `PUT /api/transactions/{id}/make-failed/`
+
+> [!NOTE]
+> This endpoint backs a manual compliance-dashboard action. It exists so you
+> can build your own review dashboard instead of using the Netki Compliance
+> dashboard. It is meant to be triggered by a person reviewing a case — do not
+> use it as part of an automated workflow.
 
 Manually fails a transaction. Valid from `new`, `processing`, `hold`,
 `post_processing`, `completed`, or `customer_review`.
@@ -832,6 +844,12 @@ curl -X "PUT" "https://kyc.myverify.info/api/transactions/83d0d0b0-68e8-4746-819
 ## Restart a transaction
 
 `PUT /api/transactions/{id}/make-restarted/`
+
+> [!NOTE]
+> This endpoint backs a manual compliance-dashboard action. It exists so you
+> can build your own review dashboard instead of using the Netki Compliance
+> dashboard. It is meant to be triggered by a person reviewing a case — do not
+> use it as part of an automated workflow.
 
 Sends the customer a new SMS with a new access code so they can go through
 verification again. Valid from `new`, `failed`, `hold`, `post_processing`,
