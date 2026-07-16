@@ -97,8 +97,8 @@ list format described in [API Conventions](./conventions.md#pagination).
 
 | Field | Type | Description |
 |---|---|---|
-| `error_code_id` | integer | Stable numeric identifier for this code |
-| `error_code_name` | string | Stable, machine-readable name for this code (for example `document_quality`). This is the value to key your integration's logic off of |
+| `error_code_id` | integer | Permanent numeric identifier for this code. It never changes, so this is the value to key your integration's logic off of |
+| `error_code_name` | string | Machine-readable name for this code (for example `document_quality`). Convenient for readability, but it can change over time — do not rely on it for matching |
 | `rank` | integer | Numeric weight used to order the registry and to filter with the `rank` query parameter above; higher generally means a more specific or more severe condition |
 | `category` | string | One of the six values in [Categories](#categories) below |
 | `error_code_description` | string | Human-readable description of the error, in the language given by `language_code` |
@@ -129,7 +129,7 @@ Each entry in an `errors` array embeds one of these error-code objects. See
 the exact shape of those arrays.
 
 > [!TIP]
-> Because the registry changes over time, match on `error_code_name` (not
-> `error_code_id` or the description text) when you drive logic off a code,
-> and pull the current registry periodically rather than caching it
-> indefinitely.
+> Match on `error_code_id` when you drive logic off a code — it is permanent
+> and never changes. The `error_code_name` and `error_code_description` can
+> both change over time, so don't key logic off them. Pull the current
+> registry periodically rather than caching it indefinitely.
