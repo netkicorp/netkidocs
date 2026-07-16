@@ -1035,6 +1035,4 @@ whatever state the containing object is in.
 
 > [!NOTE]
 > These errors are written for you, not for your end users — don't pass
-> them directly through to a customer-facing UI. `notes` on the transaction
-> also carries a plain-language summary of why a transaction is on hold or
-> failed.
+> them directly through to a customer-facing UI.
