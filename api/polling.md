@@ -449,7 +449,7 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `identity_media_references` | array | Adverse-media mentions found during screening, see [identity_media_references fields](#identity_media_references-fields) |
 | `identity_access_code` | object \| null | The access code this customer used, see [Access Codes](./access_codes.md) for the shape |
 | `identity_accredited_investor_status` | object \| null | Present only for accredited-investor workflows, see [Accredited-investor status](#accredited-investor-status) |
-| `identity_json_objects` | array | Free-form JSON blobs attached by your workflow configuration, see [identity_json_objects fields](#identity_json_objects-fields) |
+| ~~`identity_json_objects`~~ | array | **Legacy — not actively used, and may be removed in a future version.** Free-form JSON blobs attached by your workflow configuration, see [identity_json_objects fields](#identity_json_objects-fields) |
 | `declined_feedback_texts` | array | SMS messages sent to the customer when a restart was triggered, see [declined_feedback_texts fields](#declined_feedback_texts-fields) |
 | `errors` | array | Actionable errors on this identity, see [errors fields](#errors-fields) |
 
@@ -582,6 +582,10 @@ Represents one screening/AML check result.
 | `is_active` | boolean | Whether this record is active |
 
 ### `identity_json_objects` fields
+
+> [!NOTE]
+> Legacy — this field is not actively used and may be removed in a future
+> version. It is still returned for backward compatibility.
 
 | Field | Type | Description |
 |---|---|---|
