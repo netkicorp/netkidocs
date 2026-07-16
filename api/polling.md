@@ -494,7 +494,7 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `document_type` | string | Document type, for example `drivers_license`, `passport`, or `selfie` |
 | `country_code` | string \| null | ISO alpha-2 country code the document was issued in |
 | `expiration_date` / `issue_date` | string (date) \| null | Dates read from the document, if present |
-| `can_bypass_expiration` | boolean | Whether an expired document was allowed through |
+| `can_bypass_expiration` | boolean | `true` when this document type has no expiration date, so it is exempt from the document-expiration check |
 | `state` | string | Document processing state: `new`, `pending`, `processing`, `completed`, `failed`, `disabled`, `quarantined`, or `fraud` |
 | `document_classification` | integer \| null | Internal reference to the recognized document type |
 | `reviewer` | integer \| null | Internal user ID of whoever manually reviewed the document, if any |
