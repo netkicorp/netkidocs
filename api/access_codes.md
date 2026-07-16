@@ -4,7 +4,17 @@ Access codes are single-use tokens that Netki generates for your customers so
 they can enter the correct verification flow in the app. Give each code to
 exactly one customer, and use it afterward to look up how that person's
 verification went. Codes are provisioned by your account executive — contact
-them for more codes or guidance on best practices.
+them for more codes.
+
+> [!TIP]
+> **Best practices for access codes**
+>
+> - This endpoint is the source of truth for **which codes exist** and
+>   **whether each has been used** — but not for distribution. Netki has no
+>   visibility into who you handed a given code to.
+> - Pull your codes from this endpoint and store them in **your own database**,
+>   and track who each code was distributed to on your side. Use this endpoint
+>   to reconcile which of your distributed codes have been used.
 
 ## Endpoints
 
