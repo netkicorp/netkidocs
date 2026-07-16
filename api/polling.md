@@ -712,6 +712,12 @@ which uses a smaller set of values) will be one of:
 
 ## Transaction phases
 
+> [!NOTE]
+> `phase` reflects Netki's internal processing pipeline and is provided for
+> informational purposes only. Drive your integration off the transaction
+> `state` — do not rely on `phase` for any logic, as its values and behavior
+> may change.
+
 `phase` tracks where in the pipeline a transaction currently is, independent
 of `state`:
 
