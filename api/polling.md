@@ -932,6 +932,12 @@ sent, the response instead looks like:
 Aggregated, denormalized processing detail for the transaction — handy for
 reporting without having to walk the full nested identity object.
 
+> [!NOTE]
+> These fields are populated by a background job, so they are not guaranteed
+> to be up to date immediately after a transaction changes. If you intend to
+> use this data, poll the transaction again once at least 24 hours have passed
+> to be sure the values have been filled in.
+
 | Field | Type | Description |
 |---|---|---|
 | `id` | integer | Record identifier |
