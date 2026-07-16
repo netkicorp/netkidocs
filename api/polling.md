@@ -393,7 +393,7 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `state` | string | Current transaction state, see [Transaction states](#transaction-states) |
 | `phase` | string | Current processing phase, see [Transaction phases](#transaction-phases) |
 | `completed_by` | string \| null | `system` if an automated process last changed the state, `user` if a person did |
-| `notes` | string \| null | Free-text notes on the transaction |
+| ~~`notes`~~ | string \| null | **Legacy — replaced by the `transaction_notes` array below, and may be removed in a future version.** Free-text notes on the transaction |
 | `is_active` | boolean | Whether the transaction record is active |
 | `created` | string (ISO-8601) | When the transaction was created |
 | `updated` | string (ISO-8601) | When the transaction was last modified |
