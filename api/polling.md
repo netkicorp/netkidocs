@@ -415,12 +415,12 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `country_code` | string \| null | ISO alpha-2 country code from the identity document |
 | `selected_country_code` | string \| null | ISO alpha-2 country code the customer selected in the flow |
 | `locale` | string \| null | Locale the customer used |
-| `state` | string | Identity-level state: `new`, `processing`, `failed`, `completed`, or `expired` |
+| ~~`state`~~ | string | **Legacy — not actively used, and may be removed in a future version.** Present in responses but not maintained. Identity-level state: `new`, `processing`, `failed`, `completed`, or `expired` |
 | `is_active` | boolean | Whether the identity record is active |
 | `liveness_score` | number | Selfie liveness score |
 | `death_date` | string (date) \| null | Set if a data source flags the person as deceased |
 | `birth_location` | string \| null | Birth location, if captured |
-| `status` | string | Free-form identity status label |
+| ~~`status`~~ | string | **Legacy — not actively used, and may be removed in a future version.** Present in responses but not maintained. Free-form identity status label |
 | `client_guid` | string \| null | The GUID you supplied when creating the transaction |
 | `birth_date` | string (date) \| null | Date of birth |
 | `gender` | string \| null | `male`, `female`, `other`, or `unknown` |
