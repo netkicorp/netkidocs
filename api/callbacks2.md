@@ -217,8 +217,9 @@ The transaction is wrapped in a single top-level key:
 
 > [!NOTE]
 > The wrapper key is `identity` for historical reasons — its value is the
-> full transaction object, not just the identity. Read it the same way you'd
-> read a response from [`GET /api/transactions/{id}/`](./polling.md#retrieve-a-transaction).
+> full transaction object, not just the identity. Read the object contained
+> inside the `identity` key exactly as you would the body returned by
+> [`GET /api/transactions/{id}/`](./polling.md#retrieve-a-transaction).
 
 One difference from a polled transaction: entries in the payload's
 `transaction_callbacks` array omit `response_raw`, so a callback can't grow
