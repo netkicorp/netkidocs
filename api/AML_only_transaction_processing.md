@@ -142,14 +142,9 @@ curl -X "POST" "https://kyc.myverify.info/api/single-aml/" \
 
 ## Errors
 
-> [!NOTE]
-> An invalid `aml_type` currently returns HTTP `200`, not an error status —
-> check the `message` field for `"Invalid AML Type.  Needs to be corporate,
-> individual, or blockchain."` rather than relying on the status code alone.
-
 | Status | Code | Meaning |
 |---|---|---|
-| `200` | — | `aml_type` was not one of `individual`, `corporate`, or `blockchain` |
+| `400` | — | `aml_type` was not one of `individual`, `corporate`, or `blockchain` |
 | `400` | — | `date_of_birth` could not be parsed, or is in the future |
 | `400` | — | No usable name or address was supplied — provide `first_name` + `last_name`, `full_name`, or `blockchain_address` |
 | `400` | — | A name field is blank, contains a number, or contains a disallowed special character (only hyphens are permitted besides letters) |
