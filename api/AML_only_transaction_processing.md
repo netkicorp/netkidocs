@@ -42,7 +42,7 @@ Set `aml_type` to choose what you're screening:
 | Field | Required | Type | Description |
 |---|---|---|---|
 | `aml_type` | yes | string | `individual`, `corporate`, or `blockchain` |
-| `filter` | no | string | The screening filter/list configured for your business. Defaults to `default`. Only takes effect for `individual` and `corporate` checks — `blockchain` checks don't use a filter |
+| `filter` | no | string | Selects which screening filter to apply. Netki can set up custom search filters for your business — contact your account manager to have one created. If omitted, your account's standard filter is used. Applies to `individual` and `corporate` checks only — `blockchain` checks don't use a filter |
 | `first_name` / `last_name` | individual, see note | string | Provide both together as one valid way to identify who you're screening |
 | `middle_name` | no | string | Individual checks only |
 | `full_name` | individual (alternative) or corporate (required) | string | Alternative to `first_name`/`last_name` for names that aren't split into parts (common for many Asian countries' names). Required for `corporate` |
