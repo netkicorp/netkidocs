@@ -14,6 +14,23 @@ Common use cases:
 - Updating your internal systems
 - Kicking off an internal background check
 
+## Track each attempt with a client_guid
+
+When you submit a transaction, include a `client_guid` that is **unique to
+that specific attempt**. Netki returns it on every callback (and when polling)
+as `transaction_identity.client_guid`, so you can tie each callback back to the
+exact submission in your own system.
+
+Use a fresh, non-repeating value per attempt — a UUID works well. Do **not**
+reuse a value that can recur for the same person, such as an email address or
+your internal customer ID: if a customer goes through verification more than
+once, a repeated `client_guid` leaves you unable to tell which attempt a given
+callback is for. A unique value per attempt keeps every run individually
+traceable.
+
+See [`transaction_identity` fields](./polling.md#transaction_identity-fields)
+in [Transactions](./polling.md) for where `client_guid` appears in the payload.
+
 ## Handling callbacks
 
 - **Don't block.** Accept the callback, persist the payload, and hand it to a
