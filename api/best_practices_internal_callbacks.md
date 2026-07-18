@@ -74,21 +74,6 @@ See [API Error Codes](./api_error_codes.md) for the registry, and
 [errors fields](./polling.md#errors-fields) in [Transactions](./polling.md) for
 where these arrays appear in the payload.
 
-## Recording manual actions
-
-When your team approves, declines, or restarts a transaction through the
-manual dashboard actions, send a `notes` value on the request describing why —
-for example an internal case or reviewer reference like `SS1249` — so the
-action is traceable later. See
-[Mark a transaction as completed](./polling.md#mark-a-transaction-as-completed),
-[failed](./polling.md#mark-a-transaction-as-failed), and
-[Restart a transaction](./polling.md#restart-a-transaction).
-
-> [!NOTE]
-> Be careful when reviewers copy and paste into the `notes` value — stray
-> characters from Word or other rich-text sources can cause problems. Prefer
-> plain text.
-
 ## Transaction states and the payload
 
 For the full transaction shape, the list of states, and field-by-field detail,
