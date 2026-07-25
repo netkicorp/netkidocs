@@ -14,7 +14,9 @@ them for more codes.
 >   visibility into who you handed a given code to.
 > - Pull your codes from this endpoint and store them in **your own database**,
 >   and track who each code was distributed to on your side. Use this endpoint
->   to reconcile which of your distributed codes have been used.
+>   to reconcile which of your distributed codes have been used.  You can also
+>   reconcile them using the callbacks as the access code will be in the callback
+>   data.
 
 ## Endpoints
 
@@ -28,7 +30,8 @@ them for more codes.
 > [!NOTE]
 > Both endpoints require the `Authorization` header described in
 > [API Conventions](./conventions.md#authentication). The `business_id` in
-> these paths is the `id` of your business account.
+> these paths is the `id` of your business account — retrieve it from
+> [Businesses](./businesses.md).
 
 Access codes are read-only through this API — they cannot be created,
 updated, or deleted here. New codes are generated for you by your account
@@ -45,7 +48,7 @@ first.
 
 | Name | In | Type | Description |
 |---|---|---|---|
-| `business_id` | path | string (UUID) | The `id` of your business account |
+| `business_id` | path | string (UUID) | The `id` of your business account (see [Businesses](./businesses.md)) |
 | `code` | query | string | Filter to an exact code |
 | `is_active` | query | boolean | Whether the code is still valid. `is_active=true` returns unused (still valid) codes; `is_active=false` returns used codes. This is the correct way to check whether a code has been used |
 | `parent_code__code` | query | string | Filter to codes that are children of the given parent code |
@@ -150,7 +153,7 @@ used, `identity` holds the identifier of the customer who used it.
 
 | Name | In | Type | Description |
 |---|---|---|---|
-| `business_id` | path | string (UUID) | The `id` of your business account |
+| `business_id` | path | string (UUID) | The `id` of your business account (see [Businesses](./businesses.md)) |
 | `code` | path | string | The access code to look up |
 
 **Request**

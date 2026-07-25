@@ -169,11 +169,11 @@ directly. What you do next depends on which `aml_type` you ran:
   [Callbacks](./callbacks2.md) and
   [Callback Best Practices](./best_practices_internal_callbacks.md).
 - **`corporate`** returns a `business_id` for the newly created business
-  record. Results for corporate checks are delivered by callback rather
-  than through the transaction-polling endpoints above — see
-  [Callbacks](./callbacks2.md) and
-  [Callback Best Practices](./best_practices_internal_callbacks.md) to make
-  sure your callback URL is configured before you run a corporate check.
+  record. Poll it with
+  [`GET /api/business/businesses/{id}/`](./businesses.md) — the screening
+  results land on that business record — or configure a callback URL to be
+  notified when screening finishes, see [Callbacks](./callbacks2.md) and
+  [Callback Best Practices](./best_practices_internal_callbacks.md).
 
 > [!TIP]
 > Set up a callback URL even if you plan to poll — a lapse in your polling
