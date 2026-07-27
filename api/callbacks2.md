@@ -209,7 +209,6 @@ The transaction is wrapped in a single top-level key:
     "client": "604e1738-4716-4bdd-867b-4942186b1e1c",
     "state": "completed",
     "transaction_identity": { "...": "see ./polling.md" },
-    "transaction_metadata": { "...": "see ./polling.md" },
     "transaction_callbacks": [ { "...": "see below" } ]
   }
 }

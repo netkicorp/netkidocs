@@ -68,7 +68,6 @@ curl -X "GET" "https://kyc.myverify.info/api/business/businesses/" \
         "requires_multiple_taxids": false,
         "access_code_prefix": "nkt",
         "preferred_restart_contact_method": "sms",
-        "restart_limit": "20",
         "required_fields": [
           {
             "id": 4,
@@ -106,9 +105,6 @@ curl -X "GET" "https://kyc.myverify.info/api/business/businesses/" \
             ]
           }
         ],
-        "phone_pin_timeout": 120,
-        "phone_retry_attempt_limit": 1,
-        "phone_use_automatic_bypass": false,
         "accredited_investor_flow": "accredited_vi",
         "has_aml_provider": true,
         "welcome_message": "Welcome to MyVerify!",
@@ -185,12 +181,8 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `requires_multiple_taxids` | boolean | Whether both TIN and SSN are collected |
 | ~~`access_code_prefix`~~ | string \| null | **Legacy — no longer used, and may be removed in a future version.** Prefix applied to access codes for this business |
 | `preferred_restart_contact_method` | string | One of `sms`, `email`, `both`. Defaults to `sms` |
-| `restart_limit` | string | Number of times a transaction may be restarted |
 | `required_fields` | array | Custom fields collected during onboarding (see below) |
-| `phone_pin_timeout` | integer | Seconds before the phone verification PIN bypass activates |
-| `phone_retry_attempt_limit` | integer | Number of phone verification retry attempts allowed |
-| `phone_use_automatic_bypass` | boolean | Whether phone verification bypasses automatically |
-| ~~`accredited_investor_flow`~~ | string | **Legacy — no longer used, and may be removed in a future version.** Which accredited investort flow to use.  `webform`, `accredited_vi` |
+| `accredited_investor_flow` | string | Which accredited investort flow to use.  `webform`, `accredited_vi` |
 | `has_aml_provider` | boolean | Whether an AML/sanctions provider is configured for this business |
 | `welcome_message` | string | Welcome text shown in the verification app |
 | `completed_message` | string | Completion text shown in the verification app |

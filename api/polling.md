@@ -169,7 +169,6 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
             "country_code": "US",
             "expiration_date": "2028-04-12",
             "issue_date": "2020-04-12",
-            "can_bypass_expiration": false,
             "state": "completed",
             "document_classification": 4021,
             "reviewer": null,
@@ -297,56 +296,6 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
         "declined_feedback_texts": [],
         "errors": []
       },
-      "transaction_metadata": {
-        "id": 112,
-        "created": "2026-06-30T14:22:11.421248Z",
-        "updated": "2026-07-01T09:05:44.421268Z",
-        "is_active": true,
-        "transaction": "83d0d0b0-68e8-4746-8197-ca4d18a21e2c",
-        "country_code": "US",
-        "state": "TX",
-        "gender": null,
-        "birth_year": 1990,
-        "locale": "",
-        "app_name": null,
-        "platform": null,
-        "platform_version": null,
-        "platform_version_name": null,
-        "app_version": null,
-        "sdk_version": null,
-        "brand": null,
-        "device": null,
-        "display": null,
-        "hardware": null,
-        "manufacturer": null,
-        "model": null,
-        "product": null,
-        "sanction_hits": 1,
-        "pep_hits": 0,
-        "media_hits": 0,
-        "warning_hits": 0,
-        "face_match_score": 94,
-        "liveness_face_match_score": 94,
-        "document_classifications": null,
-        "provider_calls": null,
-        "investor_type": "private_party",
-        "accredited_investor_status": "open",
-        "client_guid": "your-internal-guid-123",
-        "is_country_phone_mismatch": false,
-        "is_selected_id_country_mismatch": false,
-        "center_face_attempts": 1,
-        "center_face_count_pass": 1,
-        "center_face_count_fail": 0,
-        "turn_right_face_attempts": 1,
-        "turn_right_face_count_pass": 1,
-        "turn_right_face_count_fail": 0,
-        "turn_left_face_attempts": 1,
-        "turn_left_face_count_pass": 1,
-        "turn_left_face_count_fail": 0,
-        "liveness_score": 0.94,
-        "acuant_alerts": [],
-        "audit_logs": []
-      },
       "transaction_callbacks": [
         {
           "id": 5957,
@@ -399,7 +348,6 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `updated` | string (ISO-8601) | When the transaction was last modified |
 | `contenttype` | integer | Internal reference identifier; not needed for integration |
 | `transaction_identity` | object \| null | The identity going through verification, see [transaction_identity fields](#transaction_identity-fields) |
-| `transaction_metadata` | object \| null | Aggregated processing metadata, see [transaction_metadata fields](#transaction_metadata-fields) |
 | `transaction_callbacks` | array | Callback delivery attempts for this transaction, see [transaction_callbacks fields](#transaction_callbacks-fields) |
 | `transaction_notes` | array | Timestamped notes recorded as the transaction changed state, see [transaction_notes fields](#transaction_notes-fields) |
 | `transaction_declined_reasons` | array | Structured decline reasons attached to a failed transaction, see [transaction_declined_reasons fields](#transaction_declined_reasons-fields) |
@@ -494,8 +442,7 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `document_type` | string | Document type, for example `drivers_license`, `passport`, or `selfie` |
 | `country_code` | string \| null | ISO alpha-2 country code the document was issued in |
 | `expiration_date` / `issue_date` | string (date) \| null | Dates read from the document, if present |
-| `can_bypass_expiration` | boolean | `true` when this document type has no expiration date, so it is exempt from the document-expiration check |
-| `state` | string | Document processing state: `new`, `pending`, `processing`, `completed`, `failed`, `disabled`, `quarantined`, or `fraud` |
+| `state` | string | Document processing state: `new`, `pending`, `processing`, `completed`, `failed`, `disabled`, or `quarantined` |
 | `document_classification` | integer \| null | Internal reference to the recognized document type |
 | `reviewer` | integer \| null | Internal user ID of whoever manually reviewed the document, if any |
 | `is_reviewed` | boolean | Whether a manual review has occurred |
@@ -706,7 +653,7 @@ which uses a smaller set of values) will be one of:
 | `completed` | Verification passed. Matches "Approved" on the dashboard |
 | `canceled` | The transaction was stopped and cannot be restarted |
 | `restarted` | The customer was given a new access code to redo verification after a decline. Only used by access-code (MyVerify app) customers — SDK integrations don't use this state |
-| `quarantine` | Flagged for security review |
+| `quarantine` | Held for additional review |
 | `expired` | The transaction was created but never used |
 | `delete_pending` / `deleted` | The transaction is queued for or has completed data deletion |
 
@@ -926,46 +873,6 @@ sent, the response instead looks like:
 | `401` | `not_authenticated` / `token_not_valid` | Missing or invalid access token |
 | `404` | `not_found` | `id` does not exist or is not accessible to your account |
 | `429` | — | This transaction was restarted very recently; wait before retrying |
-
-## `transaction_metadata` fields
-
-Aggregated, denormalized processing detail for the transaction — handy for
-reporting without having to walk the full nested identity object.
-
-> [!NOTE]
-> These fields are populated by a background job, so they are not guaranteed
-> to be up to date immediately after a transaction changes. If you intend to
-> use this data, poll the transaction again once at least 24 hours have passed
-> to be sure the values have been filled in.
-
-| Field | Type | Description |
-|---|---|---|
-| `id` | integer | Record identifier |
-| `country_code` | string \| null | ISO alpha-2 country code |
-| `state` | string \| null | US state/province code, when applicable |
-| `gender` | string \| null | `male`, `female`, `other`, or `unknown` |
-| `birth_year` | integer \| null | Birth year only |
-| `locale` | string \| null | Locale used during the flow |
-| `app_name` / `platform` / `platform_version` / `platform_version_name` / `app_version` / `sdk_version` | string \| null | Client application/device details, when supplied |
-| `brand` / `device` / `display` / `hardware` / `manufacturer` / `model` / `product` | string \| null | Device details, when supplied |
-| `sanction_hits` / `pep_hits` / `media_hits` / `warning_hits` | integer \| null | Counts of each type of screening hit |
-| `face_match_score` / `liveness_face_match_score` | integer \| null | Face-match and liveness scores |
-| `document_classifications` | object \| null | Internal document-classification detail |
-| `provider_calls` | object \| null | Internal diagnostic detail; not guaranteed to be present |
-| `investor_type` | string \| null | `private_party` or `corporate_entity` |
-| `accredited_investor_status` | string \| null | Mirrors `identity_accredited_investor_status.status`, when applicable |
-| `client_guid` | string \| null | The GUID you supplied when creating the transaction |
-| `is_country_phone_mismatch` | boolean | Whether the phone number's country didn't match the identity's country |
-| `is_selected_id_country_mismatch` | boolean | Whether the customer's selected country didn't match their ID's issuing country |
-| `center_face_attempts` / `center_face_count_pass` / `center_face_count_fail` | integer \| null | Liveness check attempt counts, center pose |
-| `turn_right_face_attempts` / `turn_right_face_count_pass` / `turn_right_face_count_fail` | integer \| null | Liveness check attempt counts, right-turn pose |
-| `turn_left_face_attempts` / `turn_left_face_count_pass` / `turn_left_face_count_fail` | integer \| null | Liveness check attempt counts, left-turn pose |
-| `liveness_score` | number \| null | Overall liveness score |
-| `acuant_alerts` | array | Document-authentication alerts raised during processing (usually empty) |
-| `audit_logs` | array | Internal record of administrative actions on this transaction. `actor` shows a username, or `Netki Staff Member` if the action was taken by Netki staff |
-| `transaction` | string (UUID) | Parent transaction |
-| `created` / `updated` | string (ISO-8601) | Timestamps |
-| `is_active` | boolean | Whether this record is active |
 
 ## `transaction_callbacks` fields
 
