@@ -128,8 +128,7 @@ curl -X "GET" "https://kyc.myverify.info/api/business/businesses/" \
       "business_json_objects": [],
       "business_metadata": null,
       "business_notes": [],
-      "errors": [],
-      "contenttype": 30
+      "errors": []
     }
   ]
 }
@@ -166,7 +165,6 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `business_metadata` | object \| null | Aggregate transaction/hit counters for this business |
 | `business_notes` | array | Notes attached to this business |
 | `errors` | array | Errors associated with this business |
-| `contenttype` | integer | Internal type identifier for this resource |
 
 **`app_context` fields**
 

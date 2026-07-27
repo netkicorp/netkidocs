@@ -77,7 +77,6 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
       "is_active": true,
       "created": "2026-06-30T14:22:10.104300Z",
       "updated": "2026-07-01T09:05:44.881200Z",
-      "contenttype": 29,
       "transaction_identity": {
         "id": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
         "first_name": "Jane",
@@ -119,7 +118,6 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
         "business": "604e1738-4716-4bdd-867b-4942186b1e1c",
         "created": "2026-06-30T14:22:10.093394Z",
         "updated": "2026-07-01T09:05:44.836752Z",
-        "contenttype": 30,
         "identity_emails": [
           {
             "id": "f2a172cc-6716-462e-89f0-3468dec53721",
@@ -163,7 +161,7 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
             "updated": "2026-06-30T14:24:56.074392Z",
             "is_active": true,
             "identity": "f6ee3bb3-8955-4b6a-b012-f75caa0de364",
-            "document": "https://<your-bucket>.s3.amazonaws.com/identities/documents/b12345d3-47f9-4a0d-a0ec-5e8d20c12345.selfie.jpg",
+            "document": "https://<your-bucket>.s3.amazonaws.com/documents/<image-id>.jpg",
             "document_type": "drivers_license",
             "country_code": "US",
             "expiration_date": "2028-04-12",
@@ -173,7 +171,6 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
             "reviewer": null,
             "is_reviewed": false,
             "reviewed_date": null,
-            "contenttype": 26,
             "mime_type": {
               "id": 3,
               "media_type": "image",
@@ -185,10 +182,10 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
                 "id": "0c9a3b1d-1e2f-4a3b-9c4d-5e6f7a8b9c0d",
                 "name": "b97274d3-47f9-4a0d-a0ec-5e8d20c30318",
                 "image": {
-                  "full_size": "https://<your-bucket>.s3.amazonaws.com/identities/documents/thumbs/b97274d3.jpg",
-                  "thumbnail": "https://<your-bucket>.s3.amazonaws.com/identities/documents/thumbs/b97274d3.thumbnail__200x200.jpg",
-                  "medium_square_crop": "https://<your-bucket>.s3.amazonaws.com/identities/documents/thumbs/b97274d3.crop__400x400.jpg",
-                  "small_square_crop": "https://<your-bucket>.s3.amazonaws.com/identities/documents/thumbs/b97274d3.crop__50x50.jpg"
+                  "full_size": "https://<your-bucket>.s3.amazonaws.com/documents/<image-id>-full.jpg",
+                  "thumbnail": "https://<your-bucket>.s3.amazonaws.com/documents/<image-id>-thumbnail.jpg",
+                  "medium_square_crop": "https://<your-bucket>.s3.amazonaws.com/documents/<image-id>-medium.jpg",
+                  "small_square_crop": "https://<your-bucket>.s3.amazonaws.com/documents/<image-id>-small.jpg"
                 }
               }
             ],
@@ -344,7 +341,6 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `is_active` | boolean | Whether the transaction record is active |
 | `created` | string (ISO-8601) | When the transaction was created |
 | `updated` | string (ISO-8601) | When the transaction was last modified |
-| `contenttype` | integer | Internal reference identifier; not needed for integration |
 | `transaction_identity` | object \| null | The identity going through verification, see [transaction_identity fields](#transaction_identity-fields) |
 | `transaction_callbacks` | array | Callback delivery attempts for this transaction, see [transaction_callbacks fields](#transaction_callbacks-fields) |
 | `transaction_notes` | array | Timestamped notes recorded as the transaction changed state, see [transaction_notes fields](#transaction_notes-fields) |
@@ -385,7 +381,6 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `transaction` | string (UUID) | The transaction this identity belongs to |
 | `business` | string (UUID) | The business this identity belongs to |
 | `created` / `updated` | string (ISO-8601) | Timestamps |
-| `contenttype` | integer | Internal reference identifier; not needed for integration |
 | `identity_emails` | array | See [identity_emails fields](#identity_emails-fields) |
 | `identity_phone_numbers` | array | See [identity_phone_numbers fields](#identity_phone_numbers-fields) |
 | `identity_addresses` | array | See [identity_addresses fields](#identity_addresses-fields) |
@@ -446,7 +441,6 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `is_reviewed` | boolean | Whether a manual review has occurred |
 | `reviewed_date` | string (ISO-8601) \| null | When the manual review happened |
 | `identity` | string (UUID) | Parent identity |
-| `contenttype` | integer | Internal reference identifier; not needed for integration |
 | `mime_type` | object \| null | `{ "id", "media_type", "extension", "mime_type" }` describing the file format |
 | `identity_document_thumbnail` | array | Generated thumbnails: each entry has `id`, `name`, and an `image` object with `full_size`, `thumbnail`, `medium_square_crop`, and `small_square_crop` URLs |
 | `errors` | array | Actionable errors on this document, see [errors fields](#errors-fields) |
@@ -930,7 +924,6 @@ whatever state the containing object is in.
 |---|---|---|
 | `id` | integer | Error record identifier |
 | `object_id` | string (UUID) | The record this error is attached to |
-| `content_type` | integer | Internal reference identifier for the type of record `object_id` points to; not needed for integration |
 | `error_code` | object | `{ "error_code_id", "error_code_name", "rank", "category", "error_code_description" }` — see [API Error Codes](./api_error_codes.md) for the full registry |
 | `created` / `updated` | string (ISO-8601) | Timestamps |
 | `is_active` | boolean | Whether this error is still active |
