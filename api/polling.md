@@ -38,12 +38,11 @@ periodically (or in response to a callback) and check each transaction's
 | Name | In | Type | Description |
 |---|---|---|---|
 | `search` | query | string | Case-insensitive substring match against the transaction ID, the identity ID, the identity's first or last name, or the identity's phone number. This does **not** match access codes — see [Access Codes](./access_codes.md) to look up a transaction by access code |
-| `client_id` | query | string (UUID) | Filter to an exact business ID (useful for staff/parent-business accounts that can see child businesses) |
+| `client_id` | query | string (UUID) | Filter to an exact business ID |
 | `state` | query | string | Filter to an exact transaction state (see [Transaction states](#transaction-states) below) |
 | `states` | query | string | Comma-separated list of states; returns transactions matching any of them |
 | `transaction_identity` | query | string (UUID) | Filter to an exact identity ID |
 | `transaction_identity__country_code` | query | string | Filter to an exact identity country code |
-| `created_by` | query | integer | Filter to the internal user/account that created the transaction |
 | `first_name` / `last_name` / `full_name` | query | string | Case-insensitive partial match against the identity's name |
 | `client_guid` | query | string | Case-insensitive partial match against the GUID you supplied when creating the transaction |
 | `phonenumber` | query | string | Case-insensitive partial match against the identity's phone number |
@@ -276,16 +275,15 @@ curl -X "GET" "https://kyc.myverify.info/api/transactions/" \
           "identity_document_accreditation_status": [],
           "errors": [],
           "raw_data": {
-            "id": 1876,
+            "id": 4827193,
             "status": "waiting_for_investor_acceptance",
             "message": "The verification process is waiting for the investor to start.",
-            "investor": { "id": 1559 },
+            "investor": { "id": 6203847 },
             "deal_name": null,
             "created_at": "2026-06-30T07:30:10.451-07:00",
             "legal_name": "JANE DOE",
             "portal_name": "MyVerify",
-            "webhook_url": "https://kyc.myverify.info/verify-investor/callback/",
-            "investor_url": "https://kyc.myverify.info/investor/verification-requests/1876/accept",
+            "investor_url": "https://kyc.myverify.info/investor/verification-requests/4827193/accept",
             "redirect_url": "https://kyc.myverify.info/verify-investor/complete/",
             "internal_status": "open",
             "waiting_for_info": false,
@@ -444,7 +442,7 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `expiration_date` / `issue_date` | string (date) \| null | Dates read from the document, if present |
 | `state` | string | Document processing state: `new`, `pending`, `processing`, `completed`, `failed`, `disabled`, or `quarantined` |
 | `document_classification` | integer \| null | Internal reference to the recognized document type |
-| `reviewer` | integer \| null | Internal user ID of whoever manually reviewed the document, if any |
+| `reviewer` | integer \| null | User ID of whoever reviewed the document, if any |
 | `is_reviewed` | boolean | Whether a manual review has occurred |
 | `reviewed_date` | string (ISO-8601) \| null | When the manual review happened |
 | `identity` | string (UUID) | Parent identity |
@@ -522,7 +520,7 @@ Represents one screening/AML check result.
 | `source` | string | Source reference (often a URL) |
 | `title` | string | Headline of the media mention |
 | `content` | string | Snippet of the media mention |
-| `reviewed_by` | integer \| null | Internal user ID of whoever reviewed this mention |
+| `reviewed_by` | integer \| null | User ID of whoever reviewed this mention, if any |
 | `reviewed_date` | string (ISO-8601) \| null | When it was reviewed |
 | `identity` | string (UUID) | Parent identity |
 | `created` / `updated` | string (ISO-8601) | Timestamps |
@@ -590,18 +588,15 @@ exact shape can vary. Keys commonly present include:
 | `message` | string | Human-readable status message |
 | `legal_name` | string | Legal name on file with the investor-verification workflow |
 | `deal_name` | string \| null | Name of the deal being verified for, if applicable |
-| `investor_url` | string (URL) | The link your customer visits to complete their investor verification, for example `https://kyc.myverify.info/investor/verification-requests/1876/accept` |
-| `webhook_url` | string (URL) | Netki-hosted callback endpoint used internally during processing, for example `https://kyc.myverify.info/verify-investor/callback/` |
+| `investor_url` | string (URL) | The link your customer visits to complete their investor verification, for example `https://kyc.myverify.info/investor/verification-requests/4827193/accept` |
 | `redirect_url` | string (URL) | Page the customer's browser returns to after finishing the investor-verification workflow. Netki-hosted when Netki hosts the accredited-investor form (the usual setup), for example `https://kyc.myverify.info/verify-investor/complete/`; if you host that form yourself, this is your own URL |
 | `waiting_for_info` | boolean | Whether the workflow is waiting on more information |
 | `verified_expires_at` | string (ISO-8601) \| null | When a completed verification expires, if applicable |
 
-`webhook_url` is a Netki endpoint used internally during processing — you do
-not call it yourself. `redirect_url` is where the customer's browser lands
-after verification: a Netki page when Netki hosts the accredited-investor form
-(the usual case), or your own URL when you host that form. `investor_url` is
-the link you would typically act on — for example, to resend it to your
-customer.
+`redirect_url` is where the customer's browser lands after verification: a
+Netki page when Netki hosts the accredited-investor form (the usual case), or
+your own URL when you host that form. `investor_url` is the link you would
+typically act on — for example, to resend it to your customer.
 
 ## Retrieve a transaction
 
@@ -896,7 +891,7 @@ See [Callbacks](./callbacks2.md) for more on how callback delivery works.
 | `id` | integer | Note identifier |
 | `note` | string | Note text — typically records why a state change happened |
 | `transaction` | string (UUID) | Parent transaction |
-| `created_by` | integer \| null | Internal user ID that created the note, if any |
+| `created_by` | integer \| null | User ID that created the note, if any |
 | `created` / `updated` | string (ISO-8601) | Timestamps |
 | `is_active` | boolean | Whether this record is active |
 
