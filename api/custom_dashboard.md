@@ -6,9 +6,19 @@ Compliance dashboard, the endpoints on this page let you move a transaction
 along — approve it, fail it, or restart it — the same way a reviewer would in
 the Netki dashboard.
 
+> [!IMPORTANT]
+> This is advanced usage of the API that most clients will not need. If you
+> decide you want to build your own review dashboard, please contact your Netki
+> account manager first so we can work through your use case with you.
+
 To pull the transactions you want to review, see
 [Transactions](./polling.md) (`GET /api/transactions/`). Use the endpoints here
 to act on one.
+
+> [!NOTE]
+> To look up the client businesses you manage — for example if your account
+> oversees more than one business — use the [Businesses](./businesses.md)
+> endpoints.
 
 > [!NOTE]
 > These endpoints back manual, human-in-the-loop review actions. They are meant
