@@ -173,7 +173,7 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `id` | integer | App context identifier |
 | `business` | string (UUID) | Business this app context belongs to |
 | ~~`logo_dark`~~ | string (URL) \| null | **Legacy — not actively used, and may be removed in a future version.** Logo shown on dark backgrounds in the verification app |
-| `logo_light` | string (URL) \| null | Logo shown on light backgrounds in the verification app |
+| `logo_light` | string (URL) \| null | Logo shown in the verification app |
 | `redirect_backlink` | string \| null | URL to redirect to after the flow completes |
 | `liveness_algorithm` | string | Liveness detection algorithm in use, e.g. `default` |
 | `requires_multiple_taxids` | boolean | Whether both TIN and SSN are collected |
