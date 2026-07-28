@@ -11,6 +11,7 @@ New integrators should read in this order:
 4. [Access Codes](./access_codes.md) — create and manage onboarding access codes.
 5. [Callbacks](./callbacks2.md) — receive transaction results via webhook.
 6. [Polling](./polling.md) — pull transaction status and results.
+7. [Custom Dashboard](./custom_dashboard.md) — act on transactions if you build your own review dashboard.
 
 ## Documents
 
@@ -21,6 +22,7 @@ New integrators should read in this order:
 | [Businesses](./businesses.md) | List businesses and their app configuration |
 | [Access Codes](./access_codes.md) | Access code lifecycle |
 | [Polling](./polling.md) | Poll transactions and results |
+| [Custom Dashboard](./custom_dashboard.md) | Manually approve, fail, or restart transactions |
 | [Callbacks](./callbacks2.md) | Webhook payloads and delivery |
 | [Callback Best Practices](./best_practices_internal_callbacks.md) | Recommended callback handling |
 | [Deep Link Access](./howto_deeplinks_access.md) | Deep-link access flow |
