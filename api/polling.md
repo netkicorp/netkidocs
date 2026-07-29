@@ -373,7 +373,7 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `is_accredited_investor` | boolean | Whether this identity is going through (or has completed) accredited-investor verification |
 | `title` | string \| null | Job title, for corporate-entity signers |
 | `ownership_percentage` | integer \| null | Ownership percentage, for corporate-entity signers |
-| ~~`notes`~~ | string \| null | **Legacy — not actively used, and may be removed in a future version.**  Free-text notes on the identity |
+| ~~`notes`~~ | string \| null | **Legacy — not actively used, and may be removed in a future version.** Free-text notes on the identity |
 | `source_of_wealth` | string \| null | Captured for some accredited-investor workflows |
 | `tax_id` | string \| null | Captured for some corporate-entity workflows |
 | `phone_is_validated` | boolean | Whether the phone number passed validation |
