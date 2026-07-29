@@ -5,9 +5,7 @@ transaction is the master record of that person's verification: their
 identity data, uploaded documents, AML/sanctions screening results, and
 (for accredited-investor deals) their investor-verification status. Poll
 these endpoints to track a transaction's progress and review why something
-is on hold or failed. To manually move a transaction to a new state when
-your compliance team makes a decision, see
-[Custom Dashboard](./custom_dashboard.md).
+is on hold or failed.
 
 ## Endpoints
 
@@ -375,7 +373,7 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `is_accredited_investor` | boolean | Whether this identity is going through (or has completed) accredited-investor verification |
 | `title` | string \| null | Job title, for corporate-entity signers |
 | `ownership_percentage` | integer \| null | Ownership percentage, for corporate-entity signers |
-| `notes` | string \| null | Free-text notes on the identity |
+| ~~`notes`~~ | string \| null | **Legacy — not actively used, and may be removed in a future version.**  Free-text notes on the identity |
 | `source_of_wealth` | string \| null | Captured for some accredited-investor workflows |
 | `tax_id` | string \| null | Captured for some corporate-entity workflows |
 | `phone_is_validated` | boolean | Whether the phone number passed validation |
@@ -439,7 +437,7 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `expiration_date` / `issue_date` | string (date) \| null | Dates read from the document, if present |
 | `state` | string | Document processing state: `new`, `pending`, `processing`, `completed`, `failed`, `disabled`, or `quarantined` |
 | `document_classification` | integer \| null | Internal reference to the recognized document type |
-| `reviewer` | integer \| null | User ID of whoever reviewed the document, if any |
+| `reviewer` | integer \| null | User ID of whoever reviewed the document, if required |
 | `is_reviewed` | boolean | Whether a manual review has occurred |
 | `reviewed_date` | string (ISO-8601) \| null | When the manual review happened |
 | `identity` | string (UUID) | Parent identity |
@@ -573,10 +571,11 @@ until the identity enters that workflow.
 | `accredited_status` | string (UUID) | The parent accreditation record |
 | `document` | object \| null | The uploaded document, in the same shape as [identity_documents](#identity_documents-fields) |
 
-**`raw_data` keys you may see**
+**`identity_accredited_investor_status.raw_data` keys you may see**
 
-`raw_data` is relayed as-is from the investor-verification workflow, so its
-exact shape can vary. Keys commonly present include:
+The `raw_data` field on `identity_accredited_investor_status` (above) is
+relayed as-is from the investor-verification workflow, so its exact shape can
+vary. Keys commonly present include:
 
 | Key | Type | Description |
 |---|---|---|
