@@ -4,6 +4,11 @@ Deep links are how you route your end users into the Netki verification flow.
 Each deep link carries an access code and sends the user to the right starting
 point — straight into the app, or through a form first.
 
+> [!NOTE]
+> Deep links are only for the MyVerify app. If you use the SDK, you won't need
+> them — you route users through verification with whatever system your own app
+> already uses.
+
 ## Deep link types
 
 Depending on your process, you may use any of these:
