@@ -67,6 +67,11 @@ silently. To resume:
 Your business has one callback configuration, covering the destination URL,
 authentication, and retry behavior described above.
 
+> [!NOTE]
+> This section covers managing your callback configuration through the API. The
+> same settings can also be managed in the Netki Dashboard — use whichever fits
+> your workflow.
+
 ### View your callback configuration
 
 `GET /api/business/businesses/{business_id}/config/`
