@@ -14,22 +14,31 @@ Common use cases:
 - Updating your internal systems
 - Kicking off an internal background check
 
-## Track each attempt with a client_guid
+## Track each attempt with a unique identifier
 
-When you submit a transaction, include a `client_guid` that is **unique to
-that specific attempt**. Netki returns it on every callback (and when polling)
-as `transaction_identity.client_guid`, so you can tie each callback back to the
-exact submission in your own system.
+Give every verification attempt an identifier that is **unique to that
+attempt**, so you can tie each callback back to the exact submission in your own
+system. Which identifier you use depends on how your end users enter
+verification:
 
-Use a fresh, non-repeating value per attempt — a UUID works well. Do **not**
-reuse a value that can recur for the same person, such as an email address or
-your internal customer ID: if a customer goes through verification more than
-once, a repeated `client_guid` leaves you unable to tell which attempt a given
-callback is for. A unique value per attempt keeps every run individually
-traceable.
+- **SDK integrations** — include a `client_guid` when you submit the
+  transaction. Netki returns it on every callback (and when polling) as
+  `transaction_identity.client_guid`. Use a fresh, non-repeating value per
+  attempt — a UUID works well. Do **not** reuse a value that can recur for the
+  same person, such as an email address or your internal customer ID: if a
+  customer goes through verification more than once, a repeated `client_guid`
+  leaves you unable to tell which attempt a callback is for.
+- **MyVerify app (access codes)** — each user gets a unique access code, and
+  that code identifies the attempt. Netki returns it on every callback (and when
+  polling) as `transaction_identity.identity_access_code`. Access codes are
+  single-use, so every attempt already has its own code; a restart issues a new
+  *child* code, so each pass stays individually traceable. See
+  [Access Codes](./access_codes.md) for how codes and restarts work.
 
-See [`transaction_identity` fields](./polling.md#transaction_identity-fields)
-in [Transactions](./polling.md) for where `client_guid` appears in the payload.
+A unique value per attempt keeps every run individually traceable. See
+[`transaction_identity` fields](./polling.md#transaction_identity-fields) in
+[Transactions](./polling.md) for where `client_guid` and `identity_access_code`
+appear in the payload.
 
 ## Handling callbacks
 
