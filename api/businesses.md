@@ -119,7 +119,6 @@ curl -X "GET" "https://kyc.myverify.info/api/business/businesses/" \
         "updated": "2026-04-27T18:33:30.955998Z",
         "is_active": true
       },
-      "country_blacklist": [],
       "business_addresses": [],
       "business_documents": [],
       "business_media_references": [],
@@ -155,7 +154,6 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `parent_business` | string (UUID) \| null | Identifier of the parent business, if this is a corporate investor |
 | `primary_account` | string (UUID) | Identifier of the primary user account for this business |
 | `app_context` | object | App configuration for this business (see below) |
-| `country_blacklist` | array | Countries excluded from onboarding for this business |
 | `business_addresses` | array | Addresses on file for this business |
 | `business_documents` | array | Documents on file for this business |
 | `business_media_references` | array | Media assets on file for this business |
