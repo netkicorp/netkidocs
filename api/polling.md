@@ -345,7 +345,7 @@ list format described in [API Conventions](./conventions.md#pagination).
 | `transaction_callbacks` | array | Callback delivery attempts for this transaction, see [transaction_callbacks fields](#transaction_callbacks-fields) |
 | `transaction_notes` | array | Timestamped notes recorded as the transaction changed state, see [transaction_notes fields](#transaction_notes-fields) |
 | `transaction_declined_reasons` | array | Structured decline reasons attached to a failed transaction, see [transaction_declined_reasons fields](#transaction_declined_reasons-fields) |
-| `required_fields` | array | Extra workflow fields your business has configured, see [required_fields fields](#required_fields-fields) |
+| ~~`required_fields`~~ | array | **Legacy — not actively used, and may be removed in a future version.** Extra workflow fields your business has configured |
 | `errors` | array | Actionable errors on the transaction itself, see [errors fields](#errors-fields) |
 
 ### `transaction_identity` fields
@@ -656,15 +656,7 @@ which uses a smaller set of values) will be one of:
 > may change.
 
 `phase` tracks where in the pipeline a transaction currently is, independent
-of `state`:
-
-| Phase | Meaning |
-|---|---|
-| `new` | Not yet started |
-| `document` | Document capture, face match, and OCR processing |
-| `identity` | AML/sanctions screening |
-| `kyc` | Business-logic decisioning (expiration checks, face-match thresholds, AML review) |
-| `finished` | Processing has completed for this pass (the transaction may still be on hold or otherwise need attention) |
+of `state`.
 
 ## `transaction_callbacks` fields
 
@@ -697,24 +689,6 @@ See [Callbacks](./callbacks2.md) for more on how callback delivery works.
 | Field | Type | Description |
 |---|---|---|
 | `reason` | string | The decline reason text |
-
-## `required_fields` fields
-
-Extra workflow fields configured for your business (most transactions have
-none, so this is usually an empty array).
-
-| Field | Type | Description |
-|---|---|---|
-| `id` | integer | Field identifier |
-| `name` | string | Internal field name |
-| `data_type` | string | `string`, `integer`, `float`, `date`, `datetime`, or `list` |
-| `label` | string | Display label |
-| `description` | string | Display description |
-| `regex` | string \| null | Validation pattern, if any |
-| `keypad` | string \| null | Suggested input keypad, if any |
-| `options` | array | For `list` fields: `{ "key", "position", "label" }` entries |
-| `created` / `updated` | string (ISO-8601) | Timestamps |
-| `is_active` | boolean | Whether this field is active |
 
 ## `errors` fields
 
