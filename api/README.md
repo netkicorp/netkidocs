@@ -3,15 +3,10 @@
 Client-facing reference for the Netki OnboardID API. All endpoints are served
 from `https://kyc.myverify.info`.
 
-New integrators should read in this order:
-
-1. [API Conventions](./conventions.md) — base URL, auth, pagination, errors.
-2. [Authentication](./authentication.md) — obtain and refresh your token.
-3. [Businesses](./businesses.md) — list your businesses and their `id`s.
-4. [Access Codes](./access_codes.md) — create and manage onboarding access codes.
-5. [Callbacks](./callbacks2.md) — receive transaction results via webhook.
-6. [Polling](./polling.md) — pull transaction status and results.
-7. [Custom Dashboard](./custom_dashboard.md) — act on transactions if you build your own review dashboard.
+> [!NOTE]
+> For the full, described overview — what each document covers, how the pieces
+> fit together, and where to start — see [OnboardID API](../onboarid-api.md).
+> This page is just a quick index of the reference documents in this folder.
 
 ## Documents
 
