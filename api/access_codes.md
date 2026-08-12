@@ -22,16 +22,20 @@ them for more codes.
 
 | Method | Path | Purpose |
 |---|---|---|
-| `GET` | `/api/business/businesses/{business_id}/access-codes/` | List the access codes for a business |
-| `GET` | `/api/business/businesses/{business_id}/access-codes/{code}/` | Retrieve a single access code by its code |
+| `GET` | `/api/business/access-codes/` | List your access codes |
+| `GET` | `/api/business/access-codes/{code}/` | Retrieve a single access code by its code |
+
+Older integrations may be calling the business-scoped paths under
+`/api/business/businesses/{business_id}/access-codes/`. Those still work and
+return the same payload — see [Legacy endpoints](#legacy-endpoints).
 
 ## Authentication
 
 > [!NOTE]
 > Both endpoints require the `Authorization` header described in
-> [API Conventions](./conventions.md#authentication). The `business_id` in
-> these paths is the `id` of your business account — retrieve it from
-> [Businesses](./businesses.md).
+> [API Conventions](./conventions.md#authentication). Results are scoped to
+> the business your token belongs to, so no business identifier is needed in
+> the path.
 
 Access codes are read-only through this API — they cannot be created,
 updated, or deleted here. New codes are generated for you by your account
@@ -39,16 +43,14 @@ executive.
 
 ## List access codes
 
-`GET /api/business/businesses/{business_id}/access-codes/`
+`GET /api/business/access-codes/`
 
-Returns the access codes belonging to a business, most recently created
-first.
+Returns your access codes, most recently created first.
 
-**Path / query parameters**
+**Query parameters**
 
 | Name | In | Type | Description |
 |---|---|---|---|
-| `business_id` | path | string (UUID) | The `id` of your business account (see [Businesses](./businesses.md)) |
 | `code` | query | string | Filter to an exact code |
 | `is_active` | query | boolean | Whether the code is still valid. `is_active=true` returns unused (still valid) codes; `is_active=false` returns used codes. This is the correct way to check whether a code has been used |
 | `parent_code__code` | query | string | Filter to codes that are children of the given parent code |
@@ -59,7 +61,7 @@ first.
 **Request**
 
 ```bash
-curl -X "GET" "https://kyc.myverify.info/api/business/businesses/604e1738-4716-4bdd-867b-4942186b1e1c/access-codes/" \
+curl -X "GET" "https://kyc.myverify.info/api/business/access-codes/" \
      -H 'Authorization: Bearer eyJ...<truncated>'
 ```
 
@@ -136,30 +138,43 @@ list format described in [API Conventions](./conventions.md#pagination).
 
 | Status | Code | Meaning |
 |---|---|---|
+| `400` | — | `is_null` or `is_notnull` named a field that does not exist (see below) |
 | `401` | `not_authenticated` | No `Authorization` header was sent |
 | `401` | `token_not_valid` | Access token is expired, invalid, or malformed |
-| `404` | `not_found` | `business_id` does not exist or is not accessible to your account |
+
+A `400` names the offending field under `errors`, keyed by the parameter it
+came from. One bad name rejects the whole request, so check the spelling of
+every name in a comma-separated list:
+
+```json
+{
+  "status_code": 400,
+  "message": "The data you provided does not fulfill the object requirements.",
+  "errors": {
+    "is_null": ["Unknown field: 'parent'."]
+  }
+}
+```
 
 ## Retrieve an access code
 
-`GET /api/business/businesses/{business_id}/access-codes/{code}/`
+`GET /api/business/access-codes/{code}/`
 
 Returns a single access code by its code value. Check the `is_active` field to
 tell whether the code has been used: `is_active=true` means the code is unused
 and still valid; `is_active=false` means it has been used. When a code has been
 used, `identity` holds the identifier of the customer who used it.
 
-**Path / query parameters**
+**Path parameters**
 
 | Name | In | Type | Description |
 |---|---|---|---|
-| `business_id` | path | string (UUID) | The `id` of your business account (see [Businesses](./businesses.md)) |
 | `code` | path | string | The access code to look up |
 
 **Request**
 
 ```bash
-curl -X "GET" "https://kyc.myverify.info/api/business/businesses/604e1738-4716-4bdd-867b-4942186b1e1c/access-codes/nkt123/" \
+curl -X "GET" "https://kyc.myverify.info/api/business/access-codes/nkt123/" \
      -H 'Authorization: Bearer eyJ...<truncated>'
 ```
 
@@ -205,7 +220,7 @@ Same shape as an entry in [List access codes](#list-access-codes) above.
 |---|---|---|
 | `401` | `not_authenticated` | No `Authorization` header was sent |
 | `401` | `token_not_valid` | Access token is expired, invalid, or malformed |
-| `404` | `not_found` | `code` does not exist under this `business_id`, or is not accessible to your account |
+| `404` | `not_found` | `code` does not exist, or does not belong to your business |
 
 ## Restarted codes
 
@@ -263,3 +278,35 @@ Example of a code that has been restarted (has a child):
   "updated": "2026-05-26T14:15:32.259285Z"
 }
 ```
+
+## Legacy endpoints
+
+Access codes were originally exposed only under a business-scoped path:
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/business/businesses/{business_id}/access-codes/` | List the access codes for a business |
+| `GET` | `/api/business/businesses/{business_id}/access-codes/{code}/` | Retrieve a single access code by its code |
+
+These remain supported, and existing integrations do not need to change. They
+take the same query parameters, return the same fields in the same shape, and
+apply the same default ordering as the endpoints documented above. The only
+extra requirement is the `business_id` path segment — the `id` of your business
+account, retrievable from [Businesses](./businesses.md) — which the newer paths
+infer from your token instead.
+
+Because `business_id` is part of the path, these endpoints add one more error
+case:
+
+| Status | Code | Meaning |
+|---|---|---|
+| `404` | `not_found` | `business_id` does not exist or is not accessible to your account |
+
+**Request**
+
+```bash
+curl -X "GET" "https://kyc.myverify.info/api/business/businesses/604e1738-4716-4bdd-867b-4942186b1e1c/access-codes/" \
+     -H 'Authorization: Bearer eyJ...<truncated>'
+```
+
+New integrations should use `/api/business/access-codes/`.
