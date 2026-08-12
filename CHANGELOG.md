@@ -13,22 +13,20 @@ This changelog covers the OnboardID mobile SDKs and their published packages:
 | Flutter | `netki_sdk` | [pub.dev](https://pub.dev/packages/netki_sdk) |
 | React Native | `@netki/netki-mobilesdk` | [npm](https://www.npmjs.com/package/@netki/netki-mobilesdk) |
 
-All platforms share a single version number. Only changes visible to SDK integrators or end
-users are listed here — internal build, CI, and tooling changes are omitted.
+All platforms share a single version number, and only changes relevant to SDK integrators and
+their end users are listed here.
 
-> **Note on versioning:** OnboardID SDKs were distributed privately prior to the public-registry
-> launch (see [9.0.0](#900)). Starting with **12.0.0**, every platform ships as a single
-> self-contained artifact published to its public registry, and the public version tracks the
-> unified ecosystem version.
+> **Note on versioning:** Starting with **12.0.0**, every platform ships as a single self-contained
+> artifact published to its public registry (see the [Scope](#scope) table above).
 
 ---
 
 ## [12.1.0] - 2026-08-05
 
 ### Changed
-- **Improved error diagnostics.** Reworked crash and error reporting (Sentry) with richer breadcrumbs
-  and scope context and significantly reduced noise, making SDK-related issues easier to diagnose. The
-  reported context now includes the SDK version. (Android + iOS)
+- **Improved error diagnostics.** Improved crash and error reporting so SDK-related issues are easier
+  to diagnose, with less noise in reported events. The reported context now includes the SDK version.
+  (Android + iOS)
 
 ## [12.0.1] - 2026-07-14
 
@@ -45,8 +43,6 @@ users are listed here — internal build, CI, and tooling changes are omitted.
   - **Android** — remove the `art.myverify.io` Maven repository from `settings.gradle`; just declare
     `implementation 'com.netki:netkisdk:<version>'`.
   - **iOS** — remove the explicit `pod 'NetkiCV'` line from your `Podfile`; just `pod 'NetkiSDK'`.
-
-  This matches the single-artifact integration model used by comparable identity SDKs.
 - **Flutter available on pub.dev.** The Flutter package (`netki_sdk`) is now published to pub.dev and
   installs like any standard package: `netki_sdk: ^12.0.0`.
 
@@ -58,9 +54,8 @@ users are listed here — internal build, CI, and tooling changes are omitted.
 ## [11.6.0] - 2026-06-12
 
 ### Fixed
-- **iOS NFC passport reader integration.** Resolved a CocoaPods integration failure
-  (`NFCPassportReader` dispatch-thunk ABI mismatch) that could occur when consuming the SDK with
-  library-evolution enabled. NFC passport reading integrates cleanly out of the box. (iOS)
+- **iOS NFC passport reader integration.** Resolved a CocoaPods integration issue that could prevent
+  NFC passport reading from building. It now integrates cleanly out of the box. (iOS)
 
 ## [11.5.0] - 2026-05-07
 
@@ -97,9 +92,6 @@ users are listed here — internal build, CI, and tooling changes are omitted.
   React Native on **npm** (`@netki/netki-mobilesdk`) — so no private-registry credentials are required
   to integrate.
 
-> The 9.0.x public packages were published alongside the 11.x development line and were unified into
-> the single public 12.x line at [12.0.0](#1200).
-
 ## [8.0.0] - 2024-11
 
 ### Changed
@@ -116,7 +108,7 @@ users are listed here — internal build, CI, and tooling changes are omitted.
 
 ### 6.x
 
-- **SSN / TIN capture** support (SDK and app).
+- **SSN / TIN capture** support.
 - **Asynchronous transaction submission** endpoint.
 - **Video-injection instructions** and **server-driven liveness algorithm selection**.
 
