@@ -25,8 +25,7 @@ their end users are listed here.
 
 ### Changed
 - **Improved error diagnostics.** Improved crash and error reporting so SDK-related issues are easier
-  to diagnose, with less noise in reported events. The reported context now includes the SDK version.
-  (Android + iOS)
+  to diagnose, with less noise in reported events. (Android + iOS)
 
 ## [12.0.1] - 2026-07-14
 
@@ -54,8 +53,8 @@ their end users are listed here.
 ## [11.6.0] - 2026-06-12
 
 ### Fixed
-- **iOS NFC passport reader integration.** Resolved a CocoaPods integration issue that could prevent
-  NFC passport reading from building. It now integrates cleanly out of the box. (iOS)
+- **iOS NFC passport reader integration.** Resolved a CocoaPods integration issue. NFC passport
+  reading now integrates cleanly out of the box. (iOS)
 
 ## [11.5.0] - 2026-05-07
 
