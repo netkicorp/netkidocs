@@ -57,6 +57,10 @@ After setting up an account with us we will send you onboarding information. It 
 
 [OnboardID React Native Theme Guide](./onboard_id_theme_reactnative.md)
 
+### SDK Release Notes
+
+For a version-by-version history of developer-facing SDK changes, see the [Changelog](./CHANGELOG.md).
+
 ## OnboardID API Access
 
 Nearly all of our clients will interact with the API.  While not all clients will use more than one of the SDKs, it is important to plan ahead to integrate with the API.  Your data will return via callbacks. In addition to getting data via callbacks it is also best practices to routinely poll the API to check to see if new records have shown up. You will gather information this way on overall statistics regarding records that are in processing and can pull a transaction to see if data has been updated.  
