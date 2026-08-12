@@ -1,68 +1,106 @@
-# Best Practices for Internal Callbacks
+# Callback Best Practices
 
-Netki provides a callback service to notify the client when the transaction state changes. Some possible use cases include:
+Netki delivers a callback to your endpoint whenever a transaction reaches a
+state you should react to. This page covers how to consume those callbacks
+reliably. For how callbacks are configured and delivered — the payload shape,
+retry behavior, and the management endpoints — see [Callbacks](./callbacks2.md).
+
+Common use cases:
 
 - Automating responses to the end user
 - Notifying compliance officers of new records
-- Triggering payment of tokens
-- Alerting the end user of approval or denial
-- Forcing an update of local systems
-- Starting an internal background check
+- Triggering token or payment distribution
+- Alerting the end user of an approval or denial
+- Updating your internal systems
+- Kicking off an internal background check
 
-## Callback Implementation Guidelines
+## Track each attempt with a unique identifier
 
-When working with callbacks, follow these best practices:
+Give every verification attempt an identifier that is **unique to that
+attempt**, so you can tie each callback back to the exact submission in your own
+system. Which identifier you use depends on how your end users enter
+verification:
 
-- **Callbacks should NOT block:** Store the data received in the callback and submit it to a background job for processing. This ensures you retain the data for re-processing if there's an issue. It also ensures that if your custom processing takes too long, our system won't time out and stop sending callbacks.
-  
-- **Return proper status codes:** Use either `200` or another `2xx` status code (`201 Created`, `204 Updated`, etc.). Let us know which status code you’ll use so we can configure it accordingly.
-  
-- **Authentication:** We allow both basic authentication and no-auth methods. We recommended that you use basic auth and also whitelist our IPs.
-  
-- **Image retrieval:** Start an asynchronous job to pull in the images for the documents. These links expire, so ensure you have a plan to download them.
+- **SDK integrations** — include a `client_guid` when you submit the
+  transaction. Netki returns it on every callback (and when polling) as
+  `transaction_identity.client_guid`. Use a fresh, non-repeating value per
+  attempt — a UUID works well. Do **not** reuse a value that can recur for the
+  same person, such as an email address or your internal customer ID: if a
+  customer goes through verification more than once, a repeated `client_guid`
+  leaves you unable to tell which attempt a callback is for.
+- **MyVerify app (access codes)** — each user gets a unique access code, and
+  that code identifies the attempt. Netki returns it on every callback (and when
+  polling) as `transaction_identity.identity_access_code`. Access codes are
+  single-use, so every attempt already has its own code; a restart issues a new
+  *child* code, so each pass stays individually traceable. See
+  [Access Codes](./access_codes.md) for how codes and restarts work.
 
-- **Record retention policy:** We purge records when appropriate. Some clients retain records longer, while others purge as soon as the transaction is completed. Ensure you store your data with replication and backups.
+A unique value per attempt keeps every run individually traceable. See
+[`transaction_identity` fields](./polling.md#transaction_identity-fields) in
+[Transactions](./polling.md) for where `client_guid` and `identity_access_code`
+appear in the payload.
 
-- **Data storage:** If possible, store the data in a semi-structured or unstructured data store. While storing in text files is acceptable, a better solution would be using a database that understands JSON natively, such as MongoDB, MySQL, or PostgreSQL.
+## Handling callbacks
 
----
+- **Don't block.** Accept the callback, persist the payload, and hand it to a
+  background job for processing. Return quickly — if your handler is slow, the
+  delivery can time out, which counts as a failed attempt and triggers retries
+  (see [Retry and backoff](./callbacks2.md#retry-and-backoff)). Persisting the
+  raw payload first also lets you re-process it if your own processing fails.
 
-### Document Images
+- **Return the expected status.** A delivery only counts as successful if your
+  endpoint returns the exact status configured in `callback_expected_status`
+  (default `200`; you may set another `2xx` such as `201 Created` or
+  `204 No Content`). Configure it on your callback settings — see
+  [Configure your callback](./callbacks2.md#configure-your-callback). Anything
+  else is treated as a failed attempt.
 
-Pull in the documents as soon as possible. More than one document may be associated with a transaction, and there could be more than six in some cases. It is not uncommon for some images to be stored sideways or upside down, as end-users often take pictures in such orientations. We rotate images programmatically to detect and match faces. Image rotation is part of several post-processing algorithms.
+- **Authenticate the callback.** Configure basic authentication (recommended)
+  or no-auth on your callback settings, and consider allowlisting Netki's
+  delivery IP addresses. See
+  [Configure your callback](./callbacks2.md#configure-your-callback).
 
-The document field on the identity document object contains the necessary data:
+- **Expect duplicates; be idempotent.** You may receive more than one callback
+  for the same transaction — from retries, a manual re-send, or a restart. Key
+  your processing off the transaction `id` so a repeat delivery doesn't create
+  duplicate work.
 
-```json
-transaction_identity.identity_documents[]
-```
+- **Store the data durably.** Persist the full payload so you can re-process it
+  if something goes wrong. A store that understands JSON natively (PostgreSQL,
+  MySQL, MongoDB) is easier to work with than flat files. Replicate and back up
+  your data — do not rely on Netki as your system of record.
 
----
+- **Mind retention.** Netki purges records according to its retention policy,
+  and timing varies by client, so pull and store what you need promptly.
 
-### Determining Status Causes
+## Pull document images promptly
 
-The transaction can be modified in various ways. The best way to understand why something has changed is to gather context from other fields, particularly the `errors` field.
+Document image links in the payload are time-limited and **will expire**, so
+start an asynchronous job to download them as soon as the callback arrives.
 
-For example, the document below contains an error object at the root level of the JSON:
+A transaction may have several documents (sometimes six or more), and images
+may arrive rotated — customers often photograph IDs sideways or upside down.
+Netki rotates them during processing for face matching, so what you receive
+should be correctly oriented. The images live on each entry of
+`transaction_identity.identity_documents` — see
+[identity_documents fields](./polling.md#identity_documents-fields) in
+[Transactions](./polling.md).
+
+## Understand why a state changed
+
+To learn *why* a transaction is on hold or failed, read the `errors` arrays
+rather than any single summary field. An error attached at the transaction or
+identity level carries an `error_code` you can act on:
 
 ```json
 errors[].error_code
 ```
 
-If there is an error code attached, it means there was an issue, and the transaction was either on hold or declined by our system.
+See [API Error Codes](./api_error_codes.md) for the registry, and
+[errors fields](./polling.md#errors-fields) in [Transactions](./polling.md) for
+where these arrays appear in the payload.
 
----
+## Transaction states and the payload
 
-### Identifying Manual Updates
-
-It’s recommended to use a specific key in the "notes" field when updating a transaction. Many clients use this field to indicate why they are performing an action.
-
-> **Note:** Be cautious when allowing clerks, admins, or compliance workers to copy/paste into the notes field. Bad characters can cause issues, often coming from text copied from Microsoft Word or other rich text documents.
-
-The `notes` object is found at the root of the transaction object. Below is an example where `SS1249` was saved into the note field to identify the user who updated the records.
-
----
-
-### Sample States
-
-For more detailed information on transactions, their states, and samples please go [here](/polling.md).
+For the full transaction shape, the list of states, and field-by-field detail,
+see [Transactions](./polling.md).

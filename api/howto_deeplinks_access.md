@@ -1,37 +1,56 @@
-## How to Issue Deeplinks with Access Codes to End Users
+# Deep Links
 
-### Deeplinks
+Deep links are how you route your end users into the Netki verification flow.
+Each deep link carries an access code and sends the user to the right starting
+point — straight into the app, or through a form first.
 
-Deeplinks are how users are routed through your compliance process.  Each Master Deeplink has a specific function.
+> [!NOTE]
+> Deep links are only for the MyVerify app. If you use the SDK, you won't need
+> them — you route users through verification with whatever system your own app
+> already uses.
 
-Depending on your process you may have several deeplinks as follows:
+## Deep link types
 
-1. Take the end user straight to the app
-2. Take the end user to an individual form (which automatically goes to app afterwards)
-3. Take the end user to a corporate form (which automatically goes to app afterwards)
+Depending on your process, you may use any of these:
 
-### Access Codes
+1. **Straight to the app** — the user goes directly into the verification app.
+2. **Individual form, then app** — the user fills out an individual form, then
+   is sent into the app automatically.
+3. **Corporate form, then app** — the user fills out a corporate form, then is
+   sent into the app automatically.
 
+## Access codes in deep links
 
-Access codes are agnostic. You choose which deeplink to put the access code into.
+Access codes are agnostic — you choose which deep link to embed a code into.
+The same rules apply to every deep link:
 
-Example:
+> [!WARNING]
+> Each access code is **one-time use**. Embed a **unique code per user** and
+> change it for every link you send. Handing the same code to more than one
+> person causes collisions and failures.
 
-Access code: `abcrt6c`
+Access codes are **free**, so do not recycle or reissue them — once a code has
+been given out, don't hand it out again. Pull your codes from the API and
+assign them to users from your own system; Netki can only tell whether a code
+has been *used*, not whether you've *assigned* it. See
+[Access Codes](./access_codes.md) for how to list codes and check usage, and
+its best-practices note on treating the API as the source of truth for
+existence and usage while tracking distribution on your side.
 
-NOTE: In each of the deeplinks the access codes are embedded and you **must** change them for each user as the codes are **one-time use**. Giving the same access code out to multiple individuals will cause **collisions and failures**. 
+## Straight to the app (no form)
 
-Access codes are **free** so do NOT recycle. Once they have been issued do not reissue them. You can keep track of your access codes via the API [here](./access_codes.md).  It's best practices to pull them into your system from the API and assign them from there to your end users.  Be aware that our system can't tell when you've given one out, so we only know if it's been used, not assigned on your end.
+To send a user directly into the app for individual KYC, use the app deep link
+with the access code in the `service_code` parameter:
 
-#### Straight to App (no forms)
+```
+https://daiu.app.link/yBE7efy4PI?service_code=<ACCESS_CODE>
+```
 
-If you want the user to just go directly to the app for KYC as an individual you sent them this link:
+Replace `<ACCESS_CODE>` with a unique access code for that user.
 
-	https://daiu.app.link/yBE7efy4PI?service_code=<ACCESS_CODE>
+## Through a form first
 
-
-#### Straight to Forms (and automatically sent to app afterwards)
-
-If you want the user to fill out a corporate form and then automatically go to the app for KYC then you will be given a custom link for your form that will have a place at the end for the access_code like the deeplink above.  Each business link is different and will be given to you by your account manager when you sign up for that.
-
-**NOTE:** in each of these the codes are embedded and you must change them for each user as the codes are 1x use and giving them out to multiple individuals will cause collisions and failures. 
+To send a user through a form (individual or corporate) before the app, you
+use a custom link for your form with a place for the access code at the end,
+in the same way as the app deep link above. Each business's form link is
+different — your account manager provides yours when you set up that flow.
