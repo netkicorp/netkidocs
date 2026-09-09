@@ -21,6 +21,29 @@ their end users are listed here.
 
 ---
 
+## [13.0.1] - 2026-09-09
+
+### Added
+- **On-device document recognition.** The SDK now recognises whether a capture is actually the ID
+  document that was asked for — a national ID front, a national ID back or a passport — rather than
+  only detecting a rectangle. (Android + iOS)
+- **On-device screen-capture detection.** The SDK now detects when a capture is a photograph of a
+  screen rather than a physical document. (Android + iOS)
+
+  Both run on the device, are enabled per country by the backend, and report their result with the
+  captured picture. Neither shows anything to the end user in this release, and no integration
+  change is required to adopt them.
+
+### Upgrading from 12.x
+- **iOS integrators must do a clean build.** `IdCountry`'s initializer gained parameters, which
+  changes its compiled symbol even though existing call sites still compile. An incremental build
+  can fail with `Undefined symbol: NetkiSDK.IdCountry.init(...)`. Delete your derived data and
+  rebuild:
+
+  ```
+  rm -rf ~/Library/Developer/Xcode/DerivedData/<YourApp>-*
+  ```
+
 ## [12.1.0] - 2026-08-05
 
 ### Changed
