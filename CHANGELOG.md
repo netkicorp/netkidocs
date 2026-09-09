@@ -14,8 +14,7 @@ This changelog covers the OnboardID mobile SDKs and their published packages:
 | React Native | `@netki/netki-mobilesdk` | [npm](https://www.npmjs.com/package/@netki/netki-mobilesdk) |
 
 All platforms share a single version number, and only changes relevant to SDK integrators and
-their end users are listed here. The one exception is **13.0.x**: an iOS-only fix means iOS,
-Flutter and React Native are at 13.0.1 while Android is at 13.0.0 — see the 13.0.1 entry.
+their end users are listed here.
 
 > **Note on versioning:** Starting with **12.0.0**, every platform ships as a single self-contained
 > artifact published to its public registry (see the [Scope](#scope) table above).
@@ -27,8 +26,10 @@ Flutter and React Native are at 13.0.1 while Android is at 13.0.0 — see the 13
 ### Fixed
 - **iOS: 13.0.0 could not be compiled against.** Building an app against NetkiSDK 13.0.0 failed with
   `Unable to resolve module dependency: 'NetkiCV'`, because an internal module leaked into the
-  published Swift interface. Use **13.0.1**; do not use 13.0.0. Android was unaffected and stays on
-  **13.0.0** — there is no 13.0.1 Android artifact. (iOS)
+  published Swift interface. Use **13.0.1**; do not use iOS 13.0.0. (iOS)
+
+Android 13.0.1 is a version-only release, published so every platform stays on one version. It is
+functionally identical to Android 13.0.0. (Android)
 
 ## [13.0.0] - 2026-09-08
 
