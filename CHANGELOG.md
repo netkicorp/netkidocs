@@ -43,25 +43,6 @@ Flutter and React Native are at 13.0.1 while Android is at 13.0.0 — see the 13
   captured picture. Neither shows anything to the end user in this release, and no integration
   change is required to adopt them.
 
-### Changed
-- **`IdCountry` carries four new properties.** They describe which on-device checks the backend has
-  enabled for a country, and they are set for you.
-
-  If your code builds an `IdCountry` from another `IdCountry` — for example to substitute a
-  localized country name — copy the value and change the field you need instead of listing the
-  properties one by one. Rebuilding it property by property silently drops the new ones and resets
-  them to defaults:
-
-  ```swift
-  // Preserves everything, including properties added in future releases
-  var localized = idCountry
-  localized.name = localizedName
-  ```
-
-  ```kotlin
-  val localized = idCountry.copy(name = localizedName)
-  ```
-
 ### Upgrading from 12.x
 - **iOS integrators must do a clean build.** `IdCountry`'s initializer gained parameters, which
   changes its compiled symbol even though existing call sites still compile. An incremental build
