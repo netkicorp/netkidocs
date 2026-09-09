@@ -14,12 +14,63 @@ This changelog covers the OnboardID mobile SDKs and their published packages:
 | React Native | `@netki/netki-mobilesdk` | [npm](https://www.npmjs.com/package/@netki/netki-mobilesdk) |
 
 All platforms share a single version number, and only changes relevant to SDK integrators and
-their end users are listed here.
+their end users are listed here. The one exception is **13.0.x**: an iOS-only fix means iOS,
+Flutter and React Native are at 13.0.1 while Android is at 13.0.0 — see the 13.0.1 entry.
 
 > **Note on versioning:** Starting with **12.0.0**, every platform ships as a single self-contained
 > artifact published to its public registry (see the [Scope](#scope) table above).
 
 ---
+
+## [13.0.1] - 2026-09-09
+
+### Fixed
+- **iOS: 13.0.0 could not be compiled against.** Building an app against NetkiSDK 13.0.0 failed with
+  `Unable to resolve module dependency: 'NetkiCV'`, because an internal module leaked into the
+  published Swift interface. Use **13.0.1**; do not use 13.0.0. Android was unaffected and stays on
+  **13.0.0** — there is no 13.0.1 Android artifact. (iOS)
+
+## [13.0.0] - 2026-09-08
+
+### Added
+- **On-device document recognition.** The SDK now recognises whether a capture is actually the ID
+  document that was asked for — a national ID front, a national ID back or a passport — rather than
+  only detecting a rectangle. (Android + iOS)
+- **On-device screen-capture detection.** The SDK now detects when a capture is a photograph of a
+  screen rather than a physical document. (Android + iOS)
+
+  Both run on the device, are enabled per country by the backend, and report their result with the
+  captured picture. Neither shows anything to the end user in this release, and no integration
+  change is required to adopt them.
+
+### Changed
+- **`IdCountry` carries four new properties.** They describe which on-device checks the backend has
+  enabled for a country, and they are set for you.
+
+  If your code builds an `IdCountry` from another `IdCountry` — for example to substitute a
+  localized country name — copy the value and change the field you need instead of listing the
+  properties one by one. Rebuilding it property by property silently drops the new ones and resets
+  them to defaults:
+
+  ```swift
+  // Preserves everything, including properties added in future releases
+  var localized = idCountry
+  localized.name = localizedName
+  ```
+
+  ```kotlin
+  val localized = idCountry.copy(name = localizedName)
+  ```
+
+### Upgrading from 12.x
+- **iOS integrators must do a clean build.** `IdCountry`'s initializer gained parameters, which
+  changes its compiled symbol even though existing call sites still compile. An incremental build
+  can fail with `Undefined symbol: NetkiSDK.IdCountry.init(...)`. Delete your derived data and
+  rebuild:
+
+  ```
+  rm -rf ~/Library/Developer/Xcode/DerivedData/<YourApp>-*
+  ```
 
 ## [12.1.0] - 2026-08-05
 
