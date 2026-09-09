@@ -23,16 +23,6 @@ their end users are listed here.
 
 ## [13.0.1] - 2026-09-09
 
-### Fixed
-- **iOS: 13.0.0 could not be compiled against.** Building an app against NetkiSDK 13.0.0 failed with
-  `Unable to resolve module dependency: 'NetkiCV'`, because an internal module leaked into the
-  published Swift interface. Use **13.0.1**; do not use iOS 13.0.0. (iOS)
-
-Android 13.0.1 is a version-only release, published so every platform stays on one version. It is
-functionally identical to Android 13.0.0. (Android)
-
-## [13.0.0] - 2026-09-08
-
 ### Added
 - **On-device document recognition.** The SDK now recognises whether a capture is actually the ID
   document that was asked for — a national ID front, a national ID back or a passport — rather than
