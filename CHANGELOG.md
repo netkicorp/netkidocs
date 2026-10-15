@@ -39,11 +39,6 @@ their end users are listed here.
   visible area could be approved and captured while the user could see it was cut off. Detections
   outside the visible area are now ignored. (iOS)
 
-### Upgrading from 12.x
-- iOS integrators must do a clean build — see [Upgrading from 12.x](#upgrading-from-12x-1) under
-  13.0.1. Nothing else changes: there is no API change in 13.0.1, 13.0.2 or 13.0.3, and bridge
-  users pick the native SDKs up through the package version.
-
 ## [13.0.2] - 2026-10-12
 
 ### Fixed
