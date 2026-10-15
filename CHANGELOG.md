@@ -21,6 +21,30 @@ their end users are listed here.
 
 ---
 
+## [13.0.3] - 2026-10-15
+
+### Changed
+- **Auto-capture is announced before it happens.** Once a document is correctly framed the SDK
+  counts down on screen — 3, 2, 1 — before taking the photo, instead of capturing the moment the
+  frame turns valid. Moving the document during the countdown cancels it, and the manual shutter
+  stays hidden while a countdown is running. (Android + iOS)
+- **The camera settles before it starts guiding.** For the first second after the capture screen
+  opens, nothing is analysed and no detection is drawn, so the guidance that appears is guidance
+  the user can act on. Each liveness action settles the same way, with that action's time window
+  extended to match, so the time available to perform it is unchanged. (Android + iOS)
+
+### Fixed
+- **A document hanging outside the visible preview is no longer captured.** The camera preview
+  shows a cropped view of the image the SDK analyses, so an ID positioned above or below the
+  visible area could be approved and captured while the user could see it was cut off. Detections
+  outside the visible area are now ignored. (iOS)
+
+## [13.0.2] - 2026-10-12
+
+### Fixed
+- **Capture instructions are no longer clipped.** On dense displays, in longer locales and at
+  raised font scales, the instruction text below the camera could be cut off. (Android)
+
 ## [13.0.1] - 2026-09-09
 
 ### Added
