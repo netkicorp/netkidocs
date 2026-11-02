@@ -132,6 +132,14 @@ Task {
 | `token` | String | Yes | Your API token from Netki |
 | `accessCode` | String | No | Optional access code for the transaction |
 
+> **Note:** We recommend keeping your API token on your own backend rather than
+> shipping it inside the app. Have the app request the token from your server at
+> runtime over an authenticated channel, hold it in memory, and pass it to
+> `configureWithToken`. Values compiled into the app — `Info.plist` entries,
+> `.xcconfig` values, or source constants — can be recovered from a published
+> IPA, and a token held on your server can be rotated without releasing a new
+> version.
+
 ### Step 3: Start the Identification Flow
 
 Create a view to display the document capture UI.
