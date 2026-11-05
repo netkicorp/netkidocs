@@ -13,6 +13,7 @@ To get up and running, complete the [Installation](#installation) and [Core Inte
 ## Table of Contents
 
 - [Requirements](#requirements)
+  - [ePassport (NFC)](#epassport-nfc)
 - [Installation](#installation)
 - [Core Integration](#core-integration)
 - [Optional Features](#optional-features)
@@ -28,7 +29,6 @@ To get up and running, complete the [Installation](#installation) and [Core Inte
 - iOS 17.0 or higher
 - Camera permission
 - Photo Library permission
-- NFC capability (required for passport reading)
 
 Add the following keys to your `Info.plist`:
 
@@ -39,6 +39,19 @@ Add the following keys to your `Info.plist`:
 <string>Photo library access is required to store captured images</string>
 <key>NSPhotoLibraryAddUsageDescription</key>
 <string>Photo library access is required to store captured images</string>
+```
+
+That is everything the SDK needs to capture and verify identity documents.
+
+### ePassport (NFC)
+
+**Only required if you need passport chip reading.** Without it the SDK still captures and verifies
+documents; the ePassport step reports NFC as unavailable and the user can skip it. If you do not
+offer passport verification, skip this section entirely.
+
+Add two more keys to your `Info.plist`:
+
+```xml
 <key>NFCReaderUsageDescription</key>
 <string>Used to read NFC chip data from your passport for identity verification.</string>
 <key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
@@ -47,7 +60,12 @@ Add the following keys to your `Info.plist`:
 </array>
 ```
 
-Enable the **Near Field Communication Tag Reading** capability in your target's *Signing & Capabilities* tab. Xcode will add the following to your `.entitlements` file:
+> **About `A0000002471001`:** this is the ICAO 9303 ePassport Application Identifier (AID) — a fixed
+> standard value used by all ePassport chips worldwide. Copy it verbatim; it is not
+> application-specific.
+
+Enable the **Near Field Communication Tag Reading** capability in your target's *Signing &
+Capabilities* tab. Xcode will add the following to your `.entitlements` file:
 
 ```xml
 <key>com.apple.developer.nfc.readersession.formats</key>
@@ -56,20 +74,24 @@ Enable the **Near Field Communication Tag Reading** capability in your target's 
 </array>
 ```
 
-> **About `A0000002471001`:** this is the ICAO 9303 ePassport Application Identifier (AID) — a fixed standard value used by all ePassport chips worldwide. Copy it verbatim; it is not application-specific.
+#### Enable NFC on your App ID in Apple Developer Portal
 
-### Enable NFC on your App ID in Apple Developer Portal
-
-Info.plist keys and entitlements alone are not enough — the App ID itself must have the NFC capability enabled in the Apple Developer Portal, otherwise provisioning strips the entitlement and `NFCTagReaderSession.readingAvailable` returns `false` at runtime.
+Info.plist keys and entitlements alone are not enough — the App ID itself must have the NFC
+capability enabled in the Apple Developer Portal, otherwise provisioning strips the entitlement and
+`NFCTagReaderSession.readingAvailable` returns `false` at runtime.
 
 1. Sign in at [developer.apple.com/account](https://developer.apple.com/account).
 2. Left nav → **Certificates, Identifiers & Profiles** → **Identifiers**.
 3. Filter to **App IDs** and open the App ID matching your app's bundle identifier.
 4. In the **Capabilities** list, tick **NFC Tag Reading** and click **Save**.
-5. Enabling the capability invalidates existing provisioning profiles. Go to **Profiles**, filter to that bundle ID, and click **Edit → Save** on each affected profile so Apple re-issues them with the new entitlement.
-6. In Xcode: Settings → Accounts → your Apple ID → **Download Manual Profiles** (or let automatic signing re-fetch on next build).
+5. Enabling the capability invalidates existing provisioning profiles. Go to **Profiles**, filter to
+   that bundle ID, and click **Edit → Save** on each affected profile so Apple re-issues them with
+   the new entitlement.
+6. In Xcode: Settings → Accounts → your Apple ID → **Download Manual Profiles** (or let automatic
+   signing re-fetch on next build).
 
-Repeat for every build configuration whose bundle ID differs (Development / QA / Production typically have three separate App IDs — enable NFC on each).
+Repeat for every build configuration whose bundle ID differs (Development / QA / Production
+typically have three separate App IDs — enable NFC on each).
 
 ## Installation
 
@@ -88,6 +110,34 @@ pod install
 ```
 
 > **Note:** Replace `{latest.version}` with the current version. Check [CocoaPods](https://cocoapods.org/pods/NetkiSDK) for available versions.
+
+#### If you are on 13.0.3 or earlier
+
+Those versions crash on launch with a message like:
+
+```
+dyld: Symbol not found: _$s17NFCPassportReader08PassportB0C04readC06mrzKey...TjTu
+  Referenced from: .../NetkiSDK.framework/NetkiSDK
+  Expected in: .../NFCPassportReader.framework/NFCPassportReader
+```
+
+The build succeeds and the app dies at startup. Add this to your `Podfile` and run `pod install`
+again:
+
+```ruby
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    if target.name == 'NFCPassportReader'
+      target.build_configurations.each do |config|
+        config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+      end
+    end
+  end
+end
+```
+
+**13.1.0 and later do not need this** — the hook can be removed once you upgrade. Pinning a
+different `NFCPassportReader` version does not help; the fix is in how the SDK itself is built.
 
 ### Step 2: Import the SDK
 
