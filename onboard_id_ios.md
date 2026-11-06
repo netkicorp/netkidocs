@@ -111,6 +111,23 @@ pod install
 
 > **Note:** Replace `{latest.version}` with the current version. Check [CocoaPods](https://cocoapods.org/pods/NetkiSDK) for available versions.
 
+### CocoaPods spec source
+
+From **2 December 2026** CocoaPods Trunk stops accepting new Podspecs
+([announcement](https://blog.cocoapods.org/CocoaPods-Specs-Repo/)). Netki publishes to its own
+spec source as well, so add both to your `Podfile`:
+
+```ruby
+source 'https://cdn.cocoapods.org/'
+source 'https://github.com/netkicorp/Specs.git'
+```
+
+> **Keep the first line.** CocoaPods only uses the CDN implicitly while a `Podfile` declares no
+> sources of its own. Adding ours without it drops the default, and every *other* pod in your
+> project stops resolving — with errors naming those pods rather than this change.
+
+Versions already on Trunk stay there and keep resolving, so existing builds are unaffected.
+
 #### If you are on 13.0.3 or earlier
 
 Those versions crash on launch with a message like:
