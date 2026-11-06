@@ -21,6 +21,54 @@ their end users are listed here.
 
 ---
 
+## [13.1.0] - UNRELEASED
+
+### Fixed
+- **Integrators on Koin 4.x no longer crash on the first SDK call.** The SDK declared Koin 3.2.0,
+  while `koin-core` arrived transitively and resolved to whichever version your app used. Against
+  Koin 4.x that mismatch was an uncatchable `LinkageError` on `OnBoardId.initialize`. The SDK now
+  uses Koin 4.1.1, and the two Koin artifacts it never used have been dropped. (Android)
+- **Following the iOS install instructions no longer produces a launch crash.** A clean build could
+  fail at startup with `dyld: Symbol not found: _$s17NFCPassportReader...TjTu, Referenced from
+  NetkiSDK.framework`. The only remedy was an undocumented `post_install` hook. The SDK is now
+  built so that hook is unnecessary — see *Upgrading* below. (iOS)
+- **Integrators on a current Sentry can install the SDK again.** The Sentry dependency was pinned
+  so tightly that only 8.46.x satisfied it, so any app already using a newer Sentry — directly or
+  through another pod — failed `pod install` with no indication that the SDK was the inflexible
+  party. The constraint now admits the whole 8.x line. (iOS)
+- **Document quality is measured on the document rather than the whole frame.** The detected
+  document region was not being handed to the image-quality and document-recognition checks
+  correctly, so they scored the entire camera frame. Lighting, glare, blur and document-recognition
+  results are more accurate as a result, and passport captures no longer risk having the machine-
+  readable zone fall outside the measured area. (iOS, and on Android for frames that are not 4:3)
+
+### Changed
+- **Captured images are cleared as soon as they are no longer needed.** Document and face captures
+  are written to app-private storage, removed when a transaction is submitted or restarted, and
+  cleared again when the SDK is initialized. Images left behind in the cache by earlier versions
+  are swept on first run. Nothing the SDK captures is written to a user-visible location. (Android
+  + iOS)
+- **Session tokens are no longer written to disk.** The access and refresh pair the backend issues
+  is held in memory for the life of the process instead of being stored unencrypted in the SDK's
+  database. It survives the app being paused, resumed and re-initialized, and is discarded when the
+  transaction ends. No integration change is required, and no database migration is involved.
+  (Android + iOS)
+- **The access code is no longer included in analytics events.** It is a credential, and it was
+  being sent to our analytics processor as a property on the access-code event. The event remains,
+  without that property. (Android + iOS)
+
+### Upgrading from 13.0.x
+- **iOS: remove the `post_install` hook, if you added one.** If your `Podfile` forces
+  `BUILD_LIBRARY_FOR_DISTRIBUTION` on the `NFCPassportReader` target to work around the launch
+  crash above, delete it. It is no longer needed and the SDK does not depend on it. Integrators on
+  **13.0.3 and earlier still need it** — the workaround is documented in the iOS integration guide.
+- **iOS: `NFCPassportReader` is now pinned to exactly 2.3.1.** The SDK links it in a way that
+  depends on its exact layout, so the version is fixed rather than a range.
+- **Android: Koin resolves to 4.1.1.** If your app pins an older Koin, you will need to move to
+  4.x. Nothing in the SDK's public API changes.
+
+---
+
 ## [13.0.3] - 2026-10-15
 
 ### Changed
