@@ -21,7 +21,7 @@ their end users are listed here.
 
 ---
 
-## [13.1.0] - UNRELEASED
+## [13.1.0] - 2026-11-09
 
 ### Fixed
 - **Integrators on Koin 4.x no longer crash on the first SDK call.** The SDK declared Koin 3.2.0,
