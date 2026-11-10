@@ -74,7 +74,7 @@ The SDK brings its own dependencies, and two of them are commonly already presen
 
 | Dependency | Version the SDK resolves | Notes |
 |------------|--------------------------|-------|
-| Koin | 4.1.1 | From 13.1.0. Earlier SDK versions declared 3.2.0 and crashed with a `LinkageError` on `OnBoardId.initialize` in apps using Koin 4.x. |
+| Koin | 4.1.1 | From 13.1.0. Earlier SDK versions used an older major version, which stopped verification starting in apps already on Koin 4.x. |
 | Sentry | 8.x | Used internally for SDK diagnostics; it does not affect your own Sentry setup. |
 
 If your app pins Koin below 4.x, move to 4.x before upgrading to 13.1.0.
