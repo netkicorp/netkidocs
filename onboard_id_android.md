@@ -68,6 +68,17 @@ implementation 'com.netki:netkisdk:${latest.version}'
 
 > **Note:** Replace `${latest.version}` with the current version. Check [Maven Central](https://central.sonatype.com/artifact/com.netki/netkisdk) for available versions.
 
+#### Dependencies you may already have
+
+The SDK brings its own dependencies, and two of them are commonly already present in host apps:
+
+| Dependency | Version the SDK resolves | Notes |
+|------------|--------------------------|-------|
+| Koin | 4.1.1 | From 13.1.0. Earlier SDK versions used an older major version, which stopped verification starting in apps already on Koin 4.x. |
+| Sentry | 8.x | Used internally for SDK diagnostics; it does not affect your own Sentry setup. |
+
+If your app pins Koin below 4.x, move to 4.x before upgrading to 13.1.0.
+
 ## Core Integration
 
 This section covers everything you need to integrate the SDK. Complete these 4 steps for a fully working implementation.

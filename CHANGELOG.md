@@ -21,6 +21,42 @@ their end users are listed here.
 
 ---
 
+## [13.1.0] - 2026-11-09
+
+### Fixed
+- **Apps that follow the iOS setup guide now launch.** Some integrations could be built without
+  any error and then fail the instant they opened. Setting the SDK up on iOS no longer requires
+  any extra build configuration. (iOS)
+- **Apps already using Koin now start verification normally.** A clash between the SDK's copy of a
+  shared component and the host app's stopped verification from beginning at all. (Android)
+- **Apps already using Sentry can install the SDK again.** The SDK insisted on one narrow version
+  of Sentry, so apps on a newer one could not add it. It now works across the range. (iOS)
+- **Capture guidance reads the document, not the whole picture.** The checks for lighting, glare,
+  blur and document recognition were judging the entire camera view rather than the document
+  within it. They now assess the document itself, which makes the on-screen guidance and automatic
+  capture noticeably more accurate — most of all for passports. (iOS, and some Android cases)
+
+### Changed
+- **Photographs are cleared as soon as they are no longer needed.** Pictures taken during a
+  verification are removed once it is submitted or restarted, and anything an earlier version left
+  behind is cleared the first time this version runs. None of it is ever placed anywhere the
+  phone's owner or another app can browse. (Android + iOS)
+- **Verification credentials are no longer kept on the device.** The credentials issued for a
+  verification now last only as long as the app is running and are discarded when the verification
+  ends. Nothing about your integration changes. (Android + iOS)
+- **The access code is no longer included in analytics.** It is a credential, so it no longer
+  travels to our analytics provider. (Android + iOS)
+
+### Upgrading from 13.0.x
+- **iOS — remove the workaround, if you added one.** Earlier versions needed an extra `post_install`
+  block in your `Podfile` for `NFCPassportReader` to stop the app crashing at launch. Delete it; it
+  is no longer required. Anyone staying on 13.0.3 or earlier still needs it, and it remains
+  documented in the iOS integration guide.
+- **Android — move to Koin 4.x.** If your app pins Koin to an earlier major version, update it.
+  Nothing in the SDK's public interface changes.
+
+---
+
 ## [13.0.3] - 2026-10-15
 
 ### Changed
